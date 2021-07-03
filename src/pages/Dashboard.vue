@@ -12,6 +12,9 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'PageIndex'
+  name: 'Dashboard',
+  mounted () {
+    this.$store.commit('layout/SET_HEADER', 'Dashboard')
+  }
 })
 </script>

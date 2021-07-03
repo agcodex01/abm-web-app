@@ -6,27 +6,34 @@
   "author": "loremZyn14 <yasuaimo@gmail.com>",
   "private": true,
   "scripts": {
+    "build": "quasar build",
+    "start": "node server.js",
+    "heroku-postbuild": "yarn && yarn build",
     "lint": "eslint --ext .js,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
+    "@babel/eslint-parser": "^7.13.14",
+    "@quasar/app": "^3.0.0",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
+    "connect-history-api-fallback": "^1.6.0",
     "core-js": "^3.6.5",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-vue": "^7.0.0",
+    "eslint-webpack-plugin": "^2.4.0",
+    "express": "^4.17.1",
     "fibers": "^5.0.0",
     "quasar": "^2.0.0",
+    "serve-static": "^1.14.1",
     "vuex": "^4.0.1"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.13.14",
-    "@quasar/app": "^3.0.0",
+    "dotenv": "^10.0.0",
     "eslint": "^7.14.0",
-    "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-vue": "^7.0.0",
-    "eslint-webpack-plugin": "^2.4.0"
+    "eslint-plugin-promise": "^5.1.0"
   },
   "browserslist": [
     "last 10 Chrome versions",
@@ -40,8 +47,8 @@
     "last 5 Opera versions"
   ],
   "engines": {
-    "node": ">= 12.22.1",
-    "npm": ">= 6.13.4",
-    "yarn": ">= 1.21.1"
+    "node": "14.16.0",
+    "npm": "6.14.11",
+    "yarn": "1.22.10"
   }
 }

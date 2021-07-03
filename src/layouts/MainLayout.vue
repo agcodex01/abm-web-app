@@ -33,7 +33,6 @@
 </template>
 
 <script>
-
 import { mapGetters } from 'vuex'
 import Links from 'src/components/layout/Links.vue'
 

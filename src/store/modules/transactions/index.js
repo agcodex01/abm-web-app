@@ -1,5 +1,5 @@
 import tableHeader from './table_config'
-import { getTransactions } from './../../../services/TransactionService'
+import { getTransactions, getTransactionsByType } from './../../../services/TransactionService'
 
 export default {
   namespaced: true,
@@ -21,6 +21,12 @@ export default {
   mutations: {
     SET_TRANSACTIONS (state, data) {
       state.transactions = data
+    },
+    remove (state, data) {
+      state.transactions.splice(state.transactions.indexOf(data), 1)
+    },
+    filteredByType (state) {
+      return getTransactionsByType(state.transactions, state.transactions.type)
     }
   }
 }

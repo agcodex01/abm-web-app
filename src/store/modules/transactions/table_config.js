@@ -21,15 +21,25 @@ export default [
     sortable: true
   },
   {
-    name: 'amount',
-    field: 'amount',
-    label: 'Amount',
+    name: 'account_id',
+    field: 'account_id',
+    label: 'Account ID',
+    sortable: true
+  },
+  {
+    name: 'biller',
+    field: 'biller',
+    label: 'Biller',
     sortable: true
   },
   {
     name: 'address',
     field: 'address',
-    label: 'Address',
-    sortable: true
+    label: 'Address'
+  },
+  {
+    name: 'actions',
+    field: 'actions',
+    label: 'Actions'
   }
 ]

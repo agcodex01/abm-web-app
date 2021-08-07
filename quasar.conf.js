@@ -50,7 +50,7 @@ module.exports = configure(function (ctx) {
       // transpile: false,
       env: {
         API_URL: ctx.dev
-          ? 'http://127.0.0.1:8000/api'
+          ? 'http://localhost:8000/api'
           : 'https://abm-ser-dev.herokuapp.com/api'
       },
       // Add dependencies for transpiling with Babel (Array of string/regex)
@@ -97,7 +97,9 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: [
+        'Notify'
+      ]
     },
 
     // animations: 'all', // --- includes all animations

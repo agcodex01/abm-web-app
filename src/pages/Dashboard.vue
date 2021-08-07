@@ -37,10 +37,6 @@ export default {
   },
   mounted () {
     this.$store.commit('layout/SET_HEADER', 'Dashboard')
-    this.$store.commit(
-      'dashboard/INCREMENT_VALUE',
-      { id: 1, value: 10 }
-    )
     this.$store.commit('transactions/SET_TRANSACTIONS', [
       {
         id: '918857d6-fcbf-4c93-8412-e18d3dba0435',

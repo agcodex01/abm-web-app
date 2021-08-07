@@ -11,9 +11,8 @@ export default {
   actions: {},
   mutations: {
     INCREMENT_VALUE (state, object) {
-      state.dsSummary
-        .find(summary => summary.id === object.id)
-        .value += object.value
+      const index = state.dsSummary.findIndex(ds => ds.id === object.id)
+      state.dsSummary[index].value += object.value
     }
   }
 }

@@ -1,11 +1,27 @@
-
+import auth from './middleware/auth'
+import redirectIfAuthenticated from './middleware/guest'
 const routes = [
   {
     path: '/',
+    meta: {
+      middleware: [auth]
+    },
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('src/pages/Dashboard.vue') }
+      {
+        path: '',
+        name: 'dashboard',
+        component: () => import('src/pages/Dashboard.vue')
+      }
     ]
+  },
+  {
+    path: '/auth/login',
+    name: 'login',
+    meta: {
+      middleware: [redirectIfAuthenticated]
+    },
+    component: () => import('src/pages/Login.vue')
   },
 
   // Always leave this as last one,

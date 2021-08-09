@@ -8,10 +8,21 @@ const routes = [
     },
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('src/pages/Dashboard.vue') },
-      { path: '/transactions', component: () => import('src/pages/transactions/Transactions.vue') },
-      { path: '/transactions/update-transaction/:id', name: 'editTransaction', component: () => import('src/pages/transactions/UpdateTransaction.vue'), props: true }
-
+      {
+        path: '',
+        name: 'dashboard',
+        component: () => import('src/pages/Dashboard.vue')
+      },
+      {
+        path: '/transactions',
+        component: () => import('src/pages/transactions/Transactions.vue')
+      },
+      {
+        path: '/transactions/update-transaction/:id',
+        name: 'editTransaction',
+        component: () => import('src/pages/transactions/UpdateTransaction.vue'),
+        props: true
+      }
     ]
   },
   {

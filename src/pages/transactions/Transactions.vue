@@ -11,34 +11,13 @@
       </q-breadcrumbs>
     </div>
 
-    <div class="q-gutter-y-md" style="max-width: 300px">
-      <!-- <select class="col-2 q-gutter-sm q-mr-md" v-model="unitModel">
-        <option value="" disabled selected hidden>Select Unit</option>
-        <option v-for="transaction in transactions" :key="transaction.unit">
-          {{ transaction.unit }}
-        </option>
-      </select>
-      <select
-        class="col-2 q-gutter-sm q-mr-md"
-        v-model="typeModel"
-        label="Type"
-      >
-        <option value="" disabled selected hidden>Select Types</option>
-        <option v-for="transaction in transactions" :key="transaction.type">
-          {{ transaction.type }}
-        </option>
-      </select> -->
-      <!-- <select
-        class="col-2 q-gutter-sm q-mr-md"
-        v-model="billerModel"
-        label="Biller"
-      >
-        <option value="" disabled selected hidden>Select Billers</option>
-        <option v-for="transaction in transactions" :key="transaction.biller">
-          {{ transaction.biller }}
-        </option>
-      </select> -->
+    <div class="row q-col-gutter-md">
+
+      <p class="text-h5 h5 q-px-md q-pt-md q-mt-sm">Filter</p>
+
       <q-select
+        class="col"
+        style="max-width:300px"
         filled
         v-model="biller"
         :options="billers"
@@ -46,16 +25,18 @@
         label="Billers"
         @update:model-value="updateBiller"
         clearable
+        dense
       />
       <q-select
+        style="max-width:300px"
+        class="col"
         filled
         v-model="type"
         :options="types"
         label="Types"
         @update:model-value="updateBillerType"
-        clearable
+        dense
       />
-      {{ biller }}
     </div>
 
     <q-table
@@ -152,6 +133,11 @@ export default {
         })
     },
     updateBiller (biller) {
+      if (biller) {
+        this.type = biller.type
+        this.$store.commit('billers/SET_SELECTED_BILLER_TYPE', biller.type)
+      }
+
       this.$store.commit('billers/SET_BILLER', biller)
     },
     updateBillerType (type) {

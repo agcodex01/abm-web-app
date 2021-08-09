@@ -6,7 +6,7 @@ export default {
   state: () => ({
     billers: [],
     biller: null,
-    selectedBillerType: BILLER_TYPE.WATER
+    selectedBillerType: BILLER_TYPE.ALL
   }),
   getters: {
     GET_BILLERS: state => state.billers,

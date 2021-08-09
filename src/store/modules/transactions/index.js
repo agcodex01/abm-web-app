@@ -1,6 +1,8 @@
 import tableHeader from './table_config'
-import { getTransactionsByType } from './../../../services/TransactionService'
+import { getTransactionsByType } from 'services/TransactionService'
 import db from 'app/db'
+import _ from 'util/validation'
+import { BILLER_TYPE } from 'src/store/types/billers'
 
 export default {
   namespaced: true,
@@ -10,10 +12,27 @@ export default {
   }),
   getters: {
     getTransactions: (state, getters, rootState, rootGetters) => {
-      return state.transactions
-        .filter(item => item.type === rootGetters['billers/GET_SELECTED_BILLER_TYPE'] && item.biller.includes(rootGetters['billers/GET_SELECTED_BILLER']))
+      if (
+        rootGetters['billers/GET_SELECTED_BILLER_TYPE'] === BILLER_TYPE.ALL &&
+         _.isEmpty(rootGetters['billers/GET_SELECTED_BILLER'])
+      ) return state.transactions
+
+      if (
+        rootGetters['billers/GET_SELECTED_BILLER_TYPE'] === BILLER_TYPE.ALL &&
+        !_.isEmpty(rootGetters['billers/GET_SELECTED_BILLER'])
+      ) {
+        return state.transactions.filter((item) =>
+          item.biller.includes(rootGetters['billers/GET_SELECTED_BILLER'])
+        )
+      }
+
+      return state.transactions.filter(
+        (item) =>
+          item.type === rootGetters['billers/GET_SELECTED_BILLER_TYPE'] &&
+          item.biller.includes(rootGetters['billers/GET_SELECTED_BILLER'])
+      )
     },
-    getTableHeader: state => state.tableHeader
+    getTableHeader: (state) => state.tableHeader
   },
   actions: {
     getTransactions: ({ commit }) => {

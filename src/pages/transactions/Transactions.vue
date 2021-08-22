@@ -100,6 +100,20 @@
           <div class="text-subtitle2 q-mt-md">Fetching data...</div>
         </q-inner-loading>
       </template>
+      <template v-slot:top-right>
+        <q-input
+          outlined
+          dense
+          debounce="300"
+          v-model="filter"
+          placeholder="Search"
+          clearable
+        >
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
       <template v-slot:body-selection="scope">
         <q-checkbox :disable="remittable(scope.row.status)"  v-model="scope.selected" />
       </template>
@@ -132,20 +146,6 @@
             :label="props.value"
           />
         </q-td>
-      </template>
-      <template v-slot:top-right>
-        <q-input
-          outlined
-          dense
-          debounce="300"
-          v-model="filter"
-          placeholder="Search"
-          clearable
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
       </template>
       <template v-slot:no-data="{ message }">
         <div class="full-width text-subtitle1 text-center text-primary">

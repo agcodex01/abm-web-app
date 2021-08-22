@@ -1,70 +1,136 @@
 <template>
   <q-page padding>
-    <div class="q-pa-md q-gutter-sm">
-      <q-breadcrumbs>
-        <q-breadcrumbs-el icon="home" to="/" />
-        <q-breadcrumbs-el
-          label="transactions"
-          icon="widgets"
-          to="/start/pick-quasar-flavour"
-        />
+    <div class="flex justify-between align-center q-mt-md q-mb-xl">
+      <q-breadcrumbs class="align-center q-pa-sm" style="font-size: 14px">
+        <template v-slot:separator>
+          <q-icon
+            size="24px"
+            name="chevron_right"
+          />
+        </template>
+        <q-breadcrumbs-el to="/" label="Adopisoft Billing Machine" />
+        <q-breadcrumbs-el label="Transactions"/>
       </q-breadcrumbs>
+      <q-btn outline style="font-size:12px" :disable="!selected.length" color="primary"  label="Add new remit"/>
     </div>
 
-    <div class="row q-col-gutter-md">
-
-      <p class="text-h5 h5 q-px-md q-pt-md q-mt-sm">Filter</p>
-
+    <div class="row q-col-gutter-sm">
       <q-select
         class="col"
-        style="max-width:300px"
         filled
-        v-model="biller"
-        :options="billers"
-        option-label="name"
-        label="Billers"
-        @update:model-value="updateBiller"
+        v-model="transactionFilter.unitName"
+        :options="units"
+        label="Units"
+        @update:model-value="updateFilter"
         clearable
+        options-dense
+        emit-value
         dense
       />
       <q-select
-        style="max-width:300px"
         class="col"
         filled
-        v-model="type"
+        v-model="transactionFilter.billerName"
+        :options="billers"
+        label="Billers"
+        @update:model-value="updateFilter"
+        clearable
+        options-dense
+        emit-value
+        dense
+      />
+      <q-select
+        class="col"
+        filled
+        v-model="transactionFilter.billerType"
         :options="types"
         label="Types"
-        @update:model-value="updateBillerType"
+        @update:model-value="updateFilter"
+        options-dense
+        map-options
+        emit-value
+        dense
+      />
+      <q-select
+        class="col"
+        filled
+        v-model="transactionFilter.status"
+        :options="statuses"
+        label="Status"
+        options-dense
+        @update:model-value="updateFilter"
+        map-options
+        emit-value
+        dense
+      />
+      <q-select
+        class="col"
+        filled
+        v-model="transactionFilter.createdAt"
+        :options="createdAtOptions"
+        label="Created At"
+        @update:model-value="updateFilter"
+        options-dense
+        emit-value
+        map-options
         dense
       />
     </div>
 
     <q-table
-      class="q-mt-lg half-width"
       title="Transactions"
+      no-data-label="There is no transactions as of now!"
+      no-results-label="The filter didn't uncover any transactions"
+      class="q-mt-lg"
+      selection="multiple"
+      row-key="id"
+      v-model:selected="selected"
       :rows="transactions"
       :columns="tableHeader"
-      row-key="id"
       :filter="filter"
+      :loading="loading"
     >
-      <template v-slot:body-cell-actions="transaction">
-        <q-td :value="transaction.id">
+      <template v-slot:loading>
+        <q-inner-loading :showing="loading" color="primary">
+          <q-spinner
+            color="primary"
+            size="2rem"
+            :thickness="5"
+          />
+          <div class="text-subtitle2 q-mt-md">Fetching data...</div>
+        </q-inner-loading>
+      </template>
+      <template v-slot:body-selection="scope">
+        <q-checkbox :disable="remittable(scope.row.status)"  v-model="scope.selected" />
+      </template>
+      <template v-slot:body-cell-id="props">
+        <q-td :props="props">
           <q-btn
-            dense
-            round
+            size="sm"
+            no-caps
+            style="font-size:12px"
+            text-color="primary"
+            class="link"
+            type="a"
             flat
-            color="grey"
-            v-bind:to="'/transactions/update-transaction/' + transaction.key"
-            icon="edit"
-          ></q-btn>
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            @click="deleteRow(transaction)"
-            icon="delete"
-          ></q-btn>
+            :label="props.value"
+          />
+        </q-td>
+      </template>
+      <template v-slot:body-cell-type="props">
+        <q-td :props="props">
+          <q-badge
+            :color="typeColor(props.value)"
+            :label="props.value"
+          />
+        </q-td>
+      </template>
+       <template v-slot:body-cell-status="props">
+        <q-td :props="props">
+          <q-badge
+            :color="statusColor(props.value)"
+            :label="props.value"
+          />
         </q-td>
       </template>
       <template v-slot:top-right>
@@ -81,67 +147,62 @@
           </template>
         </q-input>
       </template>
+      <template v-slot:no-data="{ message }">
+        <div class="full-width text-subtitle1 text-center text-primary">
+          {{ message }}
+        </div>
+      </template>
     </q-table>
   </q-page>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import BILLER, { BILLER_TYPE } from 'src/store/types/billers'
+import TRANSACTION from 'src/store/types/transactions'
+import Unit from 'src/store/types/units'
+import GeneralTypes from 'src/store/types/general'
+import { CREATED_AT, getCreateAtOptions, getStatusTypes, STATUS_TYPE } from 'util/transaction'
 
 export default {
   name: 'Transactions',
   data () {
     return {
       filter: '',
-      unitModel: '',
-      typeModel: '',
-      billerModel: '',
-      biller: null,
-      type: null
+      selected: [],
+      statuses: getStatusTypes(),
+      createdAtOptions: getCreateAtOptions(),
+      transactionFilter: {
+        unitName: '',
+        billerName: '',
+        billerType: BILLER_TYPE.ALL.value,
+        status: STATUS_TYPE.PENDING,
+        createdAt: CREATED_AT.TODAY.value
+      }
     }
   },
-  mounted () {
+  async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Transactions')
-    this.$store.dispatch('transactions/getTransactions')
-    this.$store.dispatch('billers/GET_BILLERS')
-    this.type = this.selectedType
+    await this.$store.dispatch(`${TRANSACTION.namespace}/${TRANSACTION.actions.GET_TRANSACTIONS}`, this.transactionFilter)
+    await this.$store.dispatch(`${Unit.namespace}/${Unit.actions.GET_UNITS}`)
+    await this.$store.dispatch(`${BILLER.namespace}/${BILLER.actions.GET_BILLERS}`)
   },
   computed: {
     ...mapGetters({
-      transactions: 'transactions/getTransactions',
-      tableHeader: 'transactions/getTableHeader',
-      billers: 'billers/GET_BILLERS',
-      types: 'billers/GET_BILLER_TYPES',
-      selectedType: 'billers/GET_SELECTED_BILLER_TYPE'
+      transactions: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TRANSACTIONS}`,
+      tableHeader: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TRANSACTIONS_TABLE_HEADER}`,
+      statusColor: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_STATUS_COLOR}`,
+      typeColor: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TYPE_COLOR}`,
+      remittable: `${TRANSACTION.namespace}/${TRANSACTION.getters.REMITTABLE}`,
+      billers: `${BILLER.namespace}/${BILLER.getters.GET_BILLERS_FOR_FILTER}`,
+      types: `${BILLER.namespace}/${BILLER.getters.GET_BILLER_TYPES}`,
+      units: `${Unit.namespace}/${Unit.getters.GET_UNITS_FOR_FILTER}`,
+      loading: `${GeneralTypes.namespace}/${GeneralTypes.getters.GET_LOADING}`
     })
   },
   methods: {
-    deleteRow (transaction) {
-      this.$q
-        .dialog({
-          title: 'Confirm',
-          message:
-            'Are you sure you want to delete ' +
-            transaction.key +
-            ' transaction?',
-          cancel: true,
-          persistent: true
-        })
-        .onOk(() => {
-          this.$store.commit('transactions/remove', transaction)
-          this.$q.notify('Transaction deleted!')
-        })
-    },
-    updateBiller (biller) {
-      if (biller) {
-        this.type = biller.type
-        this.$store.commit('billers/SET_SELECTED_BILLER_TYPE', biller.type)
-      }
-
-      this.$store.commit('billers/SET_BILLER', biller)
-    },
-    updateBillerType (type) {
-      this.$store.commit('billers/SET_SELECTED_BILLER_TYPE', type)
+    async updateFilter () {
+      await this.$store.dispatch(`${TRANSACTION.namespace}/${TRANSACTION.actions.GET_TRANSACTIONS}`, this.transactionFilter)
     }
   }
 }

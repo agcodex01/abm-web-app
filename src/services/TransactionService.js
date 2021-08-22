@@ -1,7 +1,10 @@
 import { api } from './../boot/axios'
+import { buildParams } from './Http'
 
-export function getTransactions () {
-  return api.get('/transactions')
+export function getTransactions (params) {
+  return api.get('/transactions', {
+    params: buildParams(params)
+  })
 }
 
 export function getTransactionsByType (transactions, type) {

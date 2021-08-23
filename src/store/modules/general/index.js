@@ -1,4 +1,4 @@
-import Types from '../../types'
+import GeneralTypes from 'src/store/types/general'
 
 export default {
   namespaced: true,
@@ -6,10 +6,10 @@ export default {
     loading: false
   }),
   getters: {
-    [Types.GeneralTypes.getters.GET_LOADING]: state => state.loading
+    [GeneralTypes.getters.GET_LOADING]: state => state.loading
   },
   mutations: {
-    [Types.GeneralTypes.mutations.MUTATION_SET_LOADING]: (state, value) => {
+    [GeneralTypes.mutations.MUTATION_SET_LOADING]: (state, value) => {
       state.loading = value
     }
   }

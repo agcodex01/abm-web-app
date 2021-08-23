@@ -1,7 +1,8 @@
-import Types from '../../types'
-import AuthService from './../../../services/AuthService'
+import AuthService from 'services/AuthService'
 import { LocalStorage } from 'quasar'
 import _ from 'src/util/validation'
+import AuthTypes from 'src/store/types/auth'
+import GeneralTypes from 'src/store/types/general'
 
 export default {
   namespaced: true,
@@ -10,26 +11,26 @@ export default {
     token: null
   }),
   getters: {
-    [Types.AuthTypes.getters.GET_USER]: (state) => {
+    [AuthTypes.getters.GET_USER]: (state) => {
       const { ...userFromLocalStorage } = LocalStorage.getItem('user')
       if (!_.isEmpty(userFromLocalStorage)) return Object.assign({}, userFromLocalStorage)
       return state.user
     },
-    [Types.AuthTypes.getters.GET_TOKEN]: (state) => state.token
+    [AuthTypes.getters.GET_TOKEN]: (state) => state.token
   },
   mutations: {
-    [Types.AuthTypes.mutations.SET_USER]: (state, user) => {
+    [AuthTypes.mutations.SET_USER]: (state, user) => {
       state.user = user
     },
-    [Types.AuthTypes.mutations.SET_TOKEN]: (state, token) => {
+    [AuthTypes.mutations.SET_TOKEN]: (state, token) => {
       state.token = token
     }
   },
   actions: {
-    async [Types.AuthTypes.actions.LOGIN] ({ commit }, credential) {
+    async [AuthTypes.actions.LOGIN] ({ commit }, credential) {
       return new Promise((resolve, reject) => {
         commit(
-          `${Types.GeneralTypes.namespace}/${Types.GeneralTypes.mutations.MUTATION_SET_LOADING}`,
+          `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
           true,
           { root: true }
         )
@@ -37,25 +38,25 @@ export default {
           .then(({ data }) => {
             LocalStorage.set('user', data.user)
             LocalStorage.set('token', data.token)
-            commit(Types.AuthTypes.mutations.SET_USER, data.user)
-            commit(Types.AuthTypes.mutations.SET_TOKEN, data.token)
+            commit(AuthTypes.mutations.SET_USER, data.user)
+            commit(AuthTypes.mutations.SET_TOKEN, data.token)
             resolve(data)
           })
           .catch((errors) => {
             reject(errors.response.data.errors)
           }).finally(() => {
             commit(
-              `${Types.GeneralTypes.namespace}/${Types.GeneralTypes.mutations.MUTATION_SET_LOADING}`,
+              `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
               false,
               { root: true }
             )
           })
       })
     },
-    async [Types.AuthTypes.actions.LOGOUT] ({ commit }, id) {
+    async [AuthTypes.actions.LOGOUT] ({ commit }, id) {
       return new Promise((resolve, reject) => {
         commit(
-          `${Types.GeneralTypes.namespace}/${Types.GeneralTypes.mutations.MUTATION_SET_LOADING}`,
+          `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
           true,
           { root: true }
         )
@@ -70,7 +71,7 @@ export default {
           })
           .finally(() => {
             commit(
-              `${Types.GeneralTypes.namespace}/${Types.GeneralTypes.mutations.MUTATION_SET_LOADING}`,
+              `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
               false,
               { root: true }
             )

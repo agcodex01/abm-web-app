@@ -1,4 +1,4 @@
-export const AuthTypes = {
+const AuthTypes = {
   namespace: 'auth',
   state: {
     VALIDATION: 'VALIDATION'
@@ -17,3 +17,5 @@ export const AuthTypes = {
     LOGOUT: 'LOGOUT'
   }
 }
+
+export default AuthTypes

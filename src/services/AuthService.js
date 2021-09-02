@@ -1,9 +1,9 @@
-import { api, API_BASE_URL } from './../boot/axios'
+import { api } from './../boot/axios'
 
 export default {
   login: (credentials) => {
     return new Promise((resolve, reject) => {
-      api.post(`${API_BASE_URL}/login`, credentials)
+      api.post('login', credentials)
         .then((response) => resolve(response))
         .catch((error) => reject(error))
     })

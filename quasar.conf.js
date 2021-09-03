@@ -9,6 +9,7 @@
 /* eslint-env node */
 const ESLintPlugin = require('eslint-webpack-plugin')
 const { configure } = require('quasar/wrappers')
+const path = require('path')
 
 module.exports = configure(function (ctx) {
   return {
@@ -49,9 +50,9 @@ module.exports = configure(function (ctx) {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // transpile: false,
       env: {
-        API_URL: ctx.dev
-          ? 'http://127.0.0.1:8000/api'
-          : 'https://abm-ser-dev.herokuapp.com/api'
+        API_BASE_URL: ctx.dev
+          ? 'http://localhost:8000'
+          : 'https://abm-ser-dev.herokuapp.com'
       },
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
@@ -72,6 +73,9 @@ module.exports = configure(function (ctx) {
       chainWebpack (chain) {
         chain.plugin('eslint-webpack-plugin')
           .use(ESLintPlugin, [{ extensions: ['js', 'vue'] }])
+        chain.resolve.alias
+          .set('util', path.resolve(__dirname, 'src/util'))
+          .set('services', path.resolve(__dirname, 'src/services'))
       }
     },
 

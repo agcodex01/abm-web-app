@@ -26,6 +26,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import DsSummary from 'src/components/dashboard/DsSummary.vue'
+import TRANSACTION from 'src/store/types/transactions'
 
 export default {
   components: { DsSummary },
@@ -35,55 +36,15 @@ export default {
       filter: ''
     }
   },
-  mounted () {
+  async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Dashboard')
-    this.$store.commit(
-      'dashboard/INCREMENT_VALUE',
-      { id: 1, value: 10 }
-    )
-    this.$store.commit('transactions/SET_TRANSACTIONS', [
-      {
-        id: '918857d6-fcbf-4c93-8412-e18d3dba0435',
-        unit: 'Unit 1',
-        type: 'ELECTRICITY',
-        amount: 1000,
-        address: 'Nasipit Rd. Talamaban Cebu'
-      },
-      {
-        id: '918857d6-fcbf-4c93-8412-e18d3dba0435',
-        unit: 'Unit 1',
-        type: 'ELECTRICITY',
-        amount: 1000,
-        address: 'Nasipit Rd. Talamaban Cebu'
-      },
-      {
-        id: '918857d6-fcbf-4c93-8412-e18d3dba0435',
-        unit: 'Unit 3',
-        type: 'ELECTRICITY',
-        amount: 1000,
-        address: 'Nasipit Rd. Talamaban Cebu'
-      },
-      {
-        id: '918857d6-fcbf-4c93-8412-e18d3dba0435',
-        unit: 'Unit 1',
-        type: 'ELECTRICITY',
-        amount: 1000,
-        address: 'Nasipit Rd. Talamaban Cebu'
-      },
-      {
-        id: '918857d6-fcbf-4c93-8412-e18d3dba0435',
-        unit: 'Unit 1',
-        type: 'ELECTRICITY',
-        amount: 1000,
-        address: 'Nasipit Rd. Talamaban Cebu'
-      }
-    ])
+    await this.$store.dispatch(`${TRANSACTION.namespace}/${TRANSACTION.actions.GET_TRANSACTIONS}`)
   },
   computed: {
     ...mapGetters({
       dsSummary: 'dashboard/getDsSummary',
-      transactions: 'transactions/getTransactions',
-      tableHeader: 'transactions/getTableHeader'
+      transactions: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TRANSACTIONS}`,
+      tableHeader: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TRANSACTIONS_TABLE_HEADER}`
     })
   }
 }

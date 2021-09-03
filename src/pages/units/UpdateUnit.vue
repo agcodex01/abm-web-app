@@ -4,38 +4,39 @@
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" to="/" />
         <q-breadcrumbs-el label="Units" to="/units" />
-        <q-breadcrumbs-el label="Create Unit" />
+        <q-breadcrumbs-el label="Update Unit" />
       </q-breadcrumbs>
     </div>
     <div>
+      <h5 class="text-grey-7">Unit # : {{unit.key}}</h5>
       <h5 class="text-grey-7">Information</h5>
       <div class="row q-col-gutter-sm">
         <div class="col col-md-6">
-          <q-input v-model="name" outlined label="Name"/>
+          <q-input v-model="unit.row.name" outlined label="Name"/>
         </div>
         <div class="col col-md-6">
-          <q-input v-model="fund" outlined label="Funds" type="number" />
+          <q-input v-model="unit.row.fund" outlined label="Funds" type="number" />
         </div>
       </div>
       <h5 class="text-grey-7">Address or Location</h5>
       <div class="row q-col-gutter-sm">
         <div class="col col-md-4">
-          <q-input v-model="postal_code" outlined label="Postal Code"/>
+          <q-input v-model="unit.row.postal_code" outlined label="Postal Code"/>
         </div>
         <div class="col col-md-4">
-          <q-input v-model="province" outlined label="Province"/>
+          <q-input v-model="unit.row.province" outlined label="Province"/>
         </div>
         <div class="col col-md-4">
-          <q-input v-model="city" outlined label="City" />
+          <q-input v-model="unit.row.city" outlined label="City" />
         </div>
          <div class="col col-md-4">
-          <q-input v-model="municipality" outlined label="Municipality"/>
+          <q-input v-model="unit.row.municipality" outlined label="Municipality"/>
         </div>
         <div class="col col-md-4">
-          <q-input v-model="barangay" outlined label="Barangay"/>
+          <q-input v-model="unit.row.barangay" outlined label="Barangay"/>
         </div>
         <div class="col col-md-4">
-          <q-input v-model="street" outlined label="Street" />
+          <q-input v-model="unit.row.street" outlined label="Street" />
         </div>
       </div>
     </div>
@@ -55,7 +56,7 @@
       />
       <q-btn
         align="around"
-        @click="createUnit()"
+        @click="saveUpdatedUnit"
         color="primary"
         label="Save"
       />
@@ -63,27 +64,36 @@
   </q-page>
 </template>
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
-  name: 'Create Unit',
+  name: 'Update Unit',
   data () {
     return {
-      name: '',
-      fund: 0,
-      postal_code: '',
-      province: '',
-      city: '',
-      municipality: '',
-      barangay: '',
-      street: ''
+      id: this.$route.params.id
     }
   },
   mounted () {
-    this.$store.commit('layout/SET_HEADER', 'Create Unit')
+    this.$store.commit('layout/SET_HEADER', 'Update Unit')
+  },
+  computed: {
+    ...mapGetters({
+      tableHeader: 'units/getTableHeader',
+      selectedUnit: 'units/getSelectedUnit'
+    }),
+    unit: {
+      get () {
+        return this.selectedUnit
+      },
+      set (value) {
+        this.$store.commit('units/SET_SELECTED_UNIT', value)
+      }
+    }
   },
   methods: {
-    createUnit () {
-      const newUnit = { name: this.name, fund: this.fund, postal_code: this.postal_code, province: this.province, city: this.city, municipality: this.municipality, barangay: this.barangay, street: this.street }
-      this.$store.dispatch('units/createUnit', newUnit)
+    async saveUpdatedUnit () {
+      await this.$store.dispatch('units/editUnit', this.unit)
+      this.$router.push({ name: 'units' })
     }
   }
 }

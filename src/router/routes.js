@@ -5,8 +5,9 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('src/pages/Dashboard.vue') },
-      { path: 'units', component: () => import('src/pages/units/Units.vue') },
-      { path: 'units/create-unit', component: () => import('src/pages/units/CreateUnit.vue') }
+      { path: 'units', name: 'units', component: () => import('src/pages/units/Units.vue') },
+      { path: 'units/create-unit', name: 'createUnit', component: () => import('src/pages/units/CreateUnit.vue') },
+      { path: 'units/update-unit/:id', name: 'updateUnit', component: () => import('src/pages/units/UpdateUnit.vue'), params: true }
 
     ]
   },

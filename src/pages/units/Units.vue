@@ -15,12 +15,12 @@
       row-key="id"
       :filter="filter"
     >
-    <template v-slot:body-cell-actions="props">
-            <q-td :props="props">
-              <q-btn dense round flat color="grey" @click="editRow(props)" icon="edit"></q-btn>
-              <q-btn dense round flat color="grey" @click="deleteRow(props)" icon="delete"></q-btn>
+    <template v-slot:body-cell-actions="unit">
+            <q-td :value="unit.id">
+              <q-btn dense round flat color="grey" icon="edit" @click="editUnit(unit)"></q-btn>
+              <q-btn dense round flat color="grey" @click="deleteRow(unit)" icon="delete"></q-btn>
             </q-td>
-          </template>
+    </template>
     <template v-slot:top-right>
         <q-input borderless dense debounce="300" v-model="filter" placeholder="Search" clearable>
           <template v-slot:append>
@@ -44,43 +44,7 @@ export default {
   },
   mounted () {
     this.$store.commit('layout/SET_HEADER', 'Units')
-    this.$store.commit('units/SET_UNITS', [
-      {
-        id: '918857d6-fcbf-4c93-8412-e18d3dba0435',
-        name: 'Unit 1',
-        funds: '1000',
-        address: 'Nasipit Rd. Talamaban Cebu',
-        actions: ''
-      },
-      {
-        id: '918857d6-fcbf-4c93-8412-e18d3dba0435',
-        name: 'Unit 2',
-        funds: '6789',
-        address: 'Nasipit Rd. Talamaban Cebu',
-        actions: ' '
-      },
-      {
-        id: '918857d6-fcbf-4c93-8412-e18d3dba0435',
-        name: 'Unit 3',
-        funds: '4563',
-        address: 'Nasipit Rd. Talamaban Cebu',
-        actions: ' '
-      },
-      {
-        id: '918857d6-fcbf-4c93-8412-e18d3dba0435',
-        name: 'Unit 4',
-        funds: '1234',
-        address: 'Nasipit Rd. Talamaban Cebu',
-        actions: ' '
-      },
-      {
-        id: '918857d6-fcbf-4c93-8412-e18d3dba0435',
-        name: 'Unit 5',
-        funds: '1200',
-        address: 'Nasipit Rd. Talamaban Cebu',
-        actions: ' '
-      }
-    ])
+    this.$store.dispatch('units/getUnits')
   },
   computed: {
     ...mapGetters({
@@ -89,11 +53,19 @@ export default {
     })
   },
   methods: {
-    editRow (props) {
-      console.log('this is edit', props)
+    editUnit (unit) {
+      this.$store.dispatch('units/getSelectedUnit', unit)
     },
-    deleteRow (props) {
-      console.log('this is delete', props)
+    deleteRow (unit) {
+      this.$q.dialog({
+        title: 'Confirm',
+        message: 'Are you sure you want to delete ' + unit.row.name + '?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        this.$store.dispatch('units/deleteUnit', unit)
+        this.$q.notify(unit.row.name + ' deleted!')
+      })
     }
   }
 }

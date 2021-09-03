@@ -16,7 +16,7 @@ export default [
   },
   {
     name: 'funds',
-    field: 'funds',
+    field: 'fund',
     label: 'Funds',
     sortable: true
   },

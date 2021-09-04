@@ -18,10 +18,14 @@ const routes = [
         component: () => import('src/pages/transactions/Transactions.vue')
       },
       {
-        path: '/transactions/update-transaction/:id',
-        name: 'editTransaction',
-        component: () => import('src/pages/transactions/UpdateTransaction.vue'),
-        props: true
+        path: '/remits',
+        name: 'remits',
+        component: () => import('src/pages/remits/Remits.vue')
+      },
+      {
+        path: '/remits/:id',
+        name: 'view_remit',
+        component: () => import('src/pages/remits/ViewRemit.vue')
       }
     ]
   },

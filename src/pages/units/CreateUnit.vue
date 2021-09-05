@@ -63,6 +63,7 @@
   </q-page>
 </template>
 <script>
+import UNIT from 'src/store/types/units'
 export default {
   name: 'Create Unit',
   data () {
@@ -81,9 +82,9 @@ export default {
     this.$store.commit('layout/SET_HEADER', 'Create Unit')
   },
   methods: {
-    createUnit () {
+    async createUnit () {
       const newUnit = { name: this.name, fund: this.fund, postal_code: this.postal_code, province: this.province, city: this.city, municipality: this.municipality, barangay: this.barangay, street: this.street }
-      this.$store.dispatch('units/createUnit', newUnit)
+      await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.CREATE_UNIT}`, newUnit)
     }
   }
 }

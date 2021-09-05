@@ -8,29 +8,41 @@ const routes = [
     },
     component: () => import('layouts/MainLayout.vue'),
     children: [
-<<<<<<< HEAD
-      { path: '', component: () => import('src/pages/Dashboard.vue') },
-      { path: 'units', name: 'units', component: () => import('src/pages/units/Units.vue') },
-      { path: 'units/create-unit', name: 'createUnit', component: () => import('src/pages/units/CreateUnit.vue') },
-      { path: 'units/update-unit/:id', name: 'updateUnit', component: () => import('src/pages/units/UpdateUnit.vue'), params: true }
-
-=======
       {
         path: '',
         name: 'dashboard',
         component: () => import('src/pages/Dashboard.vue')
       },
       {
+        path: 'units',
+        name: 'units',
+        component: () => import('src/pages/units/Units.vue')
+      },
+      {
+        path: 'units/create-unit',
+        name: 'createUnit',
+        component: () => import('src/pages/units/CreateUnit.vue')
+      },
+      {
+        path: 'units/update-unit/:id',
+        name: 'updateUnit',
+        component: () => import('src/pages/units/UpdateUnit.vue'),
+        params: true
+      },
+      {
         path: '/transactions',
         component: () => import('src/pages/transactions/Transactions.vue')
       },
       {
-        path: '/transactions/update-transaction/:id',
-        name: 'editTransaction',
-        component: () => import('src/pages/transactions/UpdateTransaction.vue'),
-        props: true
+        path: '/remits',
+        name: 'remits',
+        component: () => import('src/pages/remits/Remits.vue')
+      },
+      {
+        path: '/remits/:id',
+        name: 'view_remit',
+        component: () => import('src/pages/remits/ViewRemit.vue')
       }
->>>>>>> develop
     ]
   },
   {

@@ -7,8 +7,8 @@ import dashboard from './modules/dashboard'
 import general from './modules/general'
 import layout from './modules/layout'
 import units from './modules/units'
+import remits from './modules/remits'
 import transactions from './modules/transactions'
-import units from './modules/units'
 
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
@@ -20,6 +20,7 @@ export default store(function (/* { ssrContext } */) {
       dashboard,
       general,
       layout,
+      remits,
       transactions,
       units
     },

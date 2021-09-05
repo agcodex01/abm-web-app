@@ -12,22 +12,26 @@ export default [
     name: 'name',
     field: 'name',
     label: 'Name',
+    align: 'left',
     sortable: true
   },
   {
     name: 'funds',
     field: 'fund',
     label: 'Funds',
+    align: 'left',
     sortable: true
   },
   {
     name: 'address',
     field: 'address',
-    label: 'Address'
+    label: 'Address',
+    align: 'left'
   },
   {
     name: 'actions',
     field: 'actions',
-    label: 'Actions'
+    label: 'Actions',
+    align: 'left'
   }
 ]

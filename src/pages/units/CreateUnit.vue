@@ -1,44 +1,52 @@
 <template>
   <q-page padding>
-    <div class="q-pa-md q-gutter-sm">
-      <q-breadcrumbs>
-        <q-breadcrumbs-el icon="home" to="/" />
+    <div class="flex justify-between align-center q-mt-md q-mb-xl">
+      <q-breadcrumbs class="align-center q-pa-sm" style="font-size: 14px">
+        <template v-slot:separator>
+          <q-icon
+            size="24px"
+            name="chevron_right"
+          />
+        </template>
+        <q-breadcrumbs-el to="/" label="Adopisoft Billing Machine" />
         <q-breadcrumbs-el label="Units" to="/units" />
         <q-breadcrumbs-el label="Create Unit" />
       </q-breadcrumbs>
     </div>
+
     <div>
       <h5 class="text-grey-7">Information</h5>
       <div class="row q-col-gutter-sm">
         <div class="col col-md-6">
-          <q-input v-model="name" outlined label="Name"/>
+          <q-input v-model="newUnit.name" outlined label="Name"/>
         </div>
         <div class="col col-md-6">
-          <q-input v-model="fund" outlined label="Funds" type="number" />
+          <q-input v-model="newUnit.fund" outlined label="Funds" type="number" />
         </div>
       </div>
       <h5 class="text-grey-7">Address or Location</h5>
       <div class="row q-col-gutter-sm">
         <div class="col col-md-4">
-          <q-input v-model="postal_code" outlined label="Postal Code"/>
+          <q-input v-model="newUnit.postal_code" outlined label="Postal Code"/>
         </div>
         <div class="col col-md-4">
-          <q-input v-model="province" outlined label="Province"/>
+          <q-input v-model="newUnit.province" outlined label="Province"/>
         </div>
         <div class="col col-md-4">
-          <q-input v-model="city" outlined label="City" />
+          <q-input v-model="newUnit.city" outlined label="City" />
         </div>
          <div class="col col-md-4">
-          <q-input v-model="municipality" outlined label="Municipality"/>
+          <q-input v-model="newUnit.municipality" outlined label="Municipality"/>
         </div>
         <div class="col col-md-4">
-          <q-input v-model="barangay" outlined label="Barangay"/>
+          <q-input v-model="newUnit.barangay" outlined label="Barangay"/>
         </div>
         <div class="col col-md-4">
-          <q-input v-model="street" outlined label="Street" />
+          <q-input v-model="newUnit.street" outlined label="Street" />
         </div>
       </div>
     </div>
+
     <div class="absolute-bottom-right q-ma-md">
       <q-btn
         align="around"
@@ -49,7 +57,7 @@
       <q-btn
         align="around"
         class="q-mr-md"
-        @click="$router.replace('/units/create-unit')"
+        @click="reset()"
         color="negative"
         label="Reset"
       />
@@ -60,6 +68,7 @@
         label="Save"
       />
     </div>
+
   </q-page>
 </template>
 <script>
@@ -68,14 +77,16 @@ export default {
   name: 'Create Unit',
   data () {
     return {
-      name: '',
-      fund: 0,
-      postal_code: '',
-      province: '',
-      city: '',
-      municipality: '',
-      barangay: '',
-      street: ''
+      newUnit: {
+        name: '',
+        fund: 0,
+        postal_code: '',
+        province: '',
+        city: '',
+        municipality: '',
+        barangay: '',
+        street: ''
+      }
     }
   },
   mounted () {
@@ -83,8 +94,14 @@ export default {
   },
   methods: {
     async createUnit () {
-      const newUnit = { name: this.name, fund: this.fund, postal_code: this.postal_code, province: this.province, city: this.city, municipality: this.municipality, barangay: this.barangay, street: this.street }
-      await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.CREATE_UNIT}`, newUnit)
+      await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.CREATE_UNIT}`, this.newUnit).then(response => {
+        this.$router.push({ name: 'units' })
+      }, errors => {
+        console.log(errors + 'Error')
+      })
+    },
+    reset () {
+      this.newUnit = {}
     }
   }
 }

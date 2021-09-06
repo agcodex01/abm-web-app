@@ -106,7 +106,15 @@ export default {
   },
   methods: {
     editUnit (unit) {
-      this.$store.dispatch('units/getSelectedUnit', unit)
+      this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.UPDATE_UNIT}`, unit.row).then(response => {
+        this.$q.notify({
+          type: 'positive',
+          message: `Successfully updated ${unit.row.name}.`,
+          position: 'top'
+        })
+      }, errors => {
+        console.log(errors)
+      })
     },
     deleteRow (unit) {
       this.$q.dialog({
@@ -115,8 +123,15 @@ export default {
         cancel: true,
         persistent: true
       }).onOk(() => {
-        this.$store.dispatch('units/deleteUnit', unit)
-        this.$q.notify(unit.row.name + ' deleted!')
+        this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.DELETE_UNIT}`, unit.row).then(response => {
+          this.$q.notify({
+            type: 'positive',
+            message: `Successfully deleted ${unit.row.name}.`,
+            position: 'top'
+          })
+        }, errors => {
+          console.log(errors)
+        })
       })
     }
   }

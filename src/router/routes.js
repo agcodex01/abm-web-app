@@ -42,6 +42,21 @@ const routes = [
         path: '/remits/:id',
         name: 'view_remit',
         component: () => import('src/pages/remits/ViewRemit.vue')
+      },
+      {
+        path: '/billers',
+        name: 'billers',
+        component: () => import('src/pages/billers/Billers.vue')
+      },
+      {
+        path: '/billers/create',
+        name: 'create_biller',
+        component: () => import('src/pages/billers/CreateBiller.vue')
+      },
+      {
+        path: '/billers/:id/update',
+        name: 'update_biller',
+        component: () => import('src/pages/billers/UpdateBiller.vue')
       }
     ]
   },

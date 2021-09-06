@@ -194,9 +194,9 @@
           <q-btn size="sm" unelevated outline padding="sm md" label="Cancel" color="primary" @click="closeRemitDialog" />
           <q-btn size="sm" unelevated :loading="loading" padding="sm md" label="Create new remit" color="primary" @click="createNewRemit">
             <template v-slot:loading>
-                <q-spinner class="on-left" />
-                Loading...
-              </template>
+              <q-spinner class="on-left" />
+              Loading...
+            </template>
           </q-btn>
         </q-card-actions>
       </q-card>
@@ -278,7 +278,7 @@ export default {
             position: 'top'
           })
         })
-        .catch(errors => console.log(errors))
+        .catch(errors => console.error(errors))
     }
   }
 }

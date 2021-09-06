@@ -15,3 +15,11 @@ export function min (value, field) {
 export function incorrect (field) {
   return Message.INCORRECT.replace(Message.ATTR, field)
 }
+
+const Validation = {
+  required: (value, field) => {
+    return !!value || required(field)
+  }
+}
+
+export default Validation

@@ -14,65 +14,142 @@
       </q-breadcrumbs>
     </div>
 
-    <div>
-      <h5 class="text-grey-7">Information</h5>
-      <div class="row q-col-gutter-sm">
-        <div class="col col-md-6">
-          <q-input v-model="newUnit.name" outlined label="Name"/>
-        </div>
-        <div class="col col-md-6">
-          <q-input v-model="newUnit.fund" outlined label="Funds" type="number" />
-        </div>
-      </div>
-      <h5 class="text-grey-7">Address or Location</h5>
-      <div class="row q-col-gutter-sm">
-        <div class="col col-md-4">
-          <q-input v-model="newUnit.postal_code" outlined label="Postal Code"/>
-        </div>
-        <div class="col col-md-4">
-          <q-input v-model="newUnit.province" outlined label="Province"/>
-        </div>
-        <div class="col col-md-4">
-          <q-input v-model="newUnit.city" outlined label="City" />
-        </div>
-         <div class="col col-md-4">
-          <q-input v-model="newUnit.municipality" outlined label="Municipality"/>
-        </div>
-        <div class="col col-md-4">
-          <q-input v-model="newUnit.barangay" outlined label="Barangay"/>
-        </div>
-        <div class="col col-md-4">
-          <q-input v-model="newUnit.street" outlined label="Street" />
-        </div>
-      </div>
-    </div>
+<q-card>
+      <q-card-section>
+        <div class="text-h6">Create Unit</div>
+      </q-card-section>
+      <q-card-section>
+        <q-form ref="unitForm" >
+          <div class="text-subtitle1 q-ma-sm">Unit Information</div>
+          <div class="row q-col-gutter-sm">
+            <q-input
+              class="col col-md-6"
+              v-model="newUnit.name"
+              type="text"
+              label="Name"
+              outlined
+              dense
+              :error="hasError.name.error"
+              :error-message="hasError.name.message"
+              :rules="[(val) => validator.required(val, 'name')]"
+            />
+            <q-input
+              class="col col-md-6"
+              v-model="newUnit.fund"
+              type="number"
+              label="Funds"
+              outlined
+              dense
+              :error="hasError.name.error"
+              :error-message="hasError.name.message"
+              :rules="[(val) => validator.required(val, 'name')]"
+            />
+          </div>
 
-    <div class="absolute-bottom-right q-ma-md">
+          <div class="text-subtitle1 q-ma-sm">Unit Address/Location</div>
+          <div class="row q-col-gutter-sm">
+            <q-input
+              class="col col-md-6"
+              v-model="newUnit.postal_code"
+              type="text"
+              label="Postal Code"
+              outlined
+              dense
+              :error="hasError.name.error"
+              :error-message="hasError.name.message"
+              :rules="[(val) => validator.required(val, 'name')]"
+            />
+            <q-input
+              class="col col-md-6"
+              v-model="newUnit.province"
+              type="text"
+              label="Province"
+              outlined
+              dense
+              :error="hasError.name.error"
+              :error-message="hasError.name.message"
+              :rules="[(val) => validator.required(val, 'name')]"
+            />
+            <q-input
+              class="col col-md-6"
+              v-model="newUnit.city"
+              type="text"
+              label="City"
+              outlined
+              dense
+            />
+            <q-input
+              class="col col-md-6"
+              v-model="newUnit.municipality"
+              type="text"
+              label="Municipality"
+              outlined
+              dense
+              :error="hasError.name.error"
+              :error-message="hasError.name.message"
+              :rules="[(val) => validator.required(val, 'name')]"
+            />
+            <q-input
+              class="col col-md-6"
+              v-model="newUnit.barangay"
+              type="text"
+              label="Barangay"
+              outlined
+              dense
+              :error="hasError.name.error"
+              :error-message="hasError.name.message"
+              :rules="[(val) => validator.required(val, 'name')]"
+            />
+            <q-input
+              class="col col-md-6"
+              v-model="newUnit.street"
+              type="text"
+              label="Street"
+              outlined
+              dense
+            />
+          </div>
+        </q-form>
+      </q-card-section>
+    </q-card>
+
+    <q-footer
+      class="bg-white q-py-sm q-px-md flex justify-between align-center"
+      reveal
+      bordered
+    >
       <q-btn
-        align="around"
-        class="q-mr-md"
-        @click="$router.replace('/units')"
-        label="Cancel"
-      />
-      <q-btn
-        align="around"
-        class="q-mr-md"
-        @click="reset()"
-        color="negative"
-        label="Reset"
-      />
-      <q-btn
-        align="around"
-        @click="createUnit()"
+        size="sm"
+        icon="chevron_left"
+        align="center"
+        unelevated
+        outline
+        padding="sm md"
         color="primary"
+        @click="$router.back"
+      >
+        Back
+      </q-btn>
+      <q-btn
+        size="sm"
+        color="primary"
+        padding="sm lg"
         label="Save"
-      />
-    </div>
+        @click="createUnit()"
+      >
+        <template v-slot:loading>
+          <q-spinner class="on-left" />
+          Loading...
+        </template>
+      </q-btn>
+    </q-footer>
 
   </q-page>
 </template>
 <script>
 import UNIT from 'src/store/types/units'
+import Validation from 'src/util/rules'
+import AppConstant from 'src/constant/app'
 export default {
   name: 'Create Unit',
   data () {
@@ -86,6 +163,14 @@ export default {
         municipality: '',
         barangay: '',
         street: ''
+      },
+      validator: Validation,
+      loading: false,
+      hasError: {
+        name: {
+          message: null,
+          error: false
+        }
       }
     }
   },
@@ -95,13 +180,16 @@ export default {
   methods: {
     async createUnit () {
       await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.CREATE_UNIT}`, this.newUnit).then(response => {
+        this.$q.notify(AppConstant.SUCCESS_MSG(`Successfully created ${this.newUnit.name}.`))
         this.$router.push({ name: 'units' })
-      }, errors => {
-        console.log(errors + 'Error')
+          .catch((errors) => {
+            this.hasError.name.error = true
+            this.hasError.name.message = errors.name[0]
+          })
+          .finally(() => {
+            this.loading = false
+          })
       })
-    },
-    reset () {
-      this.newUnit = {}
     }
   }
 }

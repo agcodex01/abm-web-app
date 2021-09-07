@@ -11,7 +11,14 @@
         <q-breadcrumbs-el to="/" label="Adopisoft Billing Machine" />
         <q-breadcrumbs-el label="Units"/>
       </q-breadcrumbs>
-      <q-btn align="around" class="absolute-top-right q-ma-md" @click="$router.replace('/units/create-unit')" color="primary" label="Create" />
+      <q-btn
+        size="sm"
+        outline
+        color="primary"
+        label="Add new"
+        icon-right="add"
+        @click="$router.push({ name: 'create_unit' })"
+      />
     </div>
 
     <q-table
@@ -32,7 +39,7 @@
     </template>
     <template v-slot:body-cell-actions="unit">
             <q-td :value="unit.id">
-              <q-btn dense round flat color="grey" icon="edit" @click="editUnit(unit)"></q-btn>
+              <q-btn dense round flat color="grey" icon="edit" :to="{ name: 'update_unit', params: { id: unit.row.id } }"></q-btn>
               <q-btn dense round flat color="grey" @click="deleteRow(unit)" icon="delete"></q-btn>
             </q-td>
     </template>
@@ -105,17 +112,17 @@ export default {
     })
   },
   methods: {
-    editUnit (unit) {
-      this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.UPDATE_UNIT}`, unit.row).then(response => {
-        this.$q.notify({
-          type: 'positive',
-          message: `Successfully updated ${unit.row.name}.`,
-          position: 'top'
-        })
-      }, errors => {
-        console.log(errors)
-      })
-    },
+    // editUnit (unit) {
+    //   this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.UPDATE_UNIT}`, unit.row).then(response => {
+    //     this.$q.notify({
+    //       type: 'positive',
+    //       message: `Successfully updated ${unit.row.name}.`,
+    //       position: 'top'
+    //     })
+    //   }, errors => {
+    //     console.log(errors)
+    //   })
+    // },
     deleteRow (unit) {
       this.$q.dialog({
         title: 'Confirm',

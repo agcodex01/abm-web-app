@@ -19,13 +19,13 @@ const routes = [
         component: () => import('src/pages/units/Units.vue')
       },
       {
-        path: 'units/create-unit',
-        name: 'createUnit',
+        path: 'units/create',
+        name: 'create_unit',
         component: () => import('src/pages/units/CreateUnit.vue')
       },
       {
-        path: 'units/update-unit/:id',
-        name: 'updateUnit',
+        path: 'units/:id/update',
+        name: 'update_unit',
         component: () => import('src/pages/units/UpdateUnit.vue'),
         params: true
       },

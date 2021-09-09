@@ -41,6 +41,22 @@ const routes = [
         path: '/billers/:id/update',
         name: 'update_biller',
         component: () => import('src/pages/billers/UpdateBiller.vue')
+      },
+      {
+        path: 'collections',
+        name: 'collections',
+        component: () => import('src/pages/collections/Collections.vue')
+      },
+      {
+        path: 'collections/create',
+        name: 'create_collection',
+        component: () => import('src/pages/collections/CreateCollection.vue')
+      },
+      {
+        path: 'collections/:id/update',
+        name: 'update_collection',
+        component: () => import('src/pages/collections/UpdateCollection.vue'),
+        params: true
       }
     ]
   },

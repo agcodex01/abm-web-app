@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header class="bg-transparent text-dark" bordered>
+    <q-header class="bg-white text-dark" bordered>
       <q-toolbar>
         <q-btn
           flat
@@ -11,9 +11,29 @@
           @click="toggleSidebar"
         />
 
-        <q-toolbar-title v-text="header"/>
+        <q-toolbar-title v-text="header" />
 
-        <div>Administrator</div>
+        <div>{{ user.name }}</div>
+        <q-btn class="q-ml-md" flat round dense icon="account_circle">
+          <q-menu>
+            <q-item-label header>Manage Account</q-item-label>
+            <q-list style="min-width: 240px">
+              <q-item clickable v-close-popup>
+                <q-item-section>Profile</q-item-section>
+              </q-item>
+              <q-separator />
+              <q-item clickable @click="startLogout(user.id)">
+                <q-item-section>Logout</q-item-section>
+                <q-item-section avatar>
+                  <q-spinner v-show="loading"
+                    color="primary"
+                    size="2em"
+                  />
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
     </q-header>
     <q-drawer
@@ -23,7 +43,7 @@
       bordered
       class="bg-primary"
     >
-      <links/>
+      <links />
     </q-drawer>
 
     <q-page-container>
@@ -33,8 +53,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import Links from 'src/components/layout/Links.vue'
+import Types from 'src/store/types'
 
 export default {
   name: 'MainLayout',
@@ -43,17 +64,35 @@ export default {
   },
   data () {
     return {
-      sideBarIsOpen: false
+      sideBarIsOpen: false,
+      showMenu: false
     }
   },
   methods: {
+    ...mapActions({
+      logout: `${Types.AuthTypes.namespace}/${Types.AuthTypes.actions.LOGOUT}`
+    }),
     toggleSidebar () {
       this.sideBarIsOpen = !this.sideBarIsOpen
+    },
+    startLogout (id) {
+      this.logout(this.user.id).then((response) => {
+        this.$router.push({
+          name: 'login'
+        })
+      }).catch((errors) => {
+        this.$q.notify({
+          message: 'Something went wrong. Please try again.',
+          color: 'negative'
+        })
+      })
     }
   },
   computed: {
     ...mapGetters({
-      header: 'layout/getHeader'
+      header: 'layout/getHeader',
+      user: `${Types.AuthTypes.namespace}/${Types.AuthTypes.getters.GET_USER}`,
+      loading: `${Types.GeneralTypes.namespace}/${Types.GeneralTypes.getters.GET_LOADING}`
     })
   }
 }

@@ -1,21 +1,28 @@
 import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
 
+import auth from './modules/auth'
+import billers from './modules/biller'
+import dashboard from './modules/dashboard'
+import general from './modules/general'
 import layout from './modules/layout'
-
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Store instance.
- */
+import remits from './modules/remits'
+import transactions from './modules/transactions'
+import units from './modules/units'
 
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
+
+    // NOTE: Arranged this in alphabetical order for better readablity.
     modules: {
-      layout
+      auth,
+      billers,
+      dashboard,
+      general,
+      layout,
+      remits,
+      transactions,
+      units
     },
 
     strict: process.env.DEBUGGING

@@ -112,6 +112,7 @@ export default {
         this.updateBiller({ id: this.biller.id, biller: this.biller })
           .then((biller) => {
             this.hasError.name.error = false
+            this.$router.push({ name: 'billers' })
             this.$q.notify(
               AppConstant.SUCCESS_MSG(
                 `Successfully updated ${biller.name} biller.`

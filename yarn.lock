@@ -5641,6 +5641,14 @@ prettier@^2.3.2:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.3.2.tgz#ef280a05ec253712e486233db5c6f23441e7342d"
   integrity sha512-lnJzDfJ66zkMy58OL5/NY5zp70S7Nz6KqcKkXYzn2tMVrNxvbqaBpg7H3qHaLxCJ5lNMsGuM8+ohS7cZrthdLQ==
 
+pretty-error@3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/pretty-error/-/pretty-error-3.0.3.tgz#57f4b16aebcadbd681db2c002ae0f95bf87b24cf"
+  integrity sha512-nFB0BMeWNJA4YfmrgqPhOH3UQjMQZASZ2ueBfmlyqpVy9+ExLcmwXL/Iu4Wb9pbt/cubQXK4ir8IZUnE8EwFnw==
+  dependencies:
+    lodash "^4.17.20"
+    renderkid "^2.0.5"
+
 pretty-error@3.0.4, pretty-error@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/pretty-error/-/pretty-error-3.0.4.tgz#94b1d54f76c1ed95b9c604b9de2194838e5b574e"

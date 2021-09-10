@@ -18,7 +18,7 @@ export default {
     [COLLECTION.getters.GET_COLLECTION]: (state) => state.collection
   },
   actions: {
-    [COLLECTION.actions.GET_COLLECTION]: ({ commit }) => {
+    [COLLECTION.actions.GET_COLLECTIONS]: ({ commit }) => {
       api.get('/collections').then(({ data }) => {
         const collectionsForFilter = data.map(collection => Object.assign({}, {
           value: collection.name,

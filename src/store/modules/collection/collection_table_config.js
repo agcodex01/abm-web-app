@@ -12,15 +12,15 @@ export default [
     sortOrder: 'ad'
   },
   {
-    name: 'unit',
-    field: 'unit',
+    name: 'unit_id',
+    field: 'unit_id',
     label: 'Unit',
     align: 'left',
     sortable: true
   },
   {
-    name: 'collector',
-    field: 'collector',
+    name: 'collected_by',
+    field: 'collected_by',
     label: 'Collector',
     align: 'left',
     sortable: true
@@ -33,18 +33,11 @@ export default [
     sortable: true
   },
   {
-    name: 'biller',
-    field: 'biller',
-    label: 'Biller',
+    name: 'collected_at',
     align: 'left',
-    sortable: true
-  },
-  {
-    name: 'create_at',
-    align: 'left',
-    field: 'created_at',
+    field: 'collected_at',
     format: (val) => date.formatDate(val, AppConstant.DATE_FORMAT),
-    label: 'Created At',
+    label: 'Collected At',
     sortable: true,
     sortOrder: 'ad'
   },

@@ -21,7 +21,7 @@
           <div class="row q-col-gutter-sm">
             <q-select
               class="col-6"
-              v-model="updatedCollection.unit"
+              v-model="updatedCollection.unit_id"
               :options="units"
               label="Unit"
               options-dense
@@ -34,7 +34,7 @@
             />
             <q-input
               class="col col-md-6"
-              v-model="updatedCollection.collector"
+              v-model="updatedCollection.collected_by"
               type="text"
               label="Collector"
               outlined
@@ -114,12 +114,21 @@ export default {
     return {
       id: this.$route.params.id,
       updatedCollection: {
-        unit: '',
-        collector: '',
+        unit_id: '',
+        collected_by: '',
         total: 0,
         collected_at: ''
       },
-      units: ['Unit 1', 'Unit 2', 'Unit 3'],
+      units: [
+        {
+          label: 'Unit 1',
+          value: '94513265-62f4-403e-a2b6-d0eb0dadd27c'
+        },
+        {
+          label: 'Unit 2',
+          value: '94513265-7ce0-4457-9d9e-10bc9ccef1c2'
+        }
+      ],
       validator: Validation,
       loading: false,
       hasError: {
@@ -144,7 +153,7 @@ export default {
             this.$router.push({ name: 'collections' })
             this.$q.notify(
               AppConstant.SUCCESS_MSG(
-                `Successfully updated ${this.updatedCollection.name} collection.`
+                `Successfully updated ${this.updatedCollection.id} collection.`
               )
             )
           })

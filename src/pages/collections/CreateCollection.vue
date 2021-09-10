@@ -24,7 +24,7 @@
           <div class="row q-col-gutter-sm">
             <q-select
               class="col-6"
-              v-model="newCollection.unit"
+              v-model="newCollection.unit_id"
               :options="units"
               label="Unit"
               options-dense
@@ -37,7 +37,7 @@
             />
             <q-input
               class="col col-md-6"
-              v-model="newCollection.collector"
+              v-model="newCollection.collected_by"
               type="text"
               label="Collector"
               outlined
@@ -118,12 +118,21 @@ export default {
   data () {
     return {
       newCollection: {
-        unit: [],
-        collector: '',
+        unit_id: '',
+        collected_by: '',
         total: 0,
         collected_at: ''
       },
-      units: ['Unit 1', 'Unit 2', 'Unit 3'],
+      units: [
+        {
+          label: 'Unit 1',
+          value: '94513265-62f4-403e-a2b6-d0eb0dadd27c'
+        },
+        {
+          label: 'Unit 2',
+          value: '94513265-7ce0-4457-9d9e-10bc9ccef1c2'
+        }
+      ],
       validator: Validation,
       loading: false,
       hasError: {
@@ -143,7 +152,7 @@ export default {
   methods: {
     async createCollection () {
       await this.$store.dispatch(`${COLLECTION.namespace}/${COLLECTION.actions.CREATE_COLLECTION}`, this.newCollection).then(response => {
-        this.$q.notify(AppConstant.SUCCESS_MSG(`Successfully created ${this.newCollection.name}.`))
+        this.$q.notify(AppConstant.SUCCESS_MSG(`Successfully created a collection from  ${this.newCollection.unit_id}.`))
         this.$router.push({ name: 'collections' })
           .catch((errors) => {
             this.hasError.name.error = true

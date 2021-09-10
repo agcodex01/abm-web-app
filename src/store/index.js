@@ -9,7 +9,7 @@ import layout from './modules/layout'
 import remits from './modules/remits'
 import transactions from './modules/transactions'
 import units from './modules/units'
-import collection from './modules/collection'
+import collections from './modules/collection'
 
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
@@ -24,7 +24,7 @@ export default store(function (/* { ssrContext } */) {
       remits,
       transactions,
       units,
-      collection
+      collections
     },
 
     strict: process.env.DEBUGGING

@@ -110,14 +110,14 @@ export default {
     deleteRow (collection) {
       this.$q.dialog({
         title: 'Confirm',
-        message: 'Are you sure you want to delete ' + collection.row.name + '?',
+        message: 'Are you sure you want to delete ' + collection.row.id + '?',
         cancel: true,
         persistent: true
       }).onOk(() => {
         this.$store.dispatch(`${COLLECTION.namespace}/${COLLECTION.actions.DELETE_COLLECTION}`, collection.row).then(response => {
           this.$q.notify({
             type: 'positive',
-            message: `Successfully deleted ${collection.row.name}.`,
+            message: `Successfully deleted ${collection.row.id}.`,
             position: 'top'
           })
         }, errors => {

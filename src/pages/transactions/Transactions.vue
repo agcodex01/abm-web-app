@@ -208,7 +208,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import BILLER, { BILLER_TYPE } from 'src/store/types/billers'
 import TRANSACTION from 'src/store/types/transactions'
-import Unit from 'src/store/types/units'
+import UNIT from 'src/store/types/units'
 import GeneralTypes from 'src/store/types/general'
 import { CREATED_AT, getCreateAtOptions, getStatusTypes, STATUS_TYPE } from 'util/transaction'
 import REMIT from 'src/store/types/remits'
@@ -233,7 +233,7 @@ export default {
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Transactions')
     await this.$store.dispatch(`${TRANSACTION.namespace}/${TRANSACTION.actions.GET_TRANSACTIONS}`, this.transactionFilter)
-    await this.$store.dispatch(`${Unit.namespace}/${Unit.actions.GET_UNITS}`)
+    await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
     await this.$store.dispatch(`${BILLER.namespace}/${BILLER.actions.GET_BILLERS}`)
   },
   computed: {
@@ -250,7 +250,7 @@ export default {
       transactionPreviewHeader: `${REMIT.namespace}/${REMIT.getters.GET_REMITS_TRANSACTION_PREVIEW_HEADER}`,
       showRemitDialog: `${REMIT.namespace}/${REMIT.getters.GET_REMIT_DIALOG_STATUS}`,
       total: `${REMIT.namespace}/${REMIT.getters.GET_TOTAL}`,
-      units: `${Unit.namespace}/${Unit.getters.GET_UNITS_FOR_FILTER}`,
+      units: `${UNIT.namespace}/${UNIT.getters.GET_UNITS_FOR_FILTER}`,
       loading: `${GeneralTypes.namespace}/${GeneralTypes.getters.GET_LOADING}`
     })
   },

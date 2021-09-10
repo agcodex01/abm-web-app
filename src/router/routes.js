@@ -14,6 +14,22 @@ const routes = [
         component: () => import('src/pages/Dashboard.vue')
       },
       {
+        path: 'units',
+        name: 'units',
+        component: () => import('src/pages/units/Units.vue')
+      },
+      {
+        path: 'units/create',
+        name: 'create_unit',
+        component: () => import('src/pages/units/CreateUnit.vue')
+      },
+      {
+        path: 'units/:id/update',
+        name: 'update_unit',
+        component: () => import('src/pages/units/UpdateUnit.vue'),
+        params: true
+      },
+      {
         path: '/transactions',
         component: () => import('src/pages/transactions/Transactions.vue')
       },

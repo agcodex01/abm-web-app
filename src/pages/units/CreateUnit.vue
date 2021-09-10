@@ -42,7 +42,7 @@
               dense
               :error="hasError.name.error"
               :error-message="hasError.name.message"
-              :rules="[(val) => validator.required(val, 'name')]"
+              :rules="[(val) => validator.required(val, 'fund')]"
             />
           </div>
 
@@ -57,7 +57,7 @@
               dense
               :error="hasError.name.error"
               :error-message="hasError.name.message"
-              :rules="[(val) => validator.required(val, 'name')]"
+              :rules="[(val) => validator.required(val, 'postal_code')]"
             />
             <q-input
               class="col col-md-6"
@@ -68,7 +68,7 @@
               dense
               :error="hasError.name.error"
               :error-message="hasError.name.message"
-              :rules="[(val) => validator.required(val, 'name')]"
+              :rules="[(val) => validator.required(val, 'province')]"
             />
             <q-input
               class="col col-md-6"
@@ -87,7 +87,7 @@
               dense
               :error="hasError.name.error"
               :error-message="hasError.name.message"
-              :rules="[(val) => validator.required(val, 'name')]"
+              :rules="[(val) => validator.required(val, 'municipality')]"
             />
             <q-input
               class="col col-md-6"
@@ -98,7 +98,7 @@
               dense
               :error="hasError.name.error"
               :error-message="hasError.name.message"
-              :rules="[(val) => validator.required(val, 'name')]"
+              :rules="[(val) => validator.required(val, 'barangay')]"
             />
             <q-input
               class="col col-md-6"
@@ -170,12 +170,32 @@ export default {
         name: {
           message: null,
           error: false
+        },
+        fund: {
+          message: null,
+          error: false
+        },
+        postal_code: {
+          message: null,
+          error: false
+        },
+        province: {
+          message: null,
+          error: false
+        },
+        municipality: {
+          message: null,
+          error: false
+        },
+        barangay: {
+          message: null,
+          error: false
         }
       }
     }
   },
   mounted () {
-    this.$store.commit('layout/SET_HEADER', 'Create Unit')
+    this.$store.commit('layout/SET_HEADER', 'Units')
   },
   methods: {
     async createUnit () {

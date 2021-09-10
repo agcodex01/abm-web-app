@@ -26,34 +26,14 @@
       no-data-label="There is no Units as of now!"
       no-results-label="The filter didn't find any Units"
       class="q-mt-lg"
+      selection="multiple"
       row-key="id"
       :rows="units"
       :columns="tableHeader"
       :filter="filter"
       :loading="loading"
     >
-    <template v-slot:body-cell-address="unit">
-            <q-td :value="unit.id">
-              {{unit.row.barangay}}, {{unit.row.municipality}}, {{unit.row.city}}, {{unit.row.province}}
-            </q-td>
-    </template>
-    <template v-slot:body-cell-actions="unit">
-            <q-td :value="unit.id">
-              <q-btn dense round flat color="grey" icon="edit" :to="{ name: 'update_unit', params: { id: unit.row.id } }"></q-btn>
-              <q-btn dense round flat color="grey" @click="deleteRow(unit)" icon="delete"></q-btn>
-            </q-td>
-    </template>
 
-      <template v-slot:loading>
-        <q-inner-loading :showing="loading" color="primary">
-          <q-spinner
-            color="primary"
-            size="2rem"
-            :thickness="5"
-          />
-          <div class="text-subtitle2 q-mt-md">Fetching data...</div>
-        </q-inner-loading>
-      </template>
       <template v-slot:top-right>
         <q-input
           outlined
@@ -68,20 +48,46 @@
           </template>
         </q-input>
       </template>
+
       <template v-slot:body-cell-id="props">
         <q-td :props="props">
           <q-btn
             size="sm"
             no-caps
-            style="font-size:12px"
+            style="font-size: 12px"
             text-color="primary"
             class="link"
             type="a"
             flat
             :label="props.value"
+            :to="{ name: 'update_unit', params: { id: props.value } }"
           />
         </q-td>
       </template>
+
+      <template v-slot:body-cell-address="unit">
+            <q-td :value="unit.id">
+              {{unit.row.barangay}}, {{unit.row.municipality}}, {{unit.row.city}}, {{unit.row.province}}
+            </q-td>
+      </template>
+
+      <template v-slot:body-cell-actions="unit">
+            <q-td :value="unit.id">
+              <q-btn dense round flat color="grey" @click="deleteRow(unit)" icon="delete"></q-btn>
+            </q-td>
+      </template>
+
+      <template v-slot:loading>
+        <q-inner-loading :showing="loading" color="primary">
+          <q-spinner
+            color="primary"
+            size="2rem"
+            :thickness="5"
+          />
+          <div class="text-subtitle2 q-mt-md">Fetching data...</div>
+        </q-inner-loading>
+      </template>
+
     </q-table>
   </q-page>
 </template>
@@ -112,17 +118,6 @@ export default {
     })
   },
   methods: {
-    // editUnit (unit) {
-    //   this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.UPDATE_UNIT}`, unit.row).then(response => {
-    //     this.$q.notify({
-    //       type: 'positive',
-    //       message: `Successfully updated ${unit.row.name}.`,
-    //       position: 'top'
-    //     })
-    //   }, errors => {
-    //     console.log(errors)
-    //   })
-    // },
     deleteRow (unit) {
       this.$q.dialog({
         title: 'Confirm',
@@ -130,7 +125,7 @@ export default {
         cancel: true,
         persistent: true
       }).onOk(() => {
-        this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.DELETE_UNIT}`, unit.row).then(response => {
+        this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.DELETE_UNIT}`, unit.row.id).then(response => {
           this.$q.notify({
             type: 'positive',
             message: `Successfully deleted ${unit.row.name}.`,

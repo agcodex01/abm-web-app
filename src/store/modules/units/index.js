@@ -37,7 +37,7 @@ export default {
     },
     [UNIT.actions.CREATE_UNIT] ({ commit }, newUnit) {
       return new Promise((resolve, reject) => {
-        api.post('/units', newUnit).then(response => {
+        UnitService.createUnit(newUnit).then(response => {
           commit(UNIT.mutations.CREATE_UNIT, response.data)
           resolve(response)
         }).catch((errors) => {
@@ -46,10 +46,10 @@ export default {
         })
       })
     },
-    [UNIT.actions.DELETE_UNIT] ({ commit }, unit) {
+    [UNIT.actions.DELETE_UNIT] ({ commit }, id) {
       return new Promise((resolve, reject) => {
-        api.delete(`/units/${unit.id}`).then(response => {
-          commit(UNIT.mutations.DELETE_UNIT, unit.id)
+        UnitService.deleteUnit(id).then(response => {
+          commit(UNIT.mutations.DELETE_UNIT, id)
           resolve(response)
         }).catch((errors) => {
           reject(errors)
@@ -78,8 +78,8 @@ export default {
     [UNIT.mutations.CREATE_UNIT]: (state, unit) => {
       state.units.push(unit)
     },
-    [UNIT.mutations.DELETE_UNIT]: (state, unit) => {
-      const units = state.units.filter(t => t.id !== unit)
+    [UNIT.mutations.DELETE_UNIT]: (state, id) => {
+      const units = state.units.filter(t => t.id !== id)
       state.units = units
     },
     [UNIT.mutations.SET_UNIT]: (state, unit) => {

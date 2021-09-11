@@ -7,40 +7,49 @@
         </template>
         <q-breadcrumbs-el to="/" label="Adopisoft Billing Machine" />
         <q-breadcrumbs-el to="/billers" label="Billers" />
-        <q-breadcrumbs-el label="Update" />
+        <q-breadcrumbs-el :label="biller.name" />
       </q-breadcrumbs>
     </div>
 
     <q-card>
-      <q-card-section>
-        <div class="text-h6">Update Biller</div>
-      </q-card-section>
-      <q-card-section>
-        <q-form ref="billerForm">
-          <div class="row q-gutter-sm">
-            <q-input
-              class="col-6"
-              v-model="biller.name"
-              type="text"
-              label="Name"
-              outlined
-              dense
-              :error="hasError.name.error"
-              :error-message="hasError.name.message"
-              :rules="[(val) => validator.required(val, 'name')]"
-            />
-            <q-select
-              class="col-5"
-              filled
-              v-model="biller.type"
-              :options="types"
-              label="Type"
-              options-dense
-              emit-value
-              dense
-            />
+      <q-card-section class="q-py-lg">
+        <div class="row">
+          <div class="col-6">
+            <div class="text-subtitle2 q-mb-md">Info</div>
+            <q-form ref="billerForm">
+              <q-input
+                v-model="biller.name"
+                type="text"
+                label="Name"
+                outlined
+                dense
+                :error="hasError.name.error"
+                :error-message="hasError.name.message"
+                :rules="[(val) => validator.required(val, 'name')]"
+              />
+              <q-select
+                filled
+                v-model="biller.type"
+                :options="types"
+                label="Type"
+                options-dense
+                emit-value
+                dense
+              />
+            </q-form>
           </div>
-        </q-form>
+          <div class="col-6 q-px-lg">
+            <div class="text-subtitle2 q-mb-md">Accounts</div>
+            <q-table
+              flat
+              :rows="accounts"
+              :columns="accountTableHeader"
+              row-key="name"
+              v-if="accounts.length"
+            />
+            <empty-state v-else/>
+          </div>
+        </div>
       </q-card-section>
     </q-card>
 
@@ -84,7 +93,10 @@ import BILLER, { BILLER_TYPE } from 'src/store/types/billers'
 import { mapActions, mapGetters } from 'vuex'
 import Validation from 'src/util/rules'
 import AppConstant from 'src/constant/app'
+import ACCOUNT from 'src/store/types/account'
+import EmptyState from 'src/components/EmptyState.vue'
 export default {
+  components: { EmptyState },
   name: 'UpdateBiller',
   data: () => ({
     biller: {
@@ -131,7 +143,9 @@ export default {
   },
   computed: {
     ...mapGetters({
-      billerData: `${BILLER.namespace}/${BILLER.getters.GET_BILLER}`
+      billerData: `${BILLER.namespace}/${BILLER.getters.GET_BILLER}`,
+      accounts: `${ACCOUNT.namespace}/${ACCOUNT.getters.GET_ACCOUNTS}`,
+      accountTableHeader: `${ACCOUNT.namespace}/${ACCOUNT.getters.GET_BILLER_ACCOUNT_TABLE_HEADER}`
     })
   },
   async mounted () {

@@ -3,6 +3,7 @@ import BILLER, { BILLER_TYPE } from 'src/store/types/billers'
 import tableConfig from './table_config'
 import BillerService from 'src/services/BillerService'
 import GeneralTypes from 'src/store/types/general'
+import ACCOUNT from 'src/store/types/account'
 
 export default {
   namespaced: true,
@@ -58,10 +59,11 @@ export default {
         commit(BILLER.mutations.SET_BILLER_TYPES, data)
       })
     },
-    [BILLER.actions.GET_BILLER]: async ({ commit }, id) => {
+    [BILLER.actions.GET_BILLER]: async ({ commit, dispatch }, id) => {
       await BillerService.getBiller(id)
         .then(({ data }) => {
           commit(BILLER.mutations.SET_BILLER, data)
+          dispatch(`${ACCOUNT.namespace}/${ACCOUNT.actions.GET_ACCOUNTS}`, id, { root: true })
         })
         .catch((errors) => console.error(errors))
     },

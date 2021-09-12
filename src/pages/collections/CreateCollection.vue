@@ -31,9 +31,9 @@
               emit-value
               dense
               outlined
-              :error="hasError.name.error"
-              :error-message="hasError.name.message"
-              :rules="[(val) => validator.required(val, 'name')]"
+              :error="hasError.unit_id.error"
+              :error-message="hasError.unit_id.message"
+              :rules="[(val) => validator.required(val, 'unit_id')]"
             />
             <q-input
               class="col col-md-6"
@@ -42,9 +42,9 @@
               label="Collector"
               outlined
               dense
-              :error="hasError.name.error"
-              :error-message="hasError.name.message"
-              :rules="[(val) => validator.required(val, 'name')]"
+              :error="hasError.collected_by.error"
+              :error-message="hasError.collected_by.message"
+              :rules="[(val) => validator.required(val, 'collector')]"
             />
             </div>
             <div class="row q-col-gutter-sm">
@@ -55,9 +55,9 @@
               label="Total"
               outlined
               dense
-              :error="hasError.name.error"
-              :error-message="hasError.name.message"
-              :rules="[(val) => validator.required(val, 'name')]"
+              :error="hasError.total.error"
+              :error-message="hasError.total.message"
+              :rules="[(val) => validator.required(val, 'total')]"
             />
             <q-input
               class="col col-md-6 items-center"
@@ -65,9 +65,9 @@
               type="date"
               outlined
               dense
-              :error="hasError.name.error"
-              :error-message="hasError.name.message"
-              :rules="[(val) => validator.required(val, 'name')]"
+              :error="hasError.collected_at.error"
+              :error-message="hasError.collected_at.message"
+              :rules="[(val) => validator.required(val, 'date collected')]"
             />
           </div>
         </q-form>
@@ -123,20 +123,23 @@ export default {
         total: 0,
         collected_at: ''
       },
-      units: [
-        {
-          label: 'Unit 1',
-          value: '94513265-62f4-403e-a2b6-d0eb0dadd27c'
-        },
-        {
-          label: 'Unit 2',
-          value: '94513265-7ce0-4457-9d9e-10bc9ccef1c2'
-        }
-      ],
+      units: [],
       validator: Validation,
       loading: false,
       hasError: {
-        name: {
+        unit_id: {
+          message: null,
+          error: false
+        },
+        collected_by: {
+          message: null,
+          error: false
+        },
+        total: {
+          message: null,
+          error: false
+        },
+        collected_at: {
           message: null,
           error: false
         }
@@ -144,10 +147,12 @@ export default {
     }
   },
   async mounted () {
-    this.$store.commit('layout/SET_HEADER', 'Create Collection')
+    this.$store.commit('layout/SET_HEADER', 'Collections')
     await this.$store.dispatch(
       `${UNIT.namespace}/${UNIT.actions.GET_UNITS}`
-    )
+    ).then(response => {
+      this.units = response
+    })
   },
   methods: {
     async createCollection () {
@@ -155,8 +160,14 @@ export default {
         this.$q.notify(AppConstant.SUCCESS_MSG(`Successfully created a collection from  ${this.newCollection.unit_id}.`))
         this.$router.push({ name: 'collections' })
           .catch((errors) => {
-            this.hasError.name.error = true
-            this.hasError.name.message = errors.name[0]
+            this.hasError.unit_id.error = true
+            this.hasError.unit_id.message = errors.unit_id[0]
+            this.hasError.collected_by.error = true
+            this.hasError.collected_by.message = errors.collected_by[0]
+            this.hasError.total.error = true
+            this.hasError.total.message = errors.total[0]
+            this.hasError.collected_at.error = true
+            this.hasError.collected_at.message = errors.collected_at[0]
           })
           .finally(() => {
             this.loading = false

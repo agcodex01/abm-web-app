@@ -1,5 +1,4 @@
 import COLLECTION from 'src/store/types/collections'
-import { api } from 'src/boot/axios'
 import CollectionService from 'src/services/CollectionService'
 import tableHeader from './collection_table_config'
 
@@ -19,9 +18,9 @@ export default {
   },
   actions: {
     [COLLECTION.actions.GET_COLLECTIONS]: ({ commit }) => {
-      api.get('/collections').then(({ data }) => {
+      CollectionService.getCollections().then(({ data }) => {
         const collectionsForFilter = data.map(collection => Object.assign({}, {
-          value: collection.name,
+          value: collection.id,
           label: collection.name
         }))
         commit(COLLECTION.mutations.SET_COLLECTIONS, data)
@@ -37,7 +36,7 @@ export default {
     },
     [COLLECTION.actions.CREATE_COLLECTION] ({ commit }, newCollection) {
       return new Promise((resolve, reject) => {
-        api.post('/collections', newCollection).then(response => {
+        CollectionService.createCollection(newCollection).then(response => {
           commit(COLLECTION.mutations.CREATE_COLLECTION, response.data)
           resolve(response)
         }).catch((errors) => {
@@ -46,10 +45,10 @@ export default {
         })
       })
     },
-    [COLLECTION.actions.DELETE_COLLECTION] ({ commit }, collection) {
+    [COLLECTION.actions.DELETE_COLLECTION] ({ commit }, id) {
       return new Promise((resolve, reject) => {
-        api.delete(`/collections/${collection.id}`).then(response => {
-          commit(COLLECTION.mutations.DELETE_COLLECTION, collection.id)
+        CollectionService.deleteCollection(id).then(response => {
+          commit(COLLECTION.mutations.DELETE_COLLECTION, id)
           resolve(response)
         }).catch((errors) => {
           reject(errors)

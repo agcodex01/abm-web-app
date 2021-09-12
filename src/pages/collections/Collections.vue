@@ -33,23 +33,7 @@
       :filter="filter"
       :loading="loading"
     >
-    <template v-slot:body-cell-actions="collection">
-            <q-td :value="collection.id">
-              <q-btn dense round flat color="grey" icon="edit" :to="{ name: 'update_collection', params: { id: collection.row.id } }"></q-btn>
-              <q-btn dense round flat color="grey" @click="deleteRow(collection)" icon="delete"></q-btn>
-            </q-td>
-    </template>
 
-      <template v-slot:loading>
-        <q-inner-loading :showing="loading" color="primary">
-          <q-spinner
-            color="primary"
-            size="2rem"
-            :thickness="5"
-          />
-          <div class="text-subtitle2 q-mt-md">Fetching data...</div>
-        </q-inner-loading>
-      </template>
       <template v-slot:top-right>
         <q-input
           outlined
@@ -64,20 +48,40 @@
           </template>
         </q-input>
       </template>
-      <template v-slot:body-cell-id="props">
+
+    <template v-slot:body-cell-id="props">
         <q-td :props="props">
           <q-btn
             size="sm"
             no-caps
-            style="font-size:12px"
+            style="font-size: 12px"
             text-color="primary"
             class="link"
             type="a"
             flat
             :label="props.value"
+            :to="{ name: 'update_collection', params: { id: props.value } }"
           />
         </q-td>
       </template>
+
+    <template v-slot:body-cell-actions="collection">
+            <q-td :value="collection.id">
+              <q-btn dense round flat color="grey" @click="deleteRow(collection)" icon="delete"></q-btn>
+            </q-td>
+    </template>
+
+      <template v-slot:loading>
+        <q-inner-loading :showing="loading" color="primary">
+          <q-spinner
+            color="primary"
+            size="2rem"
+            :thickness="5"
+          />
+          <div class="text-subtitle2 q-mt-md">Fetching data...</div>
+        </q-inner-loading>
+      </template>
+
     </q-table>
   </q-page>
 </template>
@@ -114,7 +118,7 @@ export default {
         cancel: true,
         persistent: true
       }).onOk(() => {
-        this.$store.dispatch(`${COLLECTION.namespace}/${COLLECTION.actions.DELETE_COLLECTION}`, collection.row).then(response => {
+        this.$store.dispatch(`${COLLECTION.namespace}/${COLLECTION.actions.DELETE_COLLECTION}`, collection.row.id).then(response => {
           this.$q.notify({
             type: 'positive',
             message: `Successfully deleted ${collection.row.id}.`,

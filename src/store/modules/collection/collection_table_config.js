@@ -12,8 +12,8 @@ export default [
     sortOrder: 'ad'
   },
   {
-    name: 'unit_id',
-    field: 'unit_id',
+    name: 'unit',
+    field: row => row.unit.name,
     label: 'Unit',
     align: 'left',
     sortable: true

@@ -1,5 +1,4 @@
 import UNIT from 'src/store/types/units'
-import { api } from 'src/boot/axios'
 import UnitService from 'src/services/UnitsService'
 import tableHeader from './unit_table_config'
 
@@ -19,14 +18,20 @@ export default {
   },
   actions: {
     [UNIT.actions.GET_UNITS]: ({ commit }) => {
-      api.get('/units').then(({ data }) => {
-        const unitsForFilter = data.map(unit => Object.assign({}, {
-          value: unit.name,
-          label: unit.name
-        }))
-        commit(UNIT.mutations.SET_UNITS, data)
-        commit(UNIT.mutations.SET_UNITS_FOR_FILTER, unitsForFilter)
-      }).catch(errors => console.error(errors))
+      return new Promise((resolve, reject) => {
+        UnitService.getUnits().then(({ data }) => {
+          const unitsForFilter = data.map(unit => Object.assign({}, {
+            label: unit.name,
+            value: unit.id
+          }))
+          commit(UNIT.mutations.SET_UNITS, data)
+          commit(UNIT.mutations.SET_UNITS_FOR_FILTER, unitsForFilter)
+          resolve(unitsForFilter)
+        }).catch((errors) => {
+          reject(errors)
+          console.log(errors)
+        })
+      })
     },
     [UNIT.actions.GET_UNIT]: async ({ commit }, id) => {
       await UnitService.getUnit(id)

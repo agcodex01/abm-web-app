@@ -27,7 +27,6 @@
 import { mapGetters } from 'vuex'
 import DsSummary from 'src/components/dashboard/DsSummary.vue'
 import TRANSACTION from 'src/store/types/transactions'
-
 export default {
   components: { DsSummary },
   name: 'Dashboard',

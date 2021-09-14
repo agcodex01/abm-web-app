@@ -204,7 +204,17 @@ export default {
         this.$router.push({ name: 'units' })
           .catch((errors) => {
             this.hasError.name.error = true
+            this.hasError.fund.error = true
+            this.hasError.postal_code.error = true
+            this.hasError.province.error = true
+            this.hasError.municipality.error = true
+            this.hasError.barangay.error = true
             this.hasError.name.message = errors.name[0]
+            this.hasError.fund.message = errors.fund[0]
+            this.hasError.postal_code.message = errors.postal_code[0]
+            this.hasError.province.message = errors.province[0]
+            this.hasError.municipality.message = errors.municipality[0]
+            this.hasError.barangay.message = errors.barangay[0]
           })
           .finally(() => {
             this.loading = false

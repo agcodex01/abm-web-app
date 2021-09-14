@@ -6,7 +6,7 @@ export default [
   },
   {
     title: 'Units',
-    icon: 'monitor',
+    icon: 'devices',
     link: '/units'
   },
   {
@@ -16,7 +16,7 @@ export default [
   },
   {
     title: 'Transactions',
-    icon: 'compare_arrows',
+    icon: 'tablet',
     link: '/transactions'
   },
   {

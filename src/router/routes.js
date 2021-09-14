@@ -26,8 +26,7 @@ const routes = [
       {
         path: 'units/:id/update',
         name: 'update_unit',
-        component: () => import('src/pages/units/UpdateUnit.vue'),
-        params: true
+        component: () => import('src/pages/units/UpdateUnit.vue')
       },
       {
         path: '/transactions',
@@ -71,8 +70,7 @@ const routes = [
       {
         path: 'collections/:id/update',
         name: 'update_collection',
-        component: () => import('src/pages/collections/UpdateCollection.vue'),
-        params: true
+        component: () => import('src/pages/collections/UpdateCollection.vue')
       }
     ]
   },

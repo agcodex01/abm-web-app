@@ -1,25 +1,23 @@
 <template>
   <q-page padding>
-    <div class="row q-col-gutter-md">
-      <div class="col-xs-12 col-md-3" v-for="summary in dsSummary" :key="summary.id">
-          <ds-summary  v-bind="summary"/>
+    <div class="row q-col-gutter-md q-mt-md">
+      <div
+        class="col-xs-12 col-md-3"
+        v-for="summary in dsSummary"
+        :key="summary.id"
+      >
+        <ds-summary v-bind="summary" />
       </div>
     </div>
-    <q-table
-      class="q-mt-lg half-width"
-      title="Recent Transactions"
-      :rows="transactions"
-      :columns="tableHeader"
-      row-key="id"
-      :filter="filter"
-    ><template v-slot:top-right>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search" clearable>
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-      </template>
-    </q-table>
+    <q-card class="q-mt-lg" flat>
+      <q-card-section class="flex justify-between">
+       <div class="text-subtitle2">Current Month Transactions</div>
+       <div class="text-subtitle2">Total: {{ total }}</div>
+      </q-card-section>
+      <q-card-section >
+        <div id="chart" height="500" class="shadow-2 q-py-md"></div>
+      </q-card-section>
+    </q-card>
   </q-page>
 </template>
 
@@ -27,17 +25,121 @@
 import { mapGetters } from 'vuex'
 import DsSummary from 'src/components/dashboard/DsSummary.vue'
 import TRANSACTION from 'src/store/types/transactions'
+import ApexCharts from 'apexcharts'
+import DASHBOARD from 'src/store/types/dashboard'
+
 export default {
   components: { DsSummary },
   name: 'Dashboard',
   data () {
     return {
-      filter: ''
+      filter: '',
+      total: 0,
+      chartOptions: {
+        chart: {
+          height: 350,
+          type: 'bar',
+          stacked: false
+        },
+        toolbar: {
+          export: {
+            csv: {
+              filename: undefined,
+              columnDelimiter: ',',
+              headerCategory: 'category',
+              headerValue: 'value',
+              dateFormatter (timestamp) {
+                return new Date(timestamp).toDateString()
+              }
+            },
+            svg: {
+              filename: undefined
+            },
+            png: {
+              filename: undefined
+            }
+          },
+          autoSelected: 'zoom'
+        },
+        dataLabels: {
+          enabled: false
+        },
+        colors: ['#ffc107', '#1166bd'],
+        series: [
+          {
+            name: 'Pending',
+            data: []
+          },
+          {
+            name: 'Remmited',
+            data: []
+          }
+        ],
+        stroke: {
+          width: [4, 4]
+        },
+        plotOptions: {
+          bar: {
+            columnWidth: '30%'
+          }
+        },
+        xaxis: {
+          categories: ['1st Week', '2nd Week', '3rd Week', '4th Week'],
+          axisBorder: {
+            show: true,
+            width: '3px',
+            color: '#0091EA'
+          }
+        },
+        yaxis: [
+          {
+            axisTicks: {
+              show: true
+            },
+            axisBorder: {
+              show: true,
+              width: '3px',
+              color: '#1166bd'
+            },
+            labels: {
+              style: {
+                colors: '#1166bd'
+              }
+            }
+          }
+        ],
+        tooltip: {
+          shared: false,
+          intersect: true,
+          x: {
+            show: false
+          }
+        },
+        legend: {
+          horizontalAlign: 'left',
+          offsetX: 40
+        }
+      }
     }
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Dashboard')
-    await this.$store.dispatch(`${TRANSACTION.namespace}/${TRANSACTION.actions.GET_TRANSACTIONS}`)
+    await this.$store.dispatch(`${DASHBOARD.namespace}/${DASHBOARD.actions.GER_DS_SUMMARY}`)
+    await this.$store.dispatch(`${DASHBOARD.namespace}/${DASHBOARD.actions.GET_TRANSACTIONS_PREVIEWL}`)
+      .then(({ data }) => {
+        this.total = data.pending.reduce((a, b) => a + b)
+        this.total += data.remmited.reduce((a, b) => a + b)
+        this.chartOptions.series[0].data = data.pending
+        this.chartOptions.series[1].data = data.remmited
+      })
+    const chart = new ApexCharts(
+      document.querySelector('#chart'),
+      this.chartOptions
+    )
+    chart.render()
+    await this.$store.dispatch(
+      `${TRANSACTION.namespace}/${TRANSACTION.actions.GET_TRANSACTIONS}`
+    )
   },
   computed: {
     ...mapGetters({

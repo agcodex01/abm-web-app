@@ -23,13 +23,13 @@ export default {
     [BILLER.getters.GET_BILLER]: (state) => state.biller
   },
   actions: {
-    [BILLER.actions.GET_BILLERS]: async ({ commit, dispatch }, billerFilter) => {
+    [BILLER.actions.GET_BILLERS]: async ({ commit, dispatch }) => {
       commit(
         `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
         true,
         { root: true }
       )
-      await BillerService.getBillers(billerFilter)
+      await BillerService.getBillers()
         .then(({ data }) => {
           const billersForFilter = data.map((unit) =>
             Object.assign(

@@ -2,7 +2,7 @@
   <q-list bordered separator class="text-white">
     <q-item class="q-pa-lg">
       <q-item-section avatar>
-        <q-avatar>
+        <q-avatar size="32px">
           <img
             src="~assets/logo.png"
           />

@@ -11,7 +11,7 @@ export default [
   },
   {
     title: 'Billers',
-    icon: 'chat',
+    icon: 'account_balance',
     link: '/billers'
   },
   {

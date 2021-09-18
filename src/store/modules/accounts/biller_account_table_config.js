@@ -14,5 +14,13 @@ export default [
     align: 'left',
     required: true,
     sortable: true
+  },
+  {
+    name: 'balance',
+    field: 'balance',
+    label: 'Balance',
+    align: 'left',
+    required: true,
+    sortable: true
   }
 ]

@@ -5,8 +5,13 @@ export default [
     link: '/'
   },
   {
+    title: 'Users',
+    icon: 'people',
+    link: '/users'
+  },
+  {
     title: 'Units',
-    icon: 'devices',
+    icon: 'monitor',
     link: '/units'
   },
   {

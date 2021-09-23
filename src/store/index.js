@@ -11,6 +11,7 @@ import units from './modules/units'
 import remits from './modules/remits'
 import transactions from './modules/transactions'
 import collections from './modules/collection'
+import users from './modules/users'
 
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
@@ -20,13 +21,14 @@ export default store(function (/* { ssrContext } */) {
       accounts,
       auth,
       billers,
+      collections,
       dashboard,
       general,
       layout,
       remits,
       transactions,
       units,
-      collections
+      users
     },
 
     strict: process.env.DEBUGGING

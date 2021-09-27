@@ -15,5 +15,12 @@ export default {
   },
   getRoles: async () => {
     return api.get('roles')
+  },
+  checkAccess: async (id, roles) => {
+    return api.get(`/users/${id}/roles/hasAccess`, {
+      params: {
+        roles
+      }
+    })
   }
 }

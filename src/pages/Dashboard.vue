@@ -56,7 +56,7 @@ export default {
               filename: undefined
             },
             png: {
-              filename: undefined
+              filename: 'Mothly Report'
             }
           },
           autoSelected: 'zoom'

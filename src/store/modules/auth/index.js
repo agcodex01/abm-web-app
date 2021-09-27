@@ -16,7 +16,11 @@ export default {
       if (!_.isEmpty(userFromLocalStorage)) return Object.assign({}, userFromLocalStorage)
       return state.user
     },
-    [AuthTypes.getters.GET_TOKEN]: (state) => state.token
+    [AuthTypes.getters.GET_TOKEN]: (state) => {
+      const token = LocalStorage.getItem('token')
+      if (token) return token
+      return state.token
+    }
   },
   mutations: {
     [AuthTypes.mutations.SET_USER]: (state, user) => {
@@ -28,7 +32,7 @@ export default {
   },
   actions: {
     async [AuthTypes.actions.LOGIN] ({ commit }, credential) {
-      return new Promise((resolve, reject) => {
+      return await new Promise((resolve, reject) => {
         commit(
           `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
           true,

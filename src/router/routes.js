@@ -73,6 +73,11 @@ const routes = [
         component: () => import('src/pages/collections/UpdateCollection.vue')
       },
       {
+        path: 'profile/:id/view',
+        name: 'update_profile',
+        component: () => import('src/pages/Profile.vue')
+      },
+      {
         path: 'users',
         name: 'users',
         component: () => import('src/pages/users/Users.vue')

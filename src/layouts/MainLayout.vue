@@ -18,7 +18,7 @@
           <q-menu>
             <q-item-label header>Manage Account</q-item-label>
             <q-list style="min-width: 240px">
-              <q-item clickable v-close-popup>
+              <q-item clickable v-close-popup :to="{ name: 'update_profile', params: { id: user.id } }">
                 <q-item-section>Profile</q-item-section>
               </q-item>
               <q-separator />

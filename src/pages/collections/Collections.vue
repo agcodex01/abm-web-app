@@ -26,7 +26,6 @@
       no-data-label="There is no Collections as of now!"
       no-results-label="The filter didn't find any Collections"
       class="q-mt-lg"
-      selection="multiple"
       row-key="id"
       :rows="collections"
       :columns="tableHeader"

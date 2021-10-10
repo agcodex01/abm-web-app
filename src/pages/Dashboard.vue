@@ -11,10 +11,10 @@
     </div>
     <q-card class="q-mt-lg" flat>
       <q-card-section class="flex justify-between">
-       <div class="text-subtitle2">Current Month Transactions</div>
-       <div class="text-subtitle2">Total: {{ total }}</div>
+        <div class="text-subtitle2">Current Month Transactions</div>
+        <div class="text-subtitle2">Total: {{ total }}</div>
       </q-card-section>
-      <q-card-section >
+      <q-card-section>
         <div id="chart" height="500" class="shadow-2 q-py-md"></div>
       </q-card-section>
     </q-card>
@@ -124,13 +124,18 @@ export default {
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Dashboard')
-    await this.$store.dispatch(`${DASHBOARD.namespace}/${DASHBOARD.actions.GER_DS_SUMMARY}`)
-    await this.$store.dispatch(`${DASHBOARD.namespace}/${DASHBOARD.actions.GET_TRANSACTIONS_PREVIEWL}`)
+    await this.$store.dispatch(
+      `${DASHBOARD.namespace}/${DASHBOARD.actions.GER_DS_SUMMARY}`
+    )
+    await this.$store
+      .dispatch(
+        `${DASHBOARD.namespace}/${DASHBOARD.actions.GET_TRANSACTIONS_PREVIEWL}`
+      )
       .then(({ data }) => {
-        this.total = data.pending.reduce((a, b) => a + b)
-        this.total += data.remmited.reduce((a, b) => a + b)
-        this.chartOptions.series[0].data = data.pending
-        this.chartOptions.series[1].data = data.remmited
+        this.total = this.getTotal(data.pending)
+        this.total += this.getTotal(data.remmited)
+        this.chartOptions.series[0].data = this.getData(data.pending)
+        this.chartOptions.series[1].data = this.getData(data.remmited)
       })
     const chart = new ApexCharts(
       document.querySelector('#chart'),
@@ -147,6 +152,16 @@ export default {
       transactions: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TRANSACTIONS}`,
       tableHeader: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TRANSACTIONS_TABLE_HEADER}`
     })
+  },
+  methods: {
+    getData (data) {
+      if (data) return data
+      return [0, 0, 0, 0]
+    },
+    getTotal (data) {
+      if (!data) return 0
+      return data.reduce((a, b) => a + b)
+    }
   }
 }
 </script>

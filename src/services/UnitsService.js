@@ -1,7 +1,7 @@
 import { api } from '../boot/axios'
 
 const UnitService = {
-  getUnits () {
+  getUnits: () => {
     return api.get('/units')
   },
   getUnit: async (id) => {
@@ -15,6 +15,15 @@ const UnitService = {
   },
   deleteUnit: async (id) => {
     return await api.delete(`/units/${id}`)
+  },
+  getConfig: async (id) => {
+    return await api.get(`/units/${id}/config`)
+  },
+  createConfig: async (id) => {
+    return await api.post(`/units/${id}/config`)
+  },
+  deleteConfig: async (id) => {
+    return await api.delete(`/units/${id}/config`)
   }
 }
 

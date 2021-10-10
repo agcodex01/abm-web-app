@@ -135,7 +135,7 @@ const routes = [
         path: 'users',
         name: 'users',
         meta: {
-          roles: ['Admin', 'Manager', 'Collector'],
+          roles: ['Admin', 'Manager'],
           middleware: [canAccess]
         },
         component: () => import('src/pages/users/Users.vue')

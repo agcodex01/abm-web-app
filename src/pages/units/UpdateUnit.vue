@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="q-mt-md q-mb-xl">
+    <div class="flex justify-between align-center q-mt-md q-mb-xl">
       <q-breadcrumbs class="align-center q-pa-sm" style="font-size: 14px">
         <template v-slot:separator>
           <q-icon size="24px" name="chevron_right" />
@@ -9,6 +9,7 @@
         <q-breadcrumbs-el to="/units" label="Units" />
         <q-breadcrumbs-el label="Update" />
       </q-breadcrumbs>
+      <q-btn size="sm" outline  color="primary"  label="View Config" @click="openConfig"/>
     </div>
 
     <q-card>
@@ -111,7 +112,27 @@
         </q-form>
       </q-card-section>
     </q-card>
-
+    <q-dialog v-model="openConfigDialog" persistent position="top" >
+      <q-card class="q-mt-lg q-pb-sm" style="min-width:450px">
+        <q-card-section class="q-pb-none">
+          <div class="text-h6 text-weight-regular no-margin">Unit Config</div>
+        </q-card-section>
+        <q-card-section>
+          <div class="text-subtitle1">Uuid</div>
+          <div class="text-subtitle2 q-mb-lg" v-text="updatedUnit.id"></div>
+          <div class="text-subtitle1 flex justify-between align-center q-mb-md">
+            Token
+            <q-btn v-if="!config?.token" size="sm" color="primary" label="Create" @click="createConfig(updatedUnit.id)"/>
+            <q-btn v-else size="sm" color="negative" label="Delete" @click="deleteConfig(updatedUnit.id)"/>
+          </div>
+          <div v-if="config?.token" class="text-subtitle2" v-text="config?.token" />
+          <div v-else class="text-subtitle2" v-text="'No token for this unit'" />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn size="sm" padding="8px 16px" outline label="Close" color="primary" class="full-width" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <q-footer
       class="bg-white q-py-sm q-px-md flex justify-between align-center"
       reveal
@@ -192,12 +213,15 @@ export default {
           message: null,
           error: false
         }
-      }
+      },
+      openConfigDialog: false
     }
   },
   methods: {
     ...mapActions({
-      updateUnit: `${UNIT.namespace}/${UNIT.actions.UPDATE_UNIT}`
+      updateUnit: `${UNIT.namespace}/${UNIT.actions.UPDATE_UNIT}`,
+      createConfig: `${UNIT.namespace}/${UNIT.actions.CREATE_CONFIG}`,
+      deleteConfig: `${UNIT.namespace}/${UNIT.actions.DELETE_CONFIG}`
     }),
     async onUpdate () {
       const validated = await this.$refs.unitForm.validate()
@@ -221,11 +245,16 @@ export default {
             this.loading = false
           })
       }
+    },
+    async openConfig () {
+      this.openConfigDialog = true
+      await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_CONFIG}`, this.updatedUnit.id)
     }
   },
   computed: {
     ...mapGetters({
-      unitData: `${UNIT.namespace}/${UNIT.getters.GET_UNIT}`
+      unitData: `${UNIT.namespace}/${UNIT.getters.GET_UNIT}`,
+      config: `${UNIT.namespace}/${UNIT.getters.GET_CONFIG}`
     })
   },
   async mounted () {

@@ -4,7 +4,8 @@ const AppConstant = {
     type: 'positive',
     message: message,
     position: 'top'
-  })
+  }),
+  MULTIPART_HEADER: { 'Content-Type': 'multipart/form-data' }
 }
 
 export default AppConstant

@@ -26,6 +26,7 @@ api.interceptors.response.use(function (response) {
 }, function (error) {
   switch (error.response.status) {
     case 401:
+      LocalStorage.clear()
       router().push({
         name: 'login'
       })

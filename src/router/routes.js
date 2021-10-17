@@ -157,6 +157,15 @@ const routes = [
           middleware: [canAccess]
         },
         component: () => import('src/pages/users/UpdateUser.vue')
+      },
+      {
+        path: 'settings',
+        name: 'settings',
+        meta: {
+          roles: ['Admin', 'Manager'],
+          middleware: [canAccess]
+        },
+        component: () => import('src/pages/Settings.vue')
       }
     ]
   },

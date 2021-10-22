@@ -19,19 +19,45 @@
           <div class="row">
             <div class="col-md-6">
               <div class="text-subtitle2 q-mb-sm">Fullname</div>
-              <q-input outlined dense v-model="user.name" type="text" />
+              <q-input
+                outlined
+                dense
+                v-model="user.name"
+                type="text"
+                :rules="[(v) => validation.required(v, 'name')]"
+              />
               <div class="text-subtitle2 q-my-sm">Email</div>
-              <q-input outlined dense v-model="user.email" type="email" />
+              <q-input
+                outlined
+                dense
+                :error="errors.email.hasError"
+                :error-message="errors.email.message"
+                v-model="user.email"
+                type="email"
+                :rules="[(v) => validation.required(v, 'email')]"
+              />
             </div>
             <div class="col-md-6 q-px-lg">
-              <div class="text-subtitle2 q-mb-sm">Roles</div>
+              <div class="text-subtitle2 q-mb-md">Roles</div>
               <div class="q-gutter-sm">
-                <q-checkbox
-                  v-for="role in roles"
-                  :key="role.label"
-                  v-model="role.value"
-                  :label="role.label"
-                />
+                <q-field
+                  :model-value="user.roles"
+                  borderless
+                  no-error-icon
+                  dense
+                  :rules="[(v) => validation.required(v, 'role')]"
+                >
+                  <template v-slot:control>
+                    <q-option-group
+                      dense
+                      v-model="user.roles"
+                      inline
+                      type="checkbox"
+                      color="primary"
+                      :options="roles"
+                    />
+                  </template>
+                </q-field>
               </div>
             </div>
           </div>
@@ -76,6 +102,8 @@
 import USER from 'src/store/types/users'
 import { mapGetters } from 'vuex'
 import AppConstant from 'src/constant/app'
+import Validation from 'src/util/rules'
+import UserErrors from 'src/store/modules/users/errors'
 export default {
   name: 'UpdateUser',
   data: () => ({
@@ -84,15 +112,13 @@ export default {
       email: null,
       roles: []
     },
-    roles: [],
-    loading: false
+    loading: false,
+    validation: Validation,
+    errors: UserErrors
   }),
   methods: {
     async onUpdate () {
       this.loading = true
-      this.user.roles = this.roles
-        .filter((role) => role.value)
-        .map((role) => role.label)
       await this.$store
         .dispatch(`${USER.namespace}/${USER.actions.UPDATE_USER}`, {
           user: this.user,
@@ -108,13 +134,23 @@ export default {
             this.loading = false
           }
         })
-        .catch((errors) => console.error(errors))
+        .catch((error) => {
+          const errors = error.response.data.errors
+          console.log(errors)
+          if ('email' in errors) {
+            this.errors.email.hasError = true
+            this.errors.email.message = errors.email[0]
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
     }
   },
   computed: {
     ...mapGetters({
       userData: `${USER.namespace}/${USER.getters.GET_USER}`,
-      rolesData: `${USER.namespace}/${USER.getters.GET_ROLES}`
+      roles: `${USER.namespace}/${USER.getters.GET_ROLES}`
     })
   },
   async mounted () {
@@ -124,15 +160,13 @@ export default {
       `${USER.namespace}/${USER.actions.GET_USER}`,
       this.$route.params.id
     )
-    this.user = Object.assign({}, this.userData)
-    this.rolesData.forEach(role => {
-      this.roles.push(Object.assign({}, role))
-    })
-    this.roles.forEach(role => {
-      role.value = this.user.roles
-        .map(userRole => userRole.name)
-        .includes(role.label)
-    })
+    this.user = Object.assign(
+      {},
+      {
+        ...this.userData,
+        roles: this.userData.roles.map((role) => role.name)
+      }
+    )
   }
 }
 </script>

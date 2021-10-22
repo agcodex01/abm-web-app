@@ -15,7 +15,7 @@
         size="sm"
         outline
         color="primary"
-        label="Add new"
+        label="Add Unit"
         icon-right="add"
         @click="$router.push({ name: 'create_unit' })"
       />

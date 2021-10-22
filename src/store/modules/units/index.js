@@ -50,13 +50,11 @@ export default {
     [UNIT.actions.CREATE_UNIT] ({ commit }, newUnit) {
       commit(UNIT.mutations.SET_LOADING, true)
       return new Promise((resolve, reject) => {
-        UnitService.createUnit(newUnit).then(response => {
-          commit(UNIT.mutations.CREATE_UNIT, response.data)
-          resolve(response)
-        }).catch((errors) => {
-          reject(errors)
-          console.log(errors)
-        }).finally(() => commit(UNIT.mutations.SET_LOADING, false))
+        UnitService.createUnit(newUnit).then(({ data }) => {
+          commit(UNIT.mutations.CREATE_UNIT, data)
+          resolve(data)
+        }).catch((errors) => reject(errors.response.data.errors))
+          .finally(() => commit(UNIT.mutations.SET_LOADING, false))
       })
     },
     [UNIT.actions.DELETE_UNIT] ({ commit }, id) {

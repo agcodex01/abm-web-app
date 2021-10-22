@@ -32,7 +32,7 @@ export default {
         UserService.createUser(data).then(({ data }) => {
           commit(USER.mutations.SET_USER, data)
           resolve(data)
-        }).catch(errors => reject(errors))
+        }).catch(errors => reject(errors.response.data.errors))
       })
     },
     [USER.actions.UPDATE_USER]: (context, data) => {
@@ -43,7 +43,7 @@ export default {
         data = data.map(role => {
           return {
             label: role,
-            value: false
+            value: role
           }
         })
         commit(USER.mutations.SET_ROLES, data)

@@ -9,7 +9,13 @@
         <q-breadcrumbs-el to="/units" label="Units" />
         <q-breadcrumbs-el label="Update" />
       </q-breadcrumbs>
-      <q-btn size="sm" outline  color="primary"  label="View Config" @click="openConfig"/>
+      <q-btn
+        size="sm"
+        outline
+        color="primary"
+        label="View Config"
+        @click="openConfig"
+      />
     </div>
 
     <q-card>
@@ -17,8 +23,8 @@
         <div class="text-h6">Update Unit</div>
       </q-card-section>
       <q-card-section>
-        <q-form ref="unitForm" >
-          <div class="text-subtitle1 q-ma-sm">Unit Information</div>
+        <q-form ref="unitForm">
+          <div class="text-subtitle1 q-ma-sm">Information</div>
           <div class="row q-col-gutter-sm">
             <q-input
               class="col col-md-6"
@@ -44,7 +50,7 @@
             />
           </div>
 
-          <div class="text-subtitle1 q-ma-sm">Unit Address/Location</div>
+          <div class="text-subtitle1 q-ma-sm">Address</div>
           <div class="row q-col-gutter-sm">
             <q-input
               class="col col-md-6"
@@ -53,8 +59,8 @@
               label="Postal Code"
               outlined
               dense
-              :error="hasError.name.error"
-              :error-message="hasError.name.message"
+              :error="hasError.postal_code.error"
+              :error-message="hasError.postal_code.message"
               :rules="[(val) => validator.required(val, 'postal_code')]"
             />
             <q-input
@@ -64,8 +70,8 @@
               label="Province"
               outlined
               dense
-              :error="hasError.name.error"
-              :error-message="hasError.name.message"
+              :error="hasError.province.error"
+              :error-message="hasError.province.message"
               :rules="[(val) => validator.required(val, 'province')]"
             />
             <q-input
@@ -83,8 +89,8 @@
               label="Municipality"
               outlined
               dense
-              :error="hasError.name.error"
-              :error-message="hasError.name.message"
+              :error="hasError.municipality.error"
+              :error-message="hasError.municipality.message"
               :rules="[(val) => validator.required(val, 'municipality')]"
             />
             <q-input
@@ -94,9 +100,6 @@
               label="Barangay"
               outlined
               dense
-              :error="hasError.name.error"
-              :error-message="hasError.name.message"
-              :rules="[(val) => validator.required(val, 'barangay')]"
             />
             <q-input
               class="col col-md-6"
@@ -105,15 +108,13 @@
               label="Street"
               outlined
               dense
-              :error="hasError.name.error"
-              :error-message="hasError.name.message"
             />
           </div>
         </q-form>
       </q-card-section>
     </q-card>
-    <q-dialog v-model="openConfigDialog" persistent position="top" >
-      <q-card class="q-mt-lg q-pb-sm" style="min-width:450px">
+    <q-dialog v-model="openConfigDialog" persistent position="top">
+      <q-card class="q-mt-lg q-pb-sm" style="min-width: 450px">
         <q-card-section class="q-pb-none">
           <div class="text-h6 text-weight-regular no-margin">Unit Config</div>
         </q-card-section>
@@ -122,14 +123,42 @@
           <div class="text-subtitle2 q-mb-lg" v-text="updatedUnit.id"></div>
           <div class="text-subtitle1 flex justify-between align-center q-mb-md">
             Token
-            <q-btn v-if="!config?.token" size="sm" color="primary" label="Create" @click="createConfig(updatedUnit.id)"/>
-            <q-btn v-else size="sm" color="negative" label="Delete" @click="deleteConfig(updatedUnit.id)"/>
+            <q-btn
+              v-if="!config?.token"
+              size="sm"
+              color="primary"
+              label="Create"
+              @click="createConfig(updatedUnit.id)"
+            />
+            <q-btn
+              v-else
+              size="sm"
+              color="negative"
+              label="Delete"
+              @click="deleteConfig(updatedUnit.id)"
+            />
           </div>
-          <div v-if="config?.token" class="text-subtitle2" v-text="config?.token" />
-          <div v-else class="text-subtitle2" v-text="'No token for this unit'" />
+          <div
+            v-if="config?.token"
+            class="text-subtitle2"
+            v-text="config?.token"
+          />
+          <div
+            v-else
+            class="text-subtitle2"
+            v-text="'No token for this unit'"
+          />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn size="sm" padding="8px 16px" outline label="Close" color="primary" class="full-width" v-close-popup />
+          <q-btn
+            size="sm"
+            padding="8px 16px"
+            outline
+            label="Close"
+            color="primary"
+            class="full-width"
+            v-close-popup
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -155,6 +184,8 @@
         color="primary"
         padding="sm lg"
         label="Save"
+        :loading="loading"
+        :style="{ width: loading ? '150px' : '' }"
         @click="onUpdate"
       >
         <template v-slot:loading>
@@ -224,31 +255,54 @@ export default {
       deleteConfig: `${UNIT.namespace}/${UNIT.actions.DELETE_CONFIG}`
     }),
     async onUpdate () {
-      const validated = await this.$refs.unitForm.validate()
-      if (validated) {
-        this.loading = true
-        this.updateUnit({ id: this.updatedUnit.id, unit: this.updatedUnit })
-          .then((unit) => {
-            this.hasError.name.error = false
-            this.$router.push({ name: 'units' })
-            this.$q.notify(
-              AppConstant.SUCCESS_MSG(
-                `Successfully updated ${this.updatedUnit.name} unit.`
+      this.$refs.unitForm.validate().then((valid) => {
+        if (valid) {
+          this.loading = true
+          this.updateUnit({ id: this.updatedUnit.id, unit: this.updatedUnit })
+            .then((unit) => {
+              this.$q.notify(
+                AppConstant.SUCCESS_MSG(
+                  `Successfully updated ${this.updatedUnit.name} unit.`
+                )
               )
-            )
-          })
-          .catch((errors) => {
-            this.hasError.name.error = true
-            this.hasError.name.message = errors.name[0]
-          })
-          .finally(() => {
-            this.loading = false
-          })
-      }
+            })
+            .catch((errors) => {
+              if ('name' in errors) {
+                this.hasError.name.error = true
+                this.hasError.name.message = errors.name[0]
+              }
+
+              if ('fund' in errors) {
+                this.hasError.fund.error = true
+                this.hasError.fund.message = errors.fund[0]
+              }
+              if ('postal_code' in errors) {
+                this.hasError.postal_code.error = true
+                this.hasError.postal_code.message = errors.postal_code[0]
+              }
+
+              if ('province' in errors) {
+                this.hasError.province.error = true
+                this.hasError.province.message = errors.province[0]
+              }
+
+              if ('municipality' in errors) {
+                this.hasError.municipality.error = true
+                this.hasError.municipality.message = errors.municipality[0]
+              }
+            })
+            .finally(() => {
+              this.loading = false
+            })
+        }
+      })
     },
     async openConfig () {
       this.openConfigDialog = true
-      await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_CONFIG}`, this.updatedUnit.id)
+      await this.$store.dispatch(
+        `${UNIT.namespace}/${UNIT.actions.GET_CONFIG}`,
+        this.updatedUnit.id
+      )
     }
   },
   computed: {

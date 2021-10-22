@@ -18,7 +18,10 @@ export function incorrect (field) {
 
 const Validation = {
   required: (value, field) => {
-    return (!!value && value.length > 0) || required(field)
+    if (isNaN(value)) {
+      return (!!value && value.length > 0) || required(field)
+    }
+    return (!!value && value > 0) || required(field)
   },
   min: (value, field, limit) => {
     return (!!value && value.length >= limit) || min(limit, field)

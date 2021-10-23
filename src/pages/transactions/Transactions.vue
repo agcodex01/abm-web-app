@@ -26,6 +26,7 @@
         options-dense
         emit-value
         dense
+        :loading="unitLoading"
       />
       <q-select
         class="col"
@@ -38,6 +39,7 @@
         options-dense
         emit-value
         dense
+        :loading="billerLoading"
       />
       <q-select
         class="col"
@@ -50,6 +52,7 @@
         map-options
         emit-value
         dense
+        :loading="typesLoading"
       />
       <q-select
         class="col"
@@ -88,11 +91,11 @@
       :rows="transactions"
       :columns="tableHeader"
       :filter="filter"
-      :loading="loading"
+      :loading="transactionLoading"
       @update:selected="selectedRow"
     >
       <template v-slot:loading>
-        <q-inner-loading :showing="loading" color="primary">
+        <q-inner-loading :showing="transactionLoading" color="primary">
           <q-spinner
             color="primary"
             size="2rem"
@@ -117,20 +120,6 @@
       </template>
       <template v-slot:body-selection="scope">
         <q-checkbox :disable="remittable(scope.row.status)"  v-model="scope.selected" />
-      </template>
-      <template v-slot:body-cell-id="props">
-        <q-td :props="props">
-          <q-btn
-            size="sm"
-            no-caps
-            style="font-size:12px"
-            text-color="primary"
-            class="link"
-            type="a"
-            flat
-            :label="props.value"
-          />
-        </q-td>
       </template>
       <template v-slot:body-cell-type="props">
         <q-td :props="props">
@@ -192,7 +181,7 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn size="sm" unelevated outline padding="sm md" label="Cancel" color="primary" @click="closeRemitDialog" />
-          <q-btn size="sm" unelevated :loading="loading" padding="sm md" label="Create new remit" color="primary" @click="createNewRemit">
+          <q-btn size="sm" unelevated :loading="remitLoading" padding="sm md" label="Create new remit" color="primary" @click="createNewRemit">
             <template v-slot:loading>
               <q-spinner class="on-left" />
               Loading...
@@ -209,7 +198,6 @@ import { mapActions, mapGetters } from 'vuex'
 import BILLER, { BILLER_TYPE } from 'src/store/types/billers'
 import TRANSACTION from 'src/store/types/transactions'
 import UNIT from 'src/store/types/units'
-import GeneralTypes from 'src/store/types/general'
 import { CREATED_AT, getCreateAtOptions, getStatusTypes, STATUS_TYPE } from 'util/transaction'
 import REMIT from 'src/store/types/remits'
 import AuthTypes from 'src/store/types/auth'
@@ -251,7 +239,11 @@ export default {
       showRemitDialog: `${REMIT.namespace}/${REMIT.getters.GET_REMIT_DIALOG_STATUS}`,
       total: `${REMIT.namespace}/${REMIT.getters.GET_TOTAL}`,
       units: `${UNIT.namespace}/${UNIT.getters.GET_UNITS_FOR_FILTER}`,
-      loading: `${GeneralTypes.namespace}/${GeneralTypes.getters.GET_LOADING}`
+      transactionLoading: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_LOADING}`,
+      unitLoading: `${UNIT.namespace}/${UNIT.getters.GET_LOADING}`,
+      billerLoading: `${BILLER.namespace}/${BILLER.getters.GET_LOADING}`,
+      remitLoading: `${REMIT.namespace}/${REMIT.getters.GET_LOADING}`,
+      typesLoading: `${BILLER.namespace}/${BILLER.getters.GET_TYPE_LOADING}`
     })
   },
   methods: {

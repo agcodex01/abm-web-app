@@ -123,8 +123,6 @@ export default {
         this.loading = true
         this.updateBiller({ id: this.biller.id, biller: this.biller })
           .then((biller) => {
-            this.hasError.name.error = false
-            this.$router.push({ name: 'billers' })
             this.$q.notify(
               AppConstant.SUCCESS_MSG(
                 `Successfully updated ${biller.name} biller.`
@@ -132,8 +130,10 @@ export default {
             )
           })
           .catch((errors) => {
-            this.hasError.name.error = true
-            this.hasError.name.message = errors.name[0]
+            if ('name' in errors) {
+              this.hasError.name.error = true
+              this.hasError.name.message = errors.name[0]
+            }
           })
           .finally(() => {
             this.loading = false

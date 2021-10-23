@@ -16,7 +16,7 @@
 
     <div class="row q-col-gutter-sm">
       <q-select
-        class="col"
+        class="col-3"
         filled
         v-model="remitFilter.createdAt"
         :options="createdAtOptions"
@@ -34,7 +34,6 @@
       no-data-label="There is no remits as of now!"
       no-results-label="The filter didn't find any remits"
       class="q-mt-lg"
-      selection="multiple"
       row-key="id"
       :rows="remits"
       :columns="tableHeader"
@@ -91,7 +90,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import GeneralTypes from 'src/store/types/general'
 import { CREATED_AT, getCreateAtOptions } from 'util/transaction'
 import REMIT from 'src/store/types/remits'
 
@@ -114,7 +112,7 @@ export default {
     ...mapGetters({
       tableHeader: `${REMIT.namespace}/${REMIT.getters.GET_TABLE_HEADER}`,
       remits: `${REMIT.namespace}/${REMIT.getters.GET_REMITS}`,
-      loading: `${GeneralTypes.namespace}/${GeneralTypes.getters.GET_LOADING}`
+      loading: `${REMIT.namespace}/${REMIT.getters.GET_LOADING}`
     })
   },
   methods: {

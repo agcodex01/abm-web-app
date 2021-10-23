@@ -82,7 +82,6 @@
 <script>
 import BILLER from 'src/store/types/billers'
 import { mapGetters } from 'vuex'
-import GeneralTypes from 'src/store/types/general'
 import { getCreateAtOptions } from 'src/util/transaction'
 import TRANSACTION from 'src/store/types/transactions'
 export default {
@@ -103,7 +102,7 @@ export default {
       billers: `${BILLER.namespace}/${BILLER.getters.GET_BILLERS}`,
       tableConfig: `${BILLER.namespace}/${BILLER.getters.GET_BILLERS_TABLE_CONFIG}`,
       types: `${BILLER.namespace}/${BILLER.getters.GET_BILLER_TYPES}`,
-      loading: `${GeneralTypes.namespace}/${GeneralTypes.getters.GET_LOADING}`,
+      loading: `${BILLER.namespace}/${BILLER.getters.GET_LOADING}`,
       typeColor: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TYPE_COLOR}`
     })
   },

@@ -118,7 +118,6 @@ export default {
   }),
   methods: {
     async onUpdate () {
-      this.loading = true
       await this.$store
         .dispatch(`${USER.namespace}/${USER.actions.UPDATE_USER}`, {
           user: this.user,
@@ -131,26 +130,22 @@ export default {
                 `Successfully updated ${this.user.name} info.`
               )
             )
-            this.loading = false
           }
         })
         .catch((error) => {
           const errors = error.response.data.errors
-          console.log(errors)
           if ('email' in errors) {
             this.errors.email.hasError = true
             this.errors.email.message = errors.email[0]
           }
-        })
-        .finally(() => {
-          this.loading = false
         })
     }
   },
   computed: {
     ...mapGetters({
       userData: `${USER.namespace}/${USER.getters.GET_USER}`,
-      roles: `${USER.namespace}/${USER.getters.GET_ROLES}`
+      roles: `${USER.namespace}/${USER.getters.GET_ROLES}`,
+      loading: `${USER.namespace}/${USER.getters.GET_LOADING}`
     })
   },
   async mounted () {

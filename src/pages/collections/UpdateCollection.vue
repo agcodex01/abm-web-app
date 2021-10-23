@@ -26,8 +26,11 @@
                   v-model="updatedCollection.unit_id"
                   :options="units"
                   label="Unit"
+                  option-label="name"
+                  option-value="id"
                   options-dense
                   emit-value
+                  map-options
                   dense
                   outlined
                   :loading="unitLoading"
@@ -152,6 +155,7 @@ import Validation from 'src/util/rules'
 import AppConstant from 'src/constant/app'
 import { API_BASE_URL } from 'src/boot/axios'
 import EmptyState from 'src/components/EmptyState.vue'
+import CollectionErrors from 'src/store/modules/collection/errors'
 export default {
   components: { EmptyState },
   name: 'Update Collection',
@@ -166,27 +170,9 @@ export default {
         images: []
       },
       api: API_BASE_URL,
-      units: [],
       validator: Validation,
       loading: false,
-      hasError: {
-        unit_id: {
-          message: null,
-          error: false
-        },
-        collected_by: {
-          message: null,
-          error: false
-        },
-        total: {
-          message: null,
-          error: false
-        },
-        collected_at: {
-          message: null,
-          error: false
-        }
-      },
+      hasError: CollectionErrors,
       openImageModal: false,
       selectedImage: {
         url: '',
@@ -201,13 +187,11 @@ export default {
     async onUpdate () {
       const validated = await this.$refs.collectionForm.validate()
       if (validated) {
-        this.loading = true
         this.updateCollection({
           id: this.updatedCollection.id,
           collection: this.updatedCollection
         })
           .then((collection) => {
-            this.$router.push({ name: 'collections' })
             this.$q.notify(
               AppConstant.SUCCESS_MSG(
                 `Successfully updated ${this.updatedCollection.id} collection.`
@@ -215,17 +199,12 @@ export default {
             )
           })
           .catch((errors) => {
-            this.hasError.unit_id.error = true
-            this.hasError.unit_id.message = errors.unit_id[0]
-            this.hasError.collected_by.error = true
-            this.hasError.collected_by.message = errors.collected_by[0]
-            this.hasError.total.error = true
-            this.hasError.total.message = errors.total[0]
-            this.hasError.collected_at.error = true
-            this.hasError.collected_at.message = errors.collected_at[0]
-          })
-          .finally(() => {
-            this.loading = false
+            Object.keys(this.hasError).forEach(key => {
+              if (key in errors) {
+                this.hasError[key].error = true
+                this.hasError[key].message = errors[key][0]
+              }
+            })
           })
       }
     },
@@ -242,16 +221,13 @@ export default {
     ...mapGetters({
       collectionData: `${COLLECTION.namespace}/${COLLECTION.getters.GET_COLLECTION}`,
       collectionLoading: `${COLLECTION.namespace}/${COLLECTION.getters.GET_LOADING}`,
-      unitLoading: `${UNIT.namespace}/${UNIT.getters.GET_LOADING}`
+      unitLoading: `${UNIT.namespace}/${UNIT.getters.GET_LOADING}`,
+      units: `${UNIT.namespace}/${UNIT.getters.GET_UNITS}`
     })
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Collections')
-    await this.$store
-      .dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
-      .then((response) => {
-        this.units = response
-      })
+    await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
     await this.$store.dispatch(
       `${COLLECTION.namespace}/${COLLECTION.actions.GET_COLLECTION}`,
       this.$route.params.id

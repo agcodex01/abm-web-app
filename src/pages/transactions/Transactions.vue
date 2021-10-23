@@ -24,6 +24,8 @@
         @update:model-value="updateFilter"
         clearable
         options-dense
+        option-value="name"
+        option-label="name"
         emit-value
         dense
         :loading="unitLoading"
@@ -37,6 +39,8 @@
         @update:model-value="updateFilter"
         clearable
         options-dense
+        option-value="name"
+        option-label="name"
         emit-value
         dense
         :loading="billerLoading"
@@ -232,13 +236,13 @@ export default {
       statusColor: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_STATUS_COLOR}`,
       typeColor: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TYPE_COLOR}`,
       remittable: `${TRANSACTION.namespace}/${TRANSACTION.getters.REMITTABLE}`,
-      billers: `${BILLER.namespace}/${BILLER.getters.GET_BILLERS_FOR_FILTER}`,
+      billers: `${BILLER.namespace}/${BILLER.getters.GET_BILLERS}`,
       types: `${BILLER.namespace}/${BILLER.getters.GET_BILLER_TYPES}`,
       selected: `${REMIT.namespace}/${REMIT.getters.GET_SELECTED_TRANSACTIONS}`,
       transactionPreviewHeader: `${REMIT.namespace}/${REMIT.getters.GET_REMITS_TRANSACTION_PREVIEW_HEADER}`,
       showRemitDialog: `${REMIT.namespace}/${REMIT.getters.GET_REMIT_DIALOG_STATUS}`,
       total: `${REMIT.namespace}/${REMIT.getters.GET_TOTAL}`,
-      units: `${UNIT.namespace}/${UNIT.getters.GET_UNITS_FOR_FILTER}`,
+      units: `${UNIT.namespace}/${UNIT.getters.GET_UNITS}`,
       transactionLoading: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_LOADING}`,
       unitLoading: `${UNIT.namespace}/${UNIT.getters.GET_LOADING}`,
       billerLoading: `${BILLER.namespace}/${BILLER.getters.GET_LOADING}`,

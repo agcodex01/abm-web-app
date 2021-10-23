@@ -7,16 +7,12 @@ export default {
   state: () => ({
     collections: [],
     collection: null,
-    collectionsForFilter: [],
     tableHeader: tableHeader,
     loading: false
   }),
   getters: {
     [COLLECTION.getters.GET_COLLECTIONS]: (state) => state.collections,
-    [COLLECTION.getters.GET_COLLECTIONS_FOR_FILTER]: (state) =>
-      state.collectionsForFilter,
-    [COLLECTION.getters.GET_COLLECTIONS_TABLE_HEADER]: (state) =>
-      state.tableHeader,
+    [COLLECTION.getters.GET_COLLECTIONS_TABLE_HEADER]: (state) => state.tableHeader,
     [COLLECTION.getters.GET_COLLECTION]: (state) => state.collection,
     [COLLECTION.getters.GET_LOADING]: (state) => state.loading
   },
@@ -26,20 +22,7 @@ export default {
       commit(COLLECTION.mutations.SET_COLLECTIONS, [])
       CollectionService.getCollections()
         .then(({ data }) => {
-          const collectionsForFilter = data.map((collection) =>
-            Object.assign(
-              {},
-              {
-                value: collection.id,
-                label: collection.name
-              }
-            )
-          )
           commit(COLLECTION.mutations.SET_COLLECTIONS, data)
-          commit(
-            COLLECTION.mutations.SET_COLLECTIONS_FOR_FILTER,
-            collectionsForFilter
-          )
         })
         .catch((errors) => console.error(errors))
         .finally(() => commit(COLLECTION.mutations.SET_LOADING, false))
@@ -101,9 +84,6 @@ export default {
   mutations: {
     [COLLECTION.mutations.SET_COLLECTIONS]: (state, collections) => {
       state.collections = collections
-    },
-    [COLLECTION.mutations.SET_COLLECTIONS_FOR_FILTER]: (state, collections) => {
-      state.collectionsForFilter = collections
     },
     [COLLECTION.mutations.CREATE_COLLECTION]: (state, collection) => {
       state.collections.push(collection)

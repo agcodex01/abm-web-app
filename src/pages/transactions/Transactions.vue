@@ -220,9 +220,9 @@ export default {
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Transactions')
+    this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
+    this.$store.dispatch(`${BILLER.namespace}/${BILLER.actions.GET_BILLERS}`)
     await this.$store.dispatch(`${TRANSACTION.namespace}/${TRANSACTION.actions.GET_TRANSACTIONS}`, this.transactionFilter)
-    await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
-    await this.$store.dispatch(`${BILLER.namespace}/${BILLER.actions.GET_BILLERS}`)
   },
   computed: {
     ...mapGetters({

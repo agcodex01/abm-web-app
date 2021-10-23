@@ -2,7 +2,7 @@
   "name": "abm-web-app",
   "version": "0.0.1",
   "description": "Adopisoft Billing Machine Web Dashboard",
-  "productName": "abm-web-app",
+  "productName": "Adopisoft Billing Machine",
   "author": "loremZyn14 <yasuaimo@gmail.com>",
   "private": true,
   "scripts": {

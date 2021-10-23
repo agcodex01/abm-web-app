@@ -170,9 +170,9 @@ export default {
   },
   methods: {
     async createUnit () {
-      this.loading = true
       this.$refs.unitForm.validate().then(async (valid) => {
         if (valid) {
+          this.loading = true
           await this.$store
             .dispatch(
               `${UNIT.namespace}/${UNIT.actions.CREATE_UNIT}`,

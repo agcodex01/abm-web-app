@@ -23,6 +23,7 @@ export default {
   actions: {
     [COLLECTION.actions.GET_COLLECTIONS]: ({ commit }) => {
       commit(COLLECTION.mutations.SET_LOADING, true)
+      commit(COLLECTION.mutations.SET_COLLECTIONS, [])
       CollectionService.getCollections()
         .then(({ data }) => {
           const collectionsForFilter = data.map((collection) =>

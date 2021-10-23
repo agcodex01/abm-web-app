@@ -41,6 +41,7 @@ export default {
   actions: {
     [REMIT.actions.GET_REMITS]: async ({ commit }, remitFilter) => {
       commit(REMIT.mutations.SET_LOADING, true)
+      commit(REMIT.mutations.SET_REMITS, [])
       await RemitService.getRemits(remitFilter)
         .then(({ data }) => {
           commit(REMIT.mutations.SET_REMITS, data)

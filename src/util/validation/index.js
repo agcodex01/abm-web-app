@@ -1,6 +1,6 @@
 const _ = {
   isEmpty: (value) => {
-    return !!value || emptyString(value) || nullValue(value) || emptyObject(value)
+    return emptyString(value) || nullValue(value) || emptyObject(value)
   }
 }
 

@@ -1,6 +1,5 @@
 import transactionPreviewHeader from 'src/store/modules/remits/transaction_preview'
 import REMIT from 'src/store/types/remits'
-import GeneralTypes from 'src/store/types/general'
 import { STATUS_TYPE } from 'src/util/transaction'
 import tableHeader from 'src/store/modules/remits/table_config'
 import RemitService from 'src/services/RemitService'
@@ -14,7 +13,8 @@ export default {
     showRemitDialog: false,
     tableHeader,
     remitTransactions: [],
-    remit: null
+    remit: null,
+    loading: false
   }),
   getters: {
     [REMIT.getters.GET_REMITS]: state => state.remits,
@@ -35,24 +35,17 @@ export default {
       return total
     },
     [REMIT.getters.GET_REMIT_TRANSACTIONS]: state => state.remitTransactions,
-    [REMIT.getters.GET_REMIT]: state => state.remit
+    [REMIT.getters.GET_REMIT]: state => state.remit,
+    [REMIT.getters.GET_LOADING]: state => state.loading
   },
   actions: {
     [REMIT.actions.GET_REMITS]: async ({ commit }, remitFilter) => {
-      commit(
-        `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
-        true,
-        { root: true }
-      )
+      commit(REMIT.mutations.SET_LOADING, true)
       await RemitService.getRemits(remitFilter)
         .then(({ data }) => {
           commit(REMIT.mutations.SET_REMITS, data)
-          commit(
-            `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
-            false,
-            { root: true }
-          )
         }).catch(errors => console.error(errors))
+        .finally(() => commit(REMIT.mutations.SET_LOADING, false))
     },
     [REMIT.actions.CREATE_REMIT]: async ({ commit }, { remitter, selected, total }) => {
       const transactionIds = selected.map(item => {
@@ -63,11 +56,7 @@ export default {
         total,
         remitted_by: remitter
       }
-      commit(
-        `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
-        true,
-        { root: true }
-      )
+      commit(REMIT.mutations.SET_LOADING, true)
       await RemitService.createRemit(remit)
         .then(({ data }) => {
           commit(REMIT.mutations.ADD_REMIT, data)
@@ -75,19 +64,15 @@ export default {
           commit(REMIT.mutations.UPDATE_SELECTED_TRANSACTIONS, [])
         })
         .catch(errors => console.error(errors))
-        .finally(() => {
-          commit(
-            `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
-            false,
-            { root: true }
-          )
-        })
+        .finally(() => commit(REMIT.mutations.SET_LOADING, false))
     },
     [REMIT.actions.GET_REMIT_TRANSACTIONS]: async ({ commit }, remitId) => {
+      commit(REMIT.mutations.SET_LOADING, true)
       await RemitService.getRemitTransactions(remitId)
         .then(({ data }) => {
           commit(REMIT.mutations.SET_REMIT_TRANSACTIONS, data)
         }).catch(errors => console.error(errors))
+        .finally(() => commit(REMIT.mutations.SET_LOADING, false))
     },
     [REMIT.actions.UPDATE_SELECTED_TRANSACTIONS]: ({ commit }, selected) => {
       commit(REMIT.mutations.UPDATE_SELECTED_TRANSACTIONS, selected)
@@ -99,10 +84,12 @@ export default {
       commit(REMIT.mutations.UPDATE_REMIT_DIALOG_STATUS, false)
     },
     [REMIT.actions.GET_REMIT]: async ({ commit }, remitId) => {
+      commit(REMIT.mutations.SET_LOADING, true)
       await RemitService.getRemit(remitId)
         .then(({ data }) => {
           commit(REMIT.mutations.SET_REMIT, data)
         }).catch(errors => console.error(errors))
+        .finally(() => commit(REMIT.mutations.SET_LOADING, false))
     }
   },
   mutations: {
@@ -123,6 +110,9 @@ export default {
     },
     [REMIT.mutations.SET_REMIT]: (state, remit) => {
       state.remit = remit
+    },
+    [REMIT.mutations.SET_LOADING]: (state, isLoading) => {
+      state.loading = isLoading
     }
   }
 }

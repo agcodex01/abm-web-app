@@ -27,7 +27,7 @@ export default {
         UnitService.getUnits().then(({ data }) => {
           const unitsForFilter = data.map(unit => Object.assign({}, {
             label: unit.name,
-            value: unit.id
+            value: unit.name
           }))
           commit(UNIT.mutations.SET_UNITS, data)
           commit(UNIT.mutations.SET_UNITS_FOR_FILTER, unitsForFilter)

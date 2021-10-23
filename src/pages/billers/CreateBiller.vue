@@ -81,7 +81,7 @@
 
 <script>
 import BILLER, { BILLER_TYPE } from 'src/store/types/billers'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import Validation from 'src/util/rules'
 import AppConstant from 'src/constant/app'
 export default {
@@ -93,7 +93,6 @@ export default {
     },
     types: [BILLER_TYPE.WATER, BILLER_TYPE.INTERNET, BILLER_TYPE.ELECTRICITY],
     validator: Validation,
-    loading: false,
     hasError: {
       name: {
         message: null,
@@ -101,6 +100,11 @@ export default {
       }
     }
   }),
+  computed: {
+    ...mapGetters({
+      loading: `${BILLER.namespace}/${BILLER.getters.GET_LOADING}`
+    })
+  },
   methods: {
     ...mapActions({
       createBiller: `${BILLER.namespace}/${BILLER.actions.CREATE_BILLER}`
@@ -108,7 +112,6 @@ export default {
     async onSave () {
       const validated = await this.$refs.billerForm.validate()
       if (validated) {
-        this.loading = true
         this.createBiller(this.biller)
           .then((biller) => {
             this.$q.notify(AppConstant.SUCCESS_MSG('Successfully created a new biller.'))
@@ -122,9 +125,6 @@ export default {
           .catch((errors) => {
             this.hasError.name.error = true
             this.hasError.name.message = errors.name[0]
-          })
-          .finally(() => {
-            this.loading = false
           })
       }
     }

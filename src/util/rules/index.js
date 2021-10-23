@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import * as Message from './messages'
 
 export function required (field) {
@@ -18,8 +19,9 @@ export function incorrect (field) {
 
 const Validation = {
   required: (value, field) => {
+    console.log(value)
     if (isNaN(value)) {
-      return (!!value && value.length > 0) || required(field)
+      return !_.isEmpty(value) || required(field)
     }
     return (!!value && value > 0) || required(field)
   },

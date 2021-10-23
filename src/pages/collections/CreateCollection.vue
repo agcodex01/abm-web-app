@@ -23,8 +23,12 @@
               <div class="row q-col-gutter-sm">
                 <q-select
                   class="col col-xs-12 col-md-12"
-                  v-model="selectedUnit"
+                  v-model="newCollection.unit_id"
                   :options="units"
+                  option-value="id"
+                  option-label="name"
+                  emit-value
+                  map-options
                   label="Unit"
                   options-dense
                   dense
@@ -69,7 +73,13 @@
               </div>
             </div>
             <div class="col col-xs-12 col-md-6 q-px-md">
-              <q-file label="Files" multiple dense outlined v-model="newCollection.images">
+              <q-file
+                label="Files"
+                multiple
+                dense
+                outlined
+                v-model="newCollection.images"
+              >
                 <template v-slot:prepend>
                   <q-icon name="attach_file" />
                 </template>
@@ -92,20 +102,23 @@
       </q-card-section>
     </q-card>
     <q-dialog v-model="openImageModal">
-      <q-card style="width:450px" class="q-py-lg">
-        <q-card-section>
-          <b>Name:</b> {{ selectedImage.name }}
-        </q-card-section>
+      <q-card style="width: 450px" class="q-py-lg">
+        <q-card-section> <b>Name:</b> {{ selectedImage.name }} </q-card-section>
         <q-card-section class="text-center">
           <q-img
-          :src="selectedImage.url"
-          spinner-color="primary"
-          style="width:100%"
-          spinner-size="82px"
-        />
+            :src="selectedImage.url"
+            spinner-color="primary"
+            style="width: 100%"
+            spinner-size="82px"
+          />
         </q-card-section>
         <q-card-actions vertical align="center">
-          <q-btn class="full-width" color="primary" label="Close" v-close-popup/>
+          <q-btn
+            class="full-width"
+            color="primary"
+            label="Close"
+            v-close-popup
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -151,6 +164,7 @@ import Validation from 'src/util/rules'
 import AppConstant from 'src/constant/app'
 import { mapGetters } from 'vuex'
 import EmptyState from 'src/components/EmptyState.vue'
+import CollectionErrors from 'src/store/modules/collection/errors'
 
 export default {
   components: { EmptyState },
@@ -164,28 +178,9 @@ export default {
         collected_at: '',
         images: []
       },
-      units: [],
       selectedUnit: null,
       validator: Validation,
-      loading: false,
-      hasError: {
-        unit_id: {
-          message: null,
-          error: false
-        },
-        collected_by: {
-          message: null,
-          error: false
-        },
-        total: {
-          message: null,
-          error: false
-        },
-        collected_at: {
-          message: null,
-          error: false
-        }
-      },
+      hasError: CollectionErrors,
       openImageModal: false,
       selectedImage: {
         url: '',
@@ -195,17 +190,13 @@ export default {
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Collections')
-    await this.$store
-      .dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
-      .then((response) => {
-        this.units = response
-      })
+    await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
   },
   methods: {
     async createCollection () {
       const validated = await this.$refs.collectionForm.validate()
       if (validated) {
-        this.newCollection.unit_id = this.selectedUnit.value
+        // this.newCollection.unit_id = this.selectedUnit.value
         await this.$store
           .dispatch(
             `${COLLECTION.namespace}/${COLLECTION.actions.CREATE_COLLECTION}`,
@@ -217,21 +208,18 @@ export default {
                 `Successfully created a collection from  ${this.newCollection.unit_id}.`
               )
             )
-            this.$router
-              .push({ name: 'update_collection', params: { id: collection.id } })
-              .catch((errors) => {
-                this.hasError.unit_id.error = true
-                this.hasError.unit_id.message = errors.unit_id[0]
-                this.hasError.collected_by.error = true
-                this.hasError.collected_by.message = errors.collected_by[0]
-                this.hasError.total.error = true
-                this.hasError.total.message = errors.total[0]
-                this.hasError.collected_at.error = true
-                this.hasError.collected_at.message = errors.collected_at[0]
-              })
-              .finally(() => {
-                this.loading = false
-              })
+            this.$router.push({
+              name: 'update_collection',
+              params: { id: collection.id }
+            })
+          })
+          .catch((errors) => {
+            Object.keys(this.hasError).forEach(key => {
+              if (key in errors) {
+                this.hasError[key].error = true
+                this.hasError[key].message = errors[key][0]
+              }
+            })
           })
       }
     },
@@ -246,6 +234,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      units: `${UNIT.namespace}/${UNIT.getters.GET_UNITS}`,
       collectionLoading: `${COLLECTION.namespace}/${COLLECTION.getters.GET_LOADING}`,
       unitLoading: `${UNIT.namespace}/${UNIT.getters.GET_LOADING}`
     })

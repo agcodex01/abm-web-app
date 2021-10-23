@@ -33,6 +33,7 @@ export default {
   actions: {
     [TRANSACTION.actions.GET_TRANSACTIONS]: async ({ commit }, transactionsForFilter) => {
       commit(TRANSACTION.mutations.SET_LOADING, true)
+      commit(TRANSACTION.mutations.SET_TRANSACTIONS, [])
       await getTransactions(transactionsForFilter)
         .then(({ data }) => {
           commit(TRANSACTION.mutations.SET_TRANSACTIONS, data)

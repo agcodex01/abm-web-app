@@ -94,7 +94,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import UNIT from 'src/store/types/units'
-import GeneralTypes from 'src/store/types/general'
 import AuthTypes from 'src/store/types/auth'
 
 export default {
@@ -113,7 +112,7 @@ export default {
       user: `${AuthTypes.namespace}/${AuthTypes.getters.GET_USER}`,
       units: `${UNIT.namespace}/${UNIT.getters.GET_UNITS}`,
       tableHeader: `${UNIT.namespace}/${UNIT.getters.GET_UNITS_TABLE_HEADER}`,
-      loading: `${GeneralTypes.namespace}/${GeneralTypes.getters.GET_LOADING}`
+      loading: `${UNIT.namespace}/${UNIT.getters.GET_LOADING}`
     })
   },
   methods: {

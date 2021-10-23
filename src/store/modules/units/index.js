@@ -23,6 +23,7 @@ export default {
   actions: {
     [UNIT.actions.GET_UNITS]: ({ commit }) => {
       commit(UNIT.mutations.SET_LOADING, true)
+      commit(UNIT.mutations.SET_UNITS, [])
       return new Promise((resolve, reject) => {
         UnitService.getUnits().then(({ data }) => {
           const unitsForFilter = data.map(unit => Object.assign({}, {

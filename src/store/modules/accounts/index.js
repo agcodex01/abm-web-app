@@ -14,6 +14,7 @@ export default {
   },
   actions: {
     [ACCOUNT.actions.GET_ACCOUNTS]: async ({ commit }, billerId) => {
+      commit(ACCOUNT.mutations.SET_ACCOUNTS, [])
       await AccountService.getAccountsByBillerId(billerId)
         .then(({ data }) => {
           commit(ACCOUNT.mutations.SET_ACCOUNTS, data)

@@ -35,6 +35,7 @@ export default {
     },
     [USER.actions.CREATE_USER]: ({ commit }, data) => {
       commit(USER.mutations.SET_LOADING, true)
+      commit(USER.mutations.SET_USER, [])
       return new Promise((resolve, reject) => {
         UserService.createUser(data).then(({ data }) => {
           commit(USER.mutations.SET_USER, data)

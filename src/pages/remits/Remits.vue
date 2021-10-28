@@ -33,6 +33,7 @@
       title="Remits"
       no-data-label="There is no remits as of now!"
       no-results-label="The filter didn't find any remits"
+      loading-label="Fetching remits..."
       class="q-mt-lg"
       row-key="id"
       :rows="remits"
@@ -41,14 +42,7 @@
       :loading="loading"
     >
       <template v-slot:loading>
-        <q-inner-loading :showing="loading" color="primary">
-          <q-spinner
-            color="primary"
-            size="2rem"
-            :thickness="5"
-          />
-          <div class="text-subtitle2 q-mt-md">Fetching data...</div>
-        </q-inner-loading>
+       <table-loader v-if="loading"/>
       </template>
       <template v-slot:top-right>
         <q-input
@@ -80,9 +74,7 @@
         </q-td>
       </template>
       <template v-slot:no-data="{ message }">
-        <div class="full-width text-subtitle1 text-center text-primary">
-          {{ message }}
-        </div>
+        <no-data :message="message"/>
       </template>
     </q-table>
   </q-page>
@@ -92,8 +84,11 @@
 import { mapGetters } from 'vuex'
 import { CREATED_AT, getCreateAtOptions } from 'util/transaction'
 import REMIT from 'src/store/types/remits'
+import TableLoader from 'src/components/loaders/TableLoader.vue'
+import NoData from 'src/components/loaders/NoData.vue'
 
 export default {
+  components: { TableLoader, NoData },
   name: 'Remits',
   data () {
     return {

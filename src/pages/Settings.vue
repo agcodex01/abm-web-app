@@ -20,7 +20,11 @@
               type="number"
               outlined
               dense
-              :rules="[v => v > 0 || 'Fee must be greater than 0.']"
+              :loading="loading && !setting.fee"
+              :rules="[
+                v => !!v || 'Fee is required',
+                v => v > 0 || 'Fee must be greater than 0.'
+              ]"
             />
           </q-item-section>
         </q-item>

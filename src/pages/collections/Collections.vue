@@ -3,13 +3,10 @@
     <div class="flex justify-between align-center q-mt-md q-mb-xl">
       <q-breadcrumbs class="align-center q-pa-sm" style="font-size: 14px">
         <template v-slot:separator>
-          <q-icon
-            size="24px"
-            name="chevron_right"
-          />
+          <q-icon size="24px" name="chevron_right" />
         </template>
         <q-breadcrumbs-el to="/" label="Adopisoft Billing Machine" />
-        <q-breadcrumbs-el label="Collections"/>
+        <q-breadcrumbs-el label="Collections" />
       </q-breadcrumbs>
       <q-btn
         size="sm"
@@ -23,8 +20,9 @@
 
     <q-table
       title="Collections"
-      no-data-label="There is no Collections as of now!"
-      no-results-label="The filter didn't find any Collections"
+      no-data-label="There is no collections as of now!"
+      no-results-label="The filter didn't find any collections"
+      loading-label="Fetching collections..."
       class="q-mt-lg"
       row-key="id"
       :rows="collections"
@@ -32,7 +30,6 @@
       :filter="filter"
       :loading="loading"
     >
-
       <template v-slot:top-right>
         <q-input
           outlined
@@ -48,7 +45,7 @@
         </q-input>
       </template>
 
-    <template v-slot:body-cell-id="props">
+      <template v-slot:body-cell-id="props">
         <q-td :props="props">
           <q-btn
             size="sm"
@@ -64,23 +61,25 @@
         </q-td>
       </template>
 
-    <template v-slot:body-cell-actions="collection">
-            <q-td :value="collection.id">
-              <q-btn dense round flat color="grey" @click="deleteRow(collection)" icon="delete"></q-btn>
-            </q-td>
-    </template>
-
-      <template v-slot:loading>
-        <q-inner-loading :showing="loading" color="primary">
-          <q-spinner
-            color="primary"
-            size="2rem"
-            :thickness="5"
-          />
-          <div class="text-subtitle2 q-mt-md">Fetching data...</div>
-        </q-inner-loading>
+      <template v-slot:body-cell-actions="collection">
+        <q-td :value="collection.id">
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            @click="deleteRow(collection)"
+            icon="delete"
+          ></q-btn>
+        </q-td>
       </template>
 
+      <template v-slot:loading>
+        <table-loader v-if="loading" />
+      </template>
+      <template v-slot:no-data="{ message }">
+        <no-data :message="message" />
+      </template>
     </q-table>
   </q-page>
 </template>
@@ -88,9 +87,11 @@
 <script>
 import { mapGetters } from 'vuex'
 import COLLECTION from 'src/store/types/collections'
-import GeneralTypes from 'src/store/types/general'
 import AuthTypes from 'src/store/types/auth'
+import TableLoader from 'src/components/loaders/TableLoader.vue'
+import NoData from 'src/components/loaders/NoData.vue'
 export default {
+  components: { TableLoader, NoData },
   name: 'Collections',
   data () {
     return {
@@ -99,34 +100,46 @@ export default {
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Collections')
-    await this.$store.dispatch(`${COLLECTION.namespace}/${COLLECTION.actions.GET_COLLECTIONS}`)
+    await this.$store.dispatch(
+      `${COLLECTION.namespace}/${COLLECTION.actions.GET_COLLECTIONS}`
+    )
   },
   computed: {
     ...mapGetters({
       user: `${AuthTypes.namespace}/${AuthTypes.getters.GET_USER}`,
       collections: `${COLLECTION.namespace}/${COLLECTION.getters.GET_COLLECTIONS}`,
       tableHeader: `${COLLECTION.namespace}/${COLLECTION.getters.GET_COLLECTIONS_TABLE_HEADER}`,
-      loading: `${GeneralTypes.namespace}/${GeneralTypes.getters.GET_LOADING}`
+      loading: `${COLLECTION.namespace}/${COLLECTION.getters.GET_LOADING}`
     })
   },
   methods: {
     deleteRow (collection) {
-      this.$q.dialog({
-        title: 'Confirm',
-        message: 'Are you sure you want to delete ' + collection.row.id + '?',
-        cancel: true,
-        persistent: true
-      }).onOk(() => {
-        this.$store.dispatch(`${COLLECTION.namespace}/${COLLECTION.actions.DELETE_COLLECTION}`, collection.row.id).then(response => {
-          this.$q.notify({
-            type: 'positive',
-            message: `Successfully deleted ${collection.row.id}.`,
-            position: 'top'
-          })
-        }, errors => {
-          console.log(errors)
+      this.$q
+        .dialog({
+          title: 'Confirm',
+          message: 'Are you sure you want to delete ' + collection.row.id + '?',
+          cancel: true,
+          persistent: true
         })
-      })
+        .onOk(() => {
+          this.$store
+            .dispatch(
+              `${COLLECTION.namespace}/${COLLECTION.actions.DELETE_COLLECTION}`,
+              collection.row.id
+            )
+            .then(
+              (response) => {
+                this.$q.notify({
+                  type: 'positive',
+                  message: `Successfully deleted ${collection.row.id}.`,
+                  position: 'top'
+                })
+              },
+              (errors) => {
+                console.log(errors)
+              }
+            )
+        })
     }
   }
 }

@@ -21,6 +21,7 @@
       title="Billers"
       no-data-label="There is no billers as of now!"
       no-results-label="The filter didn't find any billers"
+      loading-label="Fetching billers..."
       class="q-mt-lg"
       row-key="id"
       :rows="billers"
@@ -43,10 +44,7 @@
         </q-input>
       </template>
       <template v-slot:loading>
-        <q-inner-loading :showing="loading" color="primary">
-          <q-spinner color="primary" size="2rem" :thickness="5" />
-          <div class="text-subtitle2 q-mt-md">Fetching data...</div>
-        </q-inner-loading>
+        <table-loader v-if="loading" />
       </template>
       <template v-slot:body-cell-id="props">
         <q-td :props="props">
@@ -72,9 +70,7 @@
         </q-td>
       </template>
       <template v-slot:no-data="{ message }">
-        <div class="full-width text-subtitle1 text-center text-primary">
-          {{ message }}
-        </div>
+        <no-data :message="message" />
       </template>
     </q-table>
   </q-page>
@@ -84,7 +80,10 @@ import BILLER from 'src/store/types/billers'
 import { mapGetters } from 'vuex'
 import { getCreateAtOptions } from 'src/util/transaction'
 import TRANSACTION from 'src/store/types/transactions'
+import TableLoader from 'src/components/loaders/TableLoader.vue'
+import NoData from 'src/components/loaders/NoData.vue'
 export default {
+  components: { TableLoader, NoData },
   name: 'Billers',
   data: () => ({
     filter: '',

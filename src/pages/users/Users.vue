@@ -24,6 +24,7 @@
       title="Users"
       no-data-label="There is no users as of now!"
       no-results-label="The filter didn't find any user."
+      loading-label="Fetching users..."
       :rows="users"
       :columns="tableHeader"
       row-key="id"
@@ -45,10 +46,7 @@
         </q-input>
       </template>
       <template v-slot:loading>
-        <q-inner-loading :showing="loading" color="primary">
-          <q-spinner color="primary" size="2rem" :thickness="5" />
-          <div class="text-subtitle2 q-mt-md">Fetching data...</div>
-        </q-inner-loading>
+        <table-loader v-if="loading"/>
       </template>
       <template v-slot:body-cell-id="props">
         <q-td :props="props">
@@ -70,6 +68,9 @@
           <q-chip style="font-size:12px" outline text-color="white" dense color="primary" v-for="role in props.row.roles"  :label="role.name" :key="role.id"/>
         </q-td>
       </template>
+      <template v-slot:no-data="{ message }">
+        <no-data :message="message"/>
+      </template>
     </q-table>
   </q-page>
 </template>
@@ -77,23 +78,24 @@
 <script>
 import USER from 'src/store/types/users'
 import { mapGetters } from 'vuex'
+import TableLoader from 'src/components/loaders/TableLoader.vue'
+import NoData from 'src/components/loaders/NoData.vue'
 export default {
+  components: { TableLoader, NoData },
   name: 'Users',
   data: () => ({
-    filter: '',
-    loading: true
+    filter: ''
   }),
   computed: {
     ...mapGetters({
       users: `${USER.namespace}/${USER.getters.GET_USERS}`,
-      tableHeader: `${USER.namespace}/${USER.getters.GET_USERS_TABLE_CONFIG}`
+      tableHeader: `${USER.namespace}/${USER.getters.GET_USERS_TABLE_CONFIG}`,
+      loading: `${USER.namespace}/${USER.getters.GET_LOADING}`
     })
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Users')
-    this.loading = true
     await this.$store.dispatch(`${USER.namespace}/${USER.actions.GET_USERS}`)
-    this.loading = false
   }
 }
 </script>

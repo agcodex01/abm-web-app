@@ -25,6 +25,7 @@
       title="Units"
       no-data-label="There is no Units as of now!"
       no-results-label="The filter didn't find any Units"
+      loading-label="Fetching units..."
       class="q-mt-lg"
       row-key="id"
       :rows="units"
@@ -72,21 +73,16 @@
 
       <template v-slot:body-cell-actions="unit">
             <q-td :value="unit.id">
-              <q-btn dense round flat color="grey" @click="deleteRow(unit)" icon="delete"></q-btn>
+              <q-btn dense round flat color="negative" @click="deleteRow(unit)" icon="delete_outline"></q-btn>
             </q-td>
       </template>
 
       <template v-slot:loading>
-        <q-inner-loading :showing="loading" color="primary">
-          <q-spinner
-            color="primary"
-            size="2rem"
-            :thickness="5"
-          />
-          <div class="text-subtitle2 q-mt-md">Fetching data...</div>
-        </q-inner-loading>
+       <table-loader v-if="loading"/>
       </template>
-
+      <template v-slot:no-data="{ message }">
+        <no-data :message="message"/>
+      </template>
     </q-table>
   </q-page>
 </template>
@@ -95,14 +91,15 @@
 import { mapGetters } from 'vuex'
 import UNIT from 'src/store/types/units'
 import AuthTypes from 'src/store/types/auth'
+import TableLoader from 'src/components/loaders/TableLoader.vue'
+import NoData from 'src/components/loaders/NoData.vue'
 
 export default {
   name: 'Transactions',
-  data () {
-    return {
-      filter: ''
-    }
-  },
+  components: { TableLoader, NoData },
+  data: () => ({
+    filter: ''
+  }),
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Units')
     await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)

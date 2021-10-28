@@ -2,13 +2,13 @@ import AuthService from 'services/AuthService'
 import { LocalStorage } from 'quasar'
 import _ from 'src/util/validation'
 import AuthTypes from 'src/store/types/auth'
-import GeneralTypes from 'src/store/types/general'
 
 export default {
   namespaced: true,
   state: () => ({
     user: null,
-    token: null
+    token: null,
+    loading: false
   }),
   getters: {
     [AuthTypes.getters.GET_USER]: (state) => {
@@ -20,7 +20,8 @@ export default {
       const token = LocalStorage.getItem('token')
       if (token) return token
       return state.token
-    }
+    },
+    [AuthTypes.getters.GET_LOADING]: state => state.loading
   },
   mutations: {
     [AuthTypes.mutations.SET_USER]: (state, user) => {
@@ -28,16 +29,15 @@ export default {
     },
     [AuthTypes.mutations.SET_TOKEN]: (state, token) => {
       state.token = token
+    },
+    [AuthTypes.mutations.SET_LOADING]: (state, isLoading) => {
+      state.loading = isLoading
     }
   },
   actions: {
     async [AuthTypes.actions.LOGIN] ({ commit }, credential) {
       return await new Promise((resolve, reject) => {
-        commit(
-          `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
-          true,
-          { root: true }
-        )
+        commit(AuthTypes.mutations.SET_LOADING, true)
         AuthService.login(credential)
           .then(({ data }) => {
             LocalStorage.set('user', data.user)
@@ -48,22 +48,12 @@ export default {
           })
           .catch((errors) => {
             reject(errors.response.data.errors)
-          }).finally(() => {
-            commit(
-              `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
-              false,
-              { root: true }
-            )
-          })
+          }).finally(() => commit(AuthTypes.mutations.SET_LOADING, false))
       })
     },
     async [AuthTypes.actions.LOGOUT] ({ commit }, id) {
       return new Promise((resolve, reject) => {
-        commit(
-          `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
-          true,
-          { root: true }
-        )
+        commit(AuthTypes.mutations.SET_LOADING, true)
         AuthService.logout(id)
           .then((response) => {
             LocalStorage.remove('user')
@@ -73,13 +63,7 @@ export default {
           .catch((errors) => {
             reject(errors)
           })
-          .finally(() => {
-            commit(
-              `${GeneralTypes.namespace}/${GeneralTypes.mutations.MUTATION_SET_LOADING}`,
-              false,
-              { root: true }
-            )
-          })
+          .finally(() => commit(AuthTypes.mutations.SET_LOADING, false))
       })
     }
   }

@@ -12,16 +12,16 @@
         <h5 class="no-margin">Adopisoft Billing Machine</h5>
       </q-card-section>
       <q-card-section class="q-pa-lg">
-        <q-form @submit="startLogin" class="q-gutter-md">
+        <q-form @submit="startLogin" ref="authForm" class="q-gutter-md">
           <q-input
             v-model="credentials.email"
             type="email"
             label="Email"
             outlined
             dense
-            :error="validation.email.hasError"
-            :error-message="validation.email.message.exists"
-            :rules="[(val) => !!val || validation.email.message.exists]"
+            :error="emailErrors.email.hasError"
+            :error-message="emailErrors.email.message"
+            :rules="[(val) => validation.required(val, 'email')]"
           />
           <q-input
             v-model="credentials.password"
@@ -29,11 +29,12 @@
             label="Password"
             outlined
             dense
-            :error="validation.password.hasError"
-            :error-message="validation.password.message.incorrect"
+            lazy-rules
+            :error="emailErrors.password.hasError"
+            :error-message="emailErrors.password.message"
             :rules="[
-              (val) => !!val || validation.password.message.required,
-              (val) => val.length >= 8 || validation.password.message.min
+              (val) => validation.required(val, 'password'),
+              (val) => validation.min(val, 'password', 8)
             ]"
           />
           <div>
@@ -59,9 +60,9 @@
   </div>
 </template>
 <script>
-import Types from 'src/store/types'
-import * as Rule from './../util/rules'
+import Validation from 'src/util/rules'
 import { mapActions, mapGetters } from 'vuex'
+import AuthTypes from 'src/store/types/auth'
 export default {
   name: 'Login',
   data: () => ({
@@ -69,49 +70,50 @@ export default {
       email: null,
       password: null
     },
-    validation: {
+    validation: Validation,
+    emailErrors: {
       email: {
         hasError: false,
-        message: {
-          required: Rule.required('email'),
-          exists: Rule.exists('email')
-        }
+        message: ''
       },
       password: {
         hasError: false,
-        message: {
-          required: Rule.required('password'),
-          min: Rule.min(8, 'password'),
-          incorrect: Rule.incorrect('password')
-        }
+        message: ''
       }
     }
   }),
   methods: {
     ...mapActions({
-      login: `${Types.AuthTypes.namespace}/${Types.AuthTypes.actions.LOGIN}`
+      login: `${AuthTypes.namespace}/${AuthTypes.actions.LOGIN}`
     }),
     startLogin () {
-      this.login(this.credentials).then(result => {
-        console.log('SUCCESS AUTH')
-        this.$router.push({
-          name: 'dashboard'
-        })
-      }).catch(error => {
-        if ('email' in error) {
-          this.validation.email.hasError = true
+      this.$refs.authForm.validate().then((isValid) => {
+        if (isValid) {
+          this.login(this.credentials)
+            .then((result) => {
+              console.log('SUCCESS AUTH')
+              this.$router.push({
+                name: 'dashboard'
+              })
+            })
+            .catch((errors) => {
+              if ('email' in errors) {
+                this.emailErrors.email.hasError = true
+                this.emailErrors.email.message = errors.email[0]
+              }
+              if ('password' in errors) {
+                this.emailErrors.password.hasError = true
+                this.emailErrors.password.message = errors.password[0]
+              }
+            })
         }
-        if ('password' in error) {
-          this.validation.password.hasError = true
-        }
-        console.log(error.status)
       })
     }
   },
   computed: {
     ...mapGetters({
-      loading: `${Types.GeneralTypes.namespace}/${Types.GeneralTypes.getters.GET_LOADING}`,
-      user: `${Types.AuthTypes.namespace}/${Types.AuthTypes.getters.GET_USER}`
+      loading: `${AuthTypes.namespace}/${AuthTypes.getters.GET_LOADING}`,
+      user: `${AuthTypes.namespace}/${AuthTypes.getters.GET_USER}`
     })
   }
 }

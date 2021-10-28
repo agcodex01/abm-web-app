@@ -90,6 +90,7 @@
       no-results-label="The filter didn't find any transactions"
       class="q-mt-lg"
       selection="multiple"
+      loading-label="Fetching transactions..."
       row-key="id"
       v-model:selected="selected"
       :rows="transactions"
@@ -99,14 +100,7 @@
       @update:selected="selectedRow"
     >
       <template v-slot:loading>
-        <q-inner-loading :showing="transactionLoading" color="primary">
-          <q-spinner
-            color="primary"
-            size="2rem"
-            :thickness="5"
-          />
-          <div class="text-subtitle2 q-mt-md">Fetching data...</div>
-        </q-inner-loading>
+        <table-loader v-if="transactionLoading"/>
       </template>
       <template v-slot:top-right>
         <q-input
@@ -142,9 +136,7 @@
         </q-td>
       </template>
       <template v-slot:no-data="{ message }">
-        <div class="full-width text-subtitle1 text-center text-primary">
-          {{ message }}
-        </div>
+        <no-data :message="message"/>
       </template>
     </q-table>
     <q-dialog v-model="showRemitDialog" persistent>
@@ -205,9 +197,12 @@ import UNIT from 'src/store/types/units'
 import { CREATED_AT, getCreateAtOptions, getStatusTypes, STATUS_TYPE } from 'util/transaction'
 import REMIT from 'src/store/types/remits'
 import AuthTypes from 'src/store/types/auth'
+import TableLoader from 'src/components/loaders/TableLoader.vue'
+import NoData from 'src/components/loaders/NoData.vue'
 
 export default {
   name: 'Transactions',
+  components: { TableLoader, NoData },
   data () {
     return {
       filter: '',

@@ -19,10 +19,16 @@
             <q-item-label header>Manage Account</q-item-label>
             <q-list style="min-width: 240px">
               <q-item clickable v-close-popup :to="{ name: 'update_profile', params: { id: user.id } }">
+                <q-item-section avatar>
+                  <q-icon name="account_circle" />
+                </q-item-section>
                 <q-item-section>Profile</q-item-section>
               </q-item>
               <q-separator />
               <q-item clickable @click="startLogout(user.id)">
+                <q-item-section avatar>
+                  <q-icon name="logout" />
+                </q-item-section>
                 <q-item-section>Logout</q-item-section>
                 <q-item-section avatar>
                   <q-spinner v-show="loading"
@@ -55,7 +61,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Links from 'src/components/layout/Links.vue'
-import Types from 'src/store/types'
+import AuthTypes from 'src/store/types/auth'
 
 export default {
   name: 'MainLayout',
@@ -70,7 +76,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      logout: `${Types.AuthTypes.namespace}/${Types.AuthTypes.actions.LOGOUT}`
+      logout: `${AuthTypes.namespace}/${AuthTypes.actions.LOGOUT}`
     }),
     toggleSidebar () {
       this.sideBarIsOpen = !this.sideBarIsOpen
@@ -91,8 +97,8 @@ export default {
   computed: {
     ...mapGetters({
       header: 'layout/getHeader',
-      user: `${Types.AuthTypes.namespace}/${Types.AuthTypes.getters.GET_USER}`,
-      loading: `${Types.GeneralTypes.namespace}/${Types.GeneralTypes.getters.GET_LOADING}`
+      user: `${AuthTypes.namespace}/${AuthTypes.getters.GET_USER}`,
+      loading: `${AuthTypes.namespace}/${AuthTypes.getters.GET_LOADING}`
     })
   }
 }

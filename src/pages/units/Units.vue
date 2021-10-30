@@ -28,7 +28,7 @@
       loading-label="Fetching units..."
       class="q-mt-lg"
       row-key="id"
-      :rows="units"
+      :rows="unitsData"
       :columns="tableHeader"
       :filter="filter"
       :loading="loading"
@@ -110,7 +110,10 @@ export default {
       units: `${UNIT.namespace}/${UNIT.getters.GET_UNITS}`,
       tableHeader: `${UNIT.namespace}/${UNIT.getters.GET_UNITS_TABLE_HEADER}`,
       loading: `${UNIT.namespace}/${UNIT.getters.GET_LOADING}`
-    })
+    }),
+    unitsData () {
+      return this.loading ? [] : this.units
+    }
   },
   methods: {
     deleteRow (unit) {

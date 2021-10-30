@@ -19,7 +19,6 @@ export default {
   getters: {
     [BILLER.getters.GET_BILLERS]: (state) => state.billers,
     [BILLER.getters.GET_BILLER_TYPES]: (state) => state.types,
-    [BILLER.getters.GET_BILLERS_FOR_FILTER]: (state) => state.billersForFilter,
     [BILLER.getters.GET_BILLERS_TABLE_CONFIG]: (state) => state.tableConfig,
     [BILLER.getters.GET_BILLER]: (state) => state.biller,
     [BILLER.getters.GET_LOADING]: state => state.loading,
@@ -28,16 +27,10 @@ export default {
   actions: {
     [BILLER.actions.GET_BILLERS]: async ({ commit, dispatch }) => {
       commit(BILLER.mutations.SET_LOADING, true)
+      commit(BILLER.mutations.SET_BILLERS, [])
       await BillerService.getBillers()
         .then(({ data }) => {
-          const billersForFilter = data.map((biller) => {
-            return {
-              value: biller.name,
-              label: biller.name
-            }
-          })
           commit(BILLER.mutations.SET_BILLERS, data)
-          commit(BILLER.mutations.SET_BILLERS_FOR_FILTER, billersForFilter)
           dispatch(BILLER.actions.GET_BILLER_TYPES)
         })
         .catch((errors) => console.error(errors))
@@ -92,9 +85,6 @@ export default {
     },
     [BILLER.mutations.SET_BILLER_TYPES]: (state, types) => {
       state.types = types
-    },
-    [BILLER.mutations.SET_BILLERS_FOR_FILTER]: (state, billers) => {
-      state.billersForFilter = billers
     },
     [BILLER.mutations.SET_BILLER]: (state, biller) => {
       state.biller = biller

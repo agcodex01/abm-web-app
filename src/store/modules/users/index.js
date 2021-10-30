@@ -21,6 +21,7 @@ export default {
   actions: {
     [USER.actions.GET_USERS]: async ({ commit }) => {
       commit(USER.mutations.SET_LOADING, true)
+      commit(USER.mutations.SET_USERS, [])
       await UserService.getUsers().then(({ data }) => {
         commit(USER.mutations.SET_USERS, data)
       }).catch(errors => console.error(errors))

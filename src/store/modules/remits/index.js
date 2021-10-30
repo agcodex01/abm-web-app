@@ -17,26 +17,28 @@ export default {
     loading: false
   }),
   getters: {
-    [REMIT.getters.GET_REMITS]: state => state.remits,
-    [REMIT.getters.GET_SELECTED_TRANSACTIONS]: state => state.selectedTransactions,
-    [REMIT.getters.GET_REMITS_TRANSACTION_PREVIEW_HEADER]: state => state.transactionPreviewHeader,
-    [REMIT.getters.GET_TABLE_HEADER]: state => state.tableHeader,
-    [REMIT.getters.GET_REMIT_DIALOG_STATUS]: state => state.showRemitDialog,
-    [REMIT.getters.GET_TOTAL]: state => {
+    [REMIT.getters.GET_REMITS]: (state) => state.remits,
+    [REMIT.getters.GET_SELECTED_TRANSACTIONS]: (state) =>
+      state.selectedTransactions,
+    [REMIT.getters.GET_REMITS_TRANSACTION_PREVIEW_HEADER]: (state) =>
+      state.transactionPreviewHeader,
+    [REMIT.getters.GET_TABLE_HEADER]: (state) => state.tableHeader,
+    [REMIT.getters.GET_REMIT_DIALOG_STATUS]: (state) => state.showRemitDialog,
+    [REMIT.getters.GET_TOTAL]: (state) => {
       let total = 0
       if (!state.selectedTransactions) {
         return total
       }
 
-      state.selectedTransactions.forEach(item => {
+      state.selectedTransactions.forEach((item) => {
         total += item.amount
       })
 
       return total
     },
-    [REMIT.getters.GET_REMIT_TRANSACTIONS]: state => state.remitTransactions,
-    [REMIT.getters.GET_REMIT]: state => state.remit,
-    [REMIT.getters.GET_LOADING]: state => state.loading
+    [REMIT.getters.GET_REMIT_TRANSACTIONS]: (state) => state.remitTransactions,
+    [REMIT.getters.GET_REMIT]: (state) => state.remit,
+    [REMIT.getters.GET_LOADING]: (state) => state.loading
   },
   actions: {
     [REMIT.actions.GET_REMITS]: async ({ commit }, remitFilter) => {
@@ -45,11 +47,15 @@ export default {
       await RemitService.getRemits(remitFilter)
         .then(({ data }) => {
           commit(REMIT.mutations.SET_REMITS, data)
-        }).catch(errors => console.error(errors))
+        })
+        .catch((errors) => console.error(errors))
         .finally(() => commit(REMIT.mutations.SET_LOADING, false))
     },
-    [REMIT.actions.CREATE_REMIT]: async ({ commit }, { remitter, selected, total }) => {
-      const transactionIds = selected.map(item => {
+    [REMIT.actions.CREATE_REMIT]: async (
+      { commit },
+      { remitter, selected, total }
+    ) => {
+      const transactionIds = selected.map((item) => {
         return item.id
       })
       const remit = {
@@ -58,21 +64,25 @@ export default {
         remitted_by: remitter
       }
       commit(REMIT.mutations.SET_LOADING, true)
-      await RemitService.createRemit(remit)
-        .then(({ data }) => {
-          commit(REMIT.mutations.ADD_REMIT, data)
-          commit(REMIT.mutations.UPDATE_REMIT_DIALOG_STATUS, false)
-          commit(REMIT.mutations.UPDATE_SELECTED_TRANSACTIONS, [])
-        })
-        .catch(errors => console.error(errors))
-        .finally(() => commit(REMIT.mutations.SET_LOADING, false))
+      return new Promise((resolve, reject) => {
+        RemitService.createRemit(remit)
+          .then(({ data }) => {
+            commit(REMIT.mutations.ADD_REMIT, data)
+            commit(REMIT.mutations.UPDATE_REMIT_DIALOG_STATUS, false)
+            commit(REMIT.mutations.UPDATE_SELECTED_TRANSACTIONS, [])
+            resolve(data)
+          })
+          .catch((errors) => reject(errors.response.data.errors))
+          .finally(() => commit(REMIT.mutations.SET_LOADING, false))
+      })
     },
     [REMIT.actions.GET_REMIT_TRANSACTIONS]: async ({ commit }, remitId) => {
       commit(REMIT.mutations.SET_LOADING, true)
       await RemitService.getRemitTransactions(remitId)
         .then(({ data }) => {
           commit(REMIT.mutations.SET_REMIT_TRANSACTIONS, data)
-        }).catch(errors => console.error(errors))
+        })
+        .catch((errors) => console.error(errors))
         .finally(() => commit(REMIT.mutations.SET_LOADING, false))
     },
     [REMIT.actions.UPDATE_SELECTED_TRANSACTIONS]: ({ commit }, selected) => {
@@ -89,7 +99,8 @@ export default {
       await RemitService.getRemit(remitId)
         .then(({ data }) => {
           commit(REMIT.mutations.SET_REMIT, data)
-        }).catch(errors => console.error(errors))
+        })
+        .catch((errors) => console.error(errors))
         .finally(() => commit(REMIT.mutations.SET_LOADING, false))
     }
   },
@@ -101,7 +112,9 @@ export default {
       state.remits.unshift(remit)
     },
     [REMIT.mutations.UPDATE_SELECTED_TRANSACTIONS]: (state, transactions) => {
-      state.selectedTransactions = transactions.filter(item => item.status === STATUS_TYPE.PENDING)
+      state.selectedTransactions = transactions.filter(
+        (item) => item.status === STATUS_TYPE.PENDING
+      )
     },
     [REMIT.mutations.UPDATE_REMIT_DIALOG_STATUS]: (state, status) => {
       state.showRemitDialog = status

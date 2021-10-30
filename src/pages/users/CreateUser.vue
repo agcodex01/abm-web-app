@@ -24,14 +24,16 @@
                 dense
                 v-model="user.name"
                 type="text"
+                :error="hasError.name.error"
+                :error-message="hasError.name.message"
                 :rules="[(v) => validation.required(v, 'name')]"
               />
               <div class="text-subtitle2 q-my-sm">Email</div>
               <q-input
                 outlined
                 dense
-                :error="errors.email.hasError"
-                :error-message="errors.email.message"
+                :error="hasError.email.error"
+                :error-message="hasError.email.message"
                 v-model="user.email"
                 type="email"
                 :rules="[(v) => validation.required(v, 'email')]"
@@ -41,8 +43,8 @@
                 outlined
                 dense
                 v-model="user.password"
-                :error="errors.password.hasError"
-                :error-message="errors.password.message"
+                :error="hasError.password.error"
+                :error-message="hasError.password.message"
                 type="password"
                 :rules="[
                   (v) => validation.required(v, 'password'),
@@ -118,6 +120,7 @@ import USER from 'src/store/types/users'
 import Validation from 'src/util/rules'
 import UserErrors from 'src/store/modules/users/errors'
 import { mapGetters } from 'vuex'
+import { setErrorValues } from 'src/util/validation'
 export default {
   name: 'CreateUser',
   data: () => ({
@@ -129,7 +132,7 @@ export default {
     },
     loading: false,
     validation: Validation,
-    errors: UserErrors
+    hasError: UserErrors
   }),
   computed: {
     ...mapGetters({
@@ -158,10 +161,7 @@ export default {
               })
             })
             .catch((errors) => {
-              if ('email' in errors) {
-                this.errors.email.hasError = true
-                this.errors.email.message = errors.email[0]
-              }
+              setErrorValues(this.hasError, errors)
             })
             .finally(() => {
               this.loading = false

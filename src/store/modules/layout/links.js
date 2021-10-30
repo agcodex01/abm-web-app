@@ -35,11 +35,6 @@ export default [
     link: '/remits'
   },
   {
-    title: 'Chats',
-    icon: 'chat',
-    link: '/chats'
-  },
-  {
     title: 'Settings',
     icon: 'settings',
     link: '/settings'

@@ -25,7 +25,7 @@
       loading-label="Fetching collections..."
       class="q-mt-lg"
       row-key="id"
-      :rows="collections"
+      :rows="collectionData"
       :columns="tableHeader"
       :filter="filter"
       :loading="loading"
@@ -44,7 +44,9 @@
           </template>
         </q-input>
       </template>
-
+      <template v-slot:loading>
+        <table-loader v-show="loading" />
+      </template>
       <template v-slot:body-cell-id="props">
         <q-td :props="props">
           <q-btn
@@ -72,10 +74,6 @@
             icon="delete"
           ></q-btn>
         </q-td>
-      </template>
-
-      <template v-slot:loading>
-        <table-loader v-if="loading" />
       </template>
       <template v-slot:no-data="{ message }">
         <no-data :message="message" />
@@ -110,7 +108,10 @@ export default {
       collections: `${COLLECTION.namespace}/${COLLECTION.getters.GET_COLLECTIONS}`,
       tableHeader: `${COLLECTION.namespace}/${COLLECTION.getters.GET_COLLECTIONS_TABLE_HEADER}`,
       loading: `${COLLECTION.namespace}/${COLLECTION.getters.GET_LOADING}`
-    })
+    }),
+    collectionData () {
+      return this.loading ? [] : this.collections
+    }
   },
   methods: {
     deleteRow (collection) {

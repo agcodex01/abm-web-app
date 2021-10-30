@@ -201,6 +201,8 @@ import { mapActions, mapGetters } from 'vuex'
 import UNIT from 'src/store/types/units'
 import Validation from 'src/util/rules'
 import AppConstant from 'src/constant/app'
+import UnitErrors from 'src/store/modules/units/errors'
+import { resetErrorValues, setErrorValues } from 'src/util/validation'
 
 export default {
   name: 'Update Unit',
@@ -219,32 +221,7 @@ export default {
       },
       validator: Validation,
       loading: false,
-      hasError: {
-        name: {
-          message: null,
-          error: false
-        },
-        fund: {
-          message: null,
-          error: false
-        },
-        postal_code: {
-          message: null,
-          error: false
-        },
-        province: {
-          message: null,
-          error: false
-        },
-        municipality: {
-          message: null,
-          error: false
-        },
-        barangay: {
-          message: null,
-          error: false
-        }
-      },
+      hasError: UnitErrors,
       openConfigDialog: false
     }
   },
@@ -267,29 +244,7 @@ export default {
               )
             })
             .catch((errors) => {
-              if ('name' in errors) {
-                this.hasError.name.error = true
-                this.hasError.name.message = errors.name[0]
-              }
-
-              if ('fund' in errors) {
-                this.hasError.fund.error = true
-                this.hasError.fund.message = errors.fund[0]
-              }
-              if ('postal_code' in errors) {
-                this.hasError.postal_code.error = true
-                this.hasError.postal_code.message = errors.postal_code[0]
-              }
-
-              if ('province' in errors) {
-                this.hasError.province.error = true
-                this.hasError.province.message = errors.province[0]
-              }
-
-              if ('municipality' in errors) {
-                this.hasError.municipality.error = true
-                this.hasError.municipality.message = errors.municipality[0]
-              }
+              setErrorValues(this.hasError, errors)
             })
             .finally(() => {
               this.loading = false
@@ -313,6 +268,7 @@ export default {
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Units')
+    resetErrorValues(this.hasError)
     await this.$store.dispatch(
       `${UNIT.namespace}/${UNIT.actions.GET_UNIT}`,
       this.$route.params.id

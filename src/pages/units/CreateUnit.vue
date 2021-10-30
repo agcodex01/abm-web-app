@@ -146,6 +146,7 @@ import UNIT from 'src/store/types/units'
 import Validation from 'src/util/rules'
 import AppConstant from 'src/constant/app'
 import UnitErrors from 'src/store/modules/units/errors'
+import { resetErrorValues, setErrorValues } from 'src/util/validation'
 export default {
   name: 'Create Unit',
   data () {
@@ -167,6 +168,7 @@ export default {
   },
   mounted () {
     this.$store.commit('layout/SET_HEADER', 'Units')
+    resetErrorValues(this.hasError)
   },
   methods: {
     async createUnit () {
@@ -188,29 +190,7 @@ export default {
               })
             })
             .catch((errors) => {
-              if ('name' in errors) {
-                this.hasError.name.error = true
-                this.hasError.name.message = errors.name[0]
-              }
-
-              if ('fund' in errors) {
-                this.hasError.fund.error = true
-                this.hasError.fund.message = errors.fund[0]
-              }
-              if ('postal_code' in errors) {
-                this.hasError.postal_code.error = true
-                this.hasError.postal_code.message = errors.postal_code[0]
-              }
-
-              if ('province' in errors) {
-                this.hasError.province.error = true
-                this.hasError.province.message = errors.province[0]
-              }
-
-              if ('municipality' in errors) {
-                this.hasError.municipality.error = true
-                this.hasError.municipality.message = errors.municipality[0]
-              }
+              setErrorValues(this.hasError, errors)
             })
             .finally(() => {
               this.loading = false

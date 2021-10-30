@@ -199,6 +199,7 @@ import REMIT from 'src/store/types/remits'
 import AuthTypes from 'src/store/types/auth'
 import TableLoader from 'src/components/loaders/TableLoader.vue'
 import NoData from 'src/components/loaders/NoData.vue'
+import { resetErrorValues, setErrorValues } from 'src/util/validation'
 
 export default {
   name: 'Transactions',
@@ -214,11 +215,26 @@ export default {
         billerType: BILLER_TYPE.ALL.value,
         status: STATUS_TYPE.PENDING,
         createdAt: CREATED_AT.TODAY.value
+      },
+      hasError: {
+        transaction_ids: {
+          error: false,
+          message: null
+        },
+        total: {
+          error: false,
+          message: null
+        },
+        remitted_by: {
+          error: false,
+          message: null
+        }
       }
     }
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Transactions')
+    resetErrorValues(this.hasError)
     this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
     this.$store.dispatch(`${BILLER.namespace}/${BILLER.actions.GET_BILLERS}`)
     await this.$store.dispatch(`${TRANSACTION.namespace}/${TRANSACTION.actions.GET_TRANSACTIONS}`, this.transactionFilter)
@@ -269,7 +285,9 @@ export default {
             position: 'top'
           })
         })
-        .catch(errors => console.error(errors))
+        .catch(errors => {
+          setErrorValues(this.hasError, errors)
+        })
     }
   }
 }

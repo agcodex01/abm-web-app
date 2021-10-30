@@ -95,6 +95,7 @@ import Validation from 'src/util/rules'
 import AppConstant from 'src/constant/app'
 import ACCOUNT from 'src/store/types/account'
 import EmptyState from 'src/components/EmptyState.vue'
+import { resetErrorValues, setErrorValues } from 'src/util/validation'
 export default {
   components: { EmptyState },
   name: 'UpdateBiller',
@@ -130,10 +131,7 @@ export default {
             )
           })
           .catch((errors) => {
-            if ('name' in errors) {
-              this.hasError.name.error = true
-              this.hasError.name.message = errors.name[0]
-            }
+            setErrorValues(this.hasError, errors)
           })
           .finally(() => {
             this.loading = false
@@ -150,6 +148,7 @@ export default {
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Billers')
+    resetErrorValues(this.hasError)
     await this.$store.dispatch(
       `${BILLER.namespace}/${BILLER.actions.GET_BILLER}`,
       this.$route.params.id

@@ -165,6 +165,7 @@ import AppConstant from 'src/constant/app'
 import { mapGetters } from 'vuex'
 import EmptyState from 'src/components/EmptyState.vue'
 import CollectionErrors from 'src/store/modules/collection/errors'
+import { resetErrorValues, setErrorValues } from 'src/util/validation'
 
 export default {
   components: { EmptyState },
@@ -190,13 +191,13 @@ export default {
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Collections')
+    resetErrorValues(this.hasError)
     await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
   },
   methods: {
     async createCollection () {
       const validated = await this.$refs.collectionForm.validate()
       if (validated) {
-        // this.newCollection.unit_id = this.selectedUnit.value
         await this.$store
           .dispatch(
             `${COLLECTION.namespace}/${COLLECTION.actions.CREATE_COLLECTION}`,
@@ -214,12 +215,7 @@ export default {
             })
           })
           .catch((errors) => {
-            Object.keys(this.hasError).forEach(key => {
-              if (key in errors) {
-                this.hasError[key].error = true
-                this.hasError[key].message = errors[key][0]
-              }
-            })
+            setErrorValues(this.hasError, errors)
           })
       }
     },

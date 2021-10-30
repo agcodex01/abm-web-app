@@ -44,8 +44,7 @@ export default {
             resolve(data)
           })
           .catch((errors) => {
-            reject(errors)
-            console.log(errors)
+            reject(errors.response.data.errors)
           })
           .finally(() => commit(COLLECTION.mutations.SET_LOADING, false))
       })
@@ -60,15 +59,11 @@ export default {
           })
           .catch((errors) => {
             reject(errors)
-            console.log(errors)
           })
           .finally(() => commit(COLLECTION.mutations.SET_LOADING, false))
       })
     },
-    [COLLECTION.actions.UPDATE_COLLECTION]: async (
-      { commit },
-      { id, collection }
-    ) => {
+    [COLLECTION.actions.UPDATE_COLLECTION]: async ({ commit }, { id, collection }) => {
       commit(COLLECTION.mutations.SET_LOADING, true)
       return await new Promise((resolve, reject) => {
         CollectionService.updateCollection(id, collection)

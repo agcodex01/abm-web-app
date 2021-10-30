@@ -1,14 +1,14 @@
 const UserErrors = {
   name: {
-    hasError: false,
+    error: false,
     message: null
   },
   email: {
-    hasError: false,
+    error: false,
     message: null
   },
   password: {
-    hasError: false,
+    error: false,
     message: null
   }
 }

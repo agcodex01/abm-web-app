@@ -80,7 +80,7 @@
                     class="q-ma-md"
                     v-for="image in updatedCollection.images"
                     :key="image"
-                    :src="api + image.url"
+                    :src="image.url"
                     spinner-color="white"
                     style="height: 140px; max-width: 150px"
                     @click="openImage(image)"
@@ -156,6 +156,7 @@ import AppConstant from 'src/constant/app'
 import { API_BASE_URL } from 'src/boot/axios'
 import EmptyState from 'src/components/EmptyState.vue'
 import CollectionErrors from 'src/store/modules/collection/errors'
+import { resetErrorValues, setErrorValues } from 'src/util/validation'
 export default {
   components: { EmptyState },
   name: 'Update Collection',
@@ -199,12 +200,7 @@ export default {
             )
           })
           .catch((errors) => {
-            Object.keys(this.hasError).forEach(key => {
-              if (key in errors) {
-                this.hasError[key].error = true
-                this.hasError[key].message = errors[key][0]
-              }
-            })
+            setErrorValues(this.hasError, errors)
           })
       }
     },
@@ -212,7 +208,7 @@ export default {
       return URL.createObjectURL(image)
     },
     openImage (image) {
-      this.selectedImage.url = this.api + image.url
+      this.selectedImage.url = image.url
       this.selectedImage.name = image.name
       this.openImageModal = true
     }
@@ -227,6 +223,7 @@ export default {
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Collections')
+    resetErrorValues(this.hasError)
     await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
     await this.$store.dispatch(
       `${COLLECTION.namespace}/${COLLECTION.actions.GET_COLLECTION}`,

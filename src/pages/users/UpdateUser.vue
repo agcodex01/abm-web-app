@@ -24,14 +24,16 @@
                 dense
                 v-model="user.name"
                 type="text"
+                :error="hasError.name.error"
+                :error-message="hasError.name.message"
                 :rules="[(v) => validation.required(v, 'name')]"
               />
               <div class="text-subtitle2 q-my-sm">Email</div>
               <q-input
                 outlined
                 dense
-                :error="errors.email.hasError"
-                :error-message="errors.email.message"
+                :error="hasError.email.error"
+                :error-message="hasError.email.message"
                 v-model="user.email"
                 type="email"
                 :rules="[(v) => validation.required(v, 'email')]"
@@ -104,6 +106,7 @@ import { mapGetters } from 'vuex'
 import AppConstant from 'src/constant/app'
 import Validation from 'src/util/rules'
 import UserErrors from 'src/store/modules/users/errors'
+import { resetErrorValues, setErrorValues } from 'src/util/validation'
 export default {
   name: 'UpdateUser',
   data: () => ({
@@ -114,7 +117,7 @@ export default {
     },
     loading: false,
     validation: Validation,
-    errors: UserErrors
+    hasError: UserErrors
   }),
   methods: {
     async onUpdate () {
@@ -132,12 +135,8 @@ export default {
             )
           }
         })
-        .catch((error) => {
-          const errors = error.response.data.errors
-          if ('email' in errors) {
-            this.errors.email.hasError = true
-            this.errors.email.message = errors.email[0]
-          }
+        .catch((errors) => {
+          setErrorValues(this.hasError, errors)
         })
     }
   },
@@ -150,6 +149,7 @@ export default {
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Users')
+    resetErrorValues(this.hasError)
     await this.$store.dispatch(`${USER.namespace}/${USER.actions.GET_ROLES}`)
     await this.$store.dispatch(
       `${USER.namespace}/${USER.actions.GET_USER}`,

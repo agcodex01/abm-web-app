@@ -84,6 +84,7 @@ import BILLER, { BILLER_TYPE } from 'src/store/types/billers'
 import { mapActions, mapGetters } from 'vuex'
 import Validation from 'src/util/rules'
 import AppConstant from 'src/constant/app'
+import { resetErrorValues, setErrorValues } from 'src/util/validation'
 export default {
   name: 'CreateBiller',
   data: () => ({
@@ -123,14 +124,14 @@ export default {
             })
           })
           .catch((errors) => {
-            this.hasError.name.error = true
-            this.hasError.name.message = errors.name[0]
+            setErrorValues(this.hasError, errors)
           })
       }
     }
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Billers')
+    resetErrorValues(this.hasError)
     await this.$store.dispatch(
       `${BILLER.namespace}/${BILLER.actions.GET_BILLER_TYPES}`
     )

@@ -5,6 +5,7 @@ import accounts from './modules/accounts'
 import auth from './modules/auth'
 import billers from './modules/biller'
 import dashboard from './modules/dashboard'
+import feedbacks from './modules/feedbacks'
 import general from './modules/general'
 import layout from './modules/layout'
 import units from './modules/units'
@@ -24,6 +25,7 @@ export default store(function (/* { ssrContext } */) {
       billers,
       collections,
       dashboard,
+      feedbacks,
       general,
       layout,
       remits,

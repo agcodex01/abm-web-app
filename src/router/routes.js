@@ -166,6 +166,15 @@ const routes = [
           middleware: [canAccess]
         },
         component: () => import('src/pages/Settings.vue')
+      },
+      {
+        path: '/feedbacks',
+        name: 'feedbacks',
+        meta: {
+          roles: ['Admin', 'Manager'],
+          middleware: [canAccess]
+        },
+        component: () => import('src/pages/Feedbacks.vue')
       }
     ]
   },

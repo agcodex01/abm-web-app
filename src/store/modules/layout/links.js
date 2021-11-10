@@ -35,6 +35,11 @@ export default [
     link: '/remits'
   },
   {
+    title: 'Feedbacks',
+    icon: 'feebacks',
+    link: '/feedbacks'
+  },
+  {
     title: 'Settings',
     icon: 'settings',
     link: '/settings'

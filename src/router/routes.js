@@ -135,7 +135,7 @@ const routes = [
         path: 'users',
         name: 'users',
         meta: {
-          roles: ['Admin', 'Manager'],
+          roles: ['Admin'],
           middleware: [canAccess]
         },
         component: () => import('src/pages/users/Users.vue')
@@ -144,7 +144,7 @@ const routes = [
         path: 'users/create',
         name: 'create_user',
         meta: {
-          roles: ['Admin', 'Manager'],
+          roles: ['Admin'],
           middleware: [canAccess]
         },
         component: () => import('src/pages/users/CreateUser.vue')
@@ -153,7 +153,7 @@ const routes = [
         path: 'users/:id/update',
         name: 'update_user',
         meta: {
-          roles: ['Admin', 'Manager'],
+          roles: ['Admin'],
           middleware: [canAccess]
         },
         component: () => import('src/pages/users/UpdateUser.vue')

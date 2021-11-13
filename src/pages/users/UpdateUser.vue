@@ -115,7 +115,6 @@ export default {
       email: null,
       roles: []
     },
-    loading: false,
     validation: Validation,
     hasError: UserErrors
   }),

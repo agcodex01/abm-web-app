@@ -38,6 +38,7 @@ export default {
       return new Promise((resolve, reject) => {
         NoficationService.readNotification(notiData).then(() => {
           commit(LAYOUT.mutations.READ_NOTIFICATION, notiData.id)
+          resolve(true)
         }).catch(errors => reject(errors))
       })
     },

@@ -51,7 +51,18 @@ module.exports = configure(function (ctx) {
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // transpile: false,
-      env: envParser(),
+      env: {
+        API_BASE_URL: ctx.dev
+          ? 'http://localhost:8000'
+          : 'https://abm-ser-dev.herokuapp.com',
+        PUSHER_APP_ID: '1295483',
+        PUSHER_APP_KEY: '9f334f54fdd14f3401cd',
+        PUSHER_APP_SECRET: '2e9a03ce0006f1b6f0c2',
+        PUSHER_APP_CLUSTER: 'ap1',
+        PUSHER_APP_HOST: ctx.dev
+          ? 'localhost'
+          : 'abm-ser-dev.herokuapp.com'
+      },
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
       // Applies only if "transpile" is set to true.

@@ -44,8 +44,8 @@
               label="Funds"
               outlined
               dense
-              :error="hasError.name.error"
-              :error-message="hasError.name.message"
+              :error="hasError.fund.error"
+              :error-message="hasError.fund.message"
               :rules="[(val) => validator.required(val, 'fund')]"
             />
           </div>
@@ -76,22 +76,14 @@
             />
             <q-input
               class="col col-md-6"
-              v-model="updatedUnit.city"
+              v-model="updatedUnit.city_municipality"
               type="text"
-              label="City"
+              label="City/Municipality"
               outlined
               dense
-            />
-            <q-input
-              class="col col-md-6"
-              v-model="updatedUnit.municipality"
-              type="text"
-              label="Municipality"
-              outlined
-              dense
-              :error="hasError.municipality.error"
-              :error-message="hasError.municipality.message"
-              :rules="[(val) => validator.required(val, 'municipality')]"
+              :error="hasError.city_municipality.error"
+              :error-message="hasError.city_municipality.message"
+              :rules="[(val) => validator.required(val, 'city/municipality')]"
             />
             <q-input
               class="col col-md-6"
@@ -102,7 +94,7 @@
               dense
             />
             <q-input
-              class="col col-md-6"
+              class="col col-md-12"
               v-model="updatedUnit.street"
               type="text"
               label="Street"
@@ -214,8 +206,7 @@ export default {
         fund: 0,
         postal_code: '',
         province: '',
-        city: '',
-        municipality: '',
+        city_municipality: '',
         barangay: '',
         street: ''
       },

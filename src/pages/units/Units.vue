@@ -65,15 +65,9 @@
         </q-td>
       </template>
 
-      <template v-slot:body-cell-address="unit">
-            <q-td :value="unit.id">
-              {{unit.row.barangay}}, {{unit.row.municipality}}, {{unit.row.city}}, {{unit.row.province}}
-            </q-td>
-      </template>
-
       <template v-slot:body-cell-actions="unit">
             <q-td :value="unit.id">
-              <q-btn dense round flat color="negative" @click="deleteRow(unit)" icon="delete_outline"></q-btn>
+              <q-btn :disable="disable(unit.row)" dense round flat color="negative" @click="deleteRow(unit)" icon="delete_outline"></q-btn>
             </q-td>
       </template>
 
@@ -133,6 +127,9 @@ export default {
           console.log(errors)
         })
       })
+    },
+    disable (unit) {
+      return unit.collections_count > 0 || unit.transactions_count > 0
     }
   }
 }

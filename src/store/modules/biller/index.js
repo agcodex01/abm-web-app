@@ -63,7 +63,7 @@ export default {
             commit(BILLER.mutations.SET_BILLER, data)
           })
           .catch((errors) => reject(errors.response.data.errors))
-          .finally(() => commit(BILLER.mutations.SET_LOADING, true))
+          .finally(() => commit(BILLER.mutations.SET_LOADING, false))
       })
     },
     [BILLER.actions.UPDATE_BILLER]: async ({ commit }, { id, biller }) => {

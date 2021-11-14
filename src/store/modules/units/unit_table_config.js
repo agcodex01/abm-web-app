@@ -23,12 +23,6 @@ export default [
     sortable: true
   },
   {
-    name: 'address',
-    field: 'address',
-    label: 'Address',
-    align: 'left'
-  },
-  {
     name: 'actions',
     field: 'actions',
     label: 'Actions',

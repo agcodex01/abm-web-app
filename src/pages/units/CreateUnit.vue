@@ -7,7 +7,7 @@
         </template>
         <q-breadcrumbs-el to="/" label="Adopisoft Billing Machine" />
         <q-breadcrumbs-el label="Units" to="/units" />
-        <q-breadcrumbs-el label="Create Unit" />
+        <q-breadcrumbs-el label="Create" />
       </q-breadcrumbs>
     </div>
 
@@ -69,22 +69,14 @@
             />
             <q-input
               class="col col-md-6"
-              v-model="newUnit.city"
+              v-model="newUnit.city_municipality"
               type="text"
-              label="City"
+              label="City/Municipality"
               outlined
               dense
-            />
-            <q-input
-              class="col col-md-6"
-              v-model="newUnit.municipality"
-              type="text"
-              label="Municipality"
-              outlined
-              dense
-              :error="hasError.municipality.error"
-              :error-message="hasError.municipality.message"
-              :rules="[(val) => validator.required(val, 'municipality')]"
+              :error="hasError.city_municipality.error"
+              :error-message="hasError.city_municipality.message"
+              :rules="[(val) => validator.required(val, 'city/municipality')]"
             />
             <q-input
               class="col col-md-6"
@@ -95,7 +87,7 @@
               dense
             />
             <q-input
-              class="col col-md-6"
+              class="col col-md-12"
               v-model="newUnit.street"
               type="text"
               label="Street"
@@ -147,6 +139,7 @@ import Validation from 'src/util/rules'
 import AppConstant from 'src/constant/app'
 import UnitErrors from 'src/store/modules/units/errors'
 import { resetErrorValues, setErrorValues } from 'src/util/validation'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Create Unit',
   data () {
@@ -156,15 +149,18 @@ export default {
         fund: null,
         postal_code: '',
         province: '',
-        city: '',
-        municipality: '',
+        city_municipality: '',
         barangay: '',
         street: ''
       },
       validator: Validation,
-      loading: false,
       hasError: UnitErrors
     }
+  },
+  computed: {
+    ...mapGetters({
+      loading: `${UNIT.namespace}/${UNIT.getters.GET_LOADING}`
+    })
   },
   mounted () {
     this.$store.commit('layout/SET_HEADER', 'Units')
@@ -174,7 +170,6 @@ export default {
     async createUnit () {
       this.$refs.unitForm.validate().then(async (valid) => {
         if (valid) {
-          this.loading = true
           await this.$store
             .dispatch(
               `${UNIT.namespace}/${UNIT.actions.CREATE_UNIT}`,
@@ -191,9 +186,6 @@ export default {
             })
             .catch((errors) => {
               setErrorValues(this.hasError, errors)
-            })
-            .finally(() => {
-              this.loading = false
             })
         }
       })

@@ -30,8 +30,7 @@
     "pusher-js": "^7.0.3",
     "quasar": "^2.0.3",
     "serve-static": "^1.14.1",
-    "vuex": "^4.0.1",
-    "dotenv": "^10.0.0"
+    "vuex": "^4.0.1"
   },
   "devDependencies": {
     "eslint": "^7.32.0",

@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="flex justify-between align-center q-mt-md q-mb-xl">
+    <div class="q-mt-md q-mb-xl">
       <q-breadcrumbs class="align-center q-pa-sm" style="font-size: 14px">
         <template v-slot:separator>
           <q-icon
@@ -11,7 +11,6 @@
         <q-breadcrumbs-el to="/" label="Adopisoft Billing Machine" />
         <q-breadcrumbs-el label="Remits"/>
       </q-breadcrumbs>
-      <q-btn size="sm" outline  color="primary" icon-right="archive"  label="Dowload csv Report"/>
     </div>
 
     <div class="row q-col-gutter-sm">

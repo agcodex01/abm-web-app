@@ -10,7 +10,6 @@
 const ESLintPlugin = require('eslint-webpack-plugin')
 const { configure } = require('quasar/wrappers')
 const path = require('path')
-const envParser = require('./envparser')
 
 module.exports = configure(function (ctx) {
   return {

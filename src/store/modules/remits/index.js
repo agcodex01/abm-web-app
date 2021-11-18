@@ -34,7 +34,7 @@ export default {
       }
 
       state.selectedTransactions.forEach((item) => {
-        total += item.amount
+        total = parseFloat(total) + parseFloat(item.amount)
       })
 
       return total

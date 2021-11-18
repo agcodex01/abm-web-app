@@ -15,6 +15,11 @@ const RemitService = {
   },
   getRemitTransactions: async (id) => {
     return await api.get(`/remits/${id}/transactions`)
+  },
+  downloadRemitReport: async (id) => {
+    return await api.get(`/remits/${id}/reports/download`, {
+      responseType: 'blob'
+    })
   }
 }
 

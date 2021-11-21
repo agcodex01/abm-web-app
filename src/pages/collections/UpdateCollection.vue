@@ -197,13 +197,7 @@ export default {
       selectedImage: {
         url: '',
         name: ''
-      },
-      rangeOptions: [
-        formatDate(date.subtractFromDate(new Date(), {
-          days: 7
-        })),
-        formatDate(new Date())
-      ]
+      }
     }
   },
   methods: {

@@ -186,7 +186,7 @@ export default {
         unit_id: null,
         collected_by: '',
         total: 0,
-        collected_at: '',
+        collected_at: formatDate(new Date()),
         images: []
       },
       api: API_BASE_URL,
@@ -197,13 +197,7 @@ export default {
       selectedImage: {
         url: '',
         name: ''
-      },
-      rangeOptions: [
-        formatDate(date.subtractFromDate(new Date(), {
-          days: 7
-        })),
-        formatDate(new Date())
-      ]
+      }
     }
   },
   methods: {
@@ -253,7 +247,14 @@ export default {
       collectionLoading: `${COLLECTION.namespace}/${COLLECTION.getters.GET_LOADING}`,
       unitLoading: `${UNIT.namespace}/${UNIT.getters.GET_LOADING}`,
       units: `${UNIT.namespace}/${UNIT.getters.GET_UNITS}`
-    })
+    }),
+    rangeOptions () {
+      return [formatDate(date.subtractFromDate(new Date(this.updatedCollection.collected_at), {
+        days: 7
+      })),
+      formatDate(new Date(this.updatedCollection.collected_at))
+      ]
+    }
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Collections')

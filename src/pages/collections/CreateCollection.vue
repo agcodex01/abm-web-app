@@ -7,7 +7,7 @@
         </template>
         <q-breadcrumbs-el to="/" label="Adopisoft Billing Machine" />
         <q-breadcrumbs-el label="Collections" to="/collections" />
-        <q-breadcrumbs-el label="Create Collection" />
+        <q-breadcrumbs-el label="Create" />
       </q-breadcrumbs>
     </div>
 
@@ -60,16 +60,32 @@
                   :error-message="hasError.total.message"
                   :rules="[(val) => validator.required(val, 'total')]"
                 />
-                <q-input
-                  class="col col-xs-12 col-md-12"
-                  v-model="newCollection.collected_at"
-                  type="date"
+                 <q-input class="col col-xs-12 col-md-12"
                   outlined
                   dense
-                  :error="hasError.collected_at.error"
-                  :error-message="hasError.collected_at.message"
-                  :rules="[(val) => validator.required(val, 'date collected')]"
-                />
+                  v-model="newCollection.collected_at"
+                  mask="date"
+                  :rules="[
+                    (val) => validator.required(val, 'date collected'),
+                    (val) => validator.date(val, 'date collected')
+                  ]">
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy ref="qDateProxy" cover transition-show="scale" transition-hide="scale">
+                        <q-date
+                          v-model="newCollection.collected_at"
+                          :options="rangeOptionsFn"
+                          :navigation-min-year-month="getNavigationMinYearMonth()"
+                          :navigation-max-year-month="getNavigationMaxYearMonth()"
+                        >
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
               </div>
             </div>
             <div class="col col-xs-12 col-md-6 q-px-md">
@@ -78,6 +94,7 @@
                 multiple
                 dense
                 outlined
+                accept="image/*"
                 v-model="newCollection.images"
               >
                 <template v-slot:prepend>
@@ -166,6 +183,8 @@ import { mapGetters } from 'vuex'
 import EmptyState from 'src/components/EmptyState.vue'
 import CollectionErrors from 'src/store/modules/collection/errors'
 import { resetErrorValues, setErrorValues } from 'src/util/validation'
+import { formatDate } from 'src/util/date'
+import { date } from 'quasar'
 
 export default {
   components: { EmptyState },
@@ -176,7 +195,7 @@ export default {
         unit_id: '',
         collected_by: '',
         total: 0,
-        collected_at: '',
+        collected_at: formatDate(new Date()),
         images: []
       },
       selectedUnit: null,
@@ -186,7 +205,13 @@ export default {
       selectedImage: {
         url: '',
         name: ''
-      }
+      },
+      rangeOptions: [
+        formatDate(date.subtractFromDate(new Date(), {
+          days: 7
+        })),
+        formatDate(new Date())
+      ]
     }
   },
   async mounted () {
@@ -226,6 +251,15 @@ export default {
       this.selectedImage.url = this.getFileUrl(image)
       this.selectedImage.name = image.name
       this.openImageModal = true
+    },
+    rangeOptionsFn (date) {
+      return date >= this.rangeOptions[0] && date <= this.rangeOptions[1]
+    },
+    getNavigationMinYearMonth () {
+      return this.rangeOptions[0].substring(0, this.rangeOptions[0].lastIndexOf('/'))
+    },
+    getNavigationMaxYearMonth () {
+      return this.rangeOptions[1].substring(0, this.rangeOptions[1].lastIndexOf('/'))
     }
   },
   computed: {

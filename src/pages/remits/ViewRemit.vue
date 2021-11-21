@@ -14,8 +14,9 @@
       </q-breadcrumbs>
     </div>
        <q-card class="q-mt-lg q-pa-sm">
-        <q-card-section>
+        <q-card-section class="flex justify-between align-center">
           <div class="text-h6">Remit Report</div>
+          <q-btn size="sm" outline  color="primary" icon-right="cloud_download" label="Download" @click="downloadReport(remit.id)"/>
         </q-card-section>
         <q-card-section class="q-py-sm">
            <div class="text-body">Remitted by  {{ remit?.remitted_by }} on  {{ date.formatDate(remit?.created_at , 'ddd MMM. D , YYYY')}} </div>
@@ -24,8 +25,6 @@
           <q-table
             title="Transactions"
             title-class="text-subtitle2"
-            style="max-height: 310px"
-            class="sticky-header-table"
             :rows="transactions"
             :columns="transactionPreviewHeader"
             row-key="id"
@@ -61,7 +60,7 @@
   </q-page>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import TRANSACTION from 'src/store/types/transactions'
 import GeneralTypes from 'src/store/types/general'
 import { getCreateAtOptions } from 'util/transaction'
@@ -88,32 +87,17 @@ export default {
       typeColor: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TYPE_COLOR}`,
       transactionPreviewHeader: `${REMIT.namespace}/${REMIT.getters.GET_REMITS_TRANSACTION_PREVIEW_HEADER}`,
       loading: `${GeneralTypes.namespace}/${GeneralTypes.getters.GET_LOADING}`,
-      remit: `${REMIT.namespace}/${REMIT.getters.GET_REMIT}`
+      remit: `${REMIT.namespace}/${REMIT.getters.GET_REMIT}`,
+      downloadingReport: `${REMIT.namespace}/${REMIT.getters.DOWNLOADING_REPORT}`
     })
   },
   methods: {
+    ...mapActions({
+      downloadReport: `${REMIT.namespace}/${REMIT.actions.DOWNLOAD_REMIT_REPORT}`
+    }),
     async updateFilter () {
       await this.$store.dispatch(`${TRANSACTION.namespace}/${TRANSACTION.actions.GET_TRANSACTIONS}`, this.transactionFilter)
     }
   }
 }
 </script>
-<style lang="sass">
-.sticky-header-table
-  .q-table__top,
-  .q-table__bottom,
-  thead tr:first-child th
-    /* bg color is important for th; just specify one */
-    background-color: #ffffff
-
-  thead tr th
-    position: sticky
-    z-index: 1
-  thead tr:first-child th
-    top: 0
-
-  /* this is when the loading indicator appears */
-  &.q-table--loading thead tr:last-child th
-    /* height of all previous header rows */
-    top: 48px
-</style>

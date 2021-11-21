@@ -106,7 +106,6 @@ export default {
     },
     types: [BILLER_TYPE.WATER, BILLER_TYPE.INTERNET, BILLER_TYPE.ELECTRICITY],
     validator: Validation,
-    loading: false,
     hasError: {
       name: {
         message: null,
@@ -121,7 +120,6 @@ export default {
     async onUpdate () {
       const validated = await this.$refs.billerForm.validate()
       if (validated) {
-        this.loading = true
         this.updateBiller({ id: this.biller.id, biller: this.biller })
           .then((biller) => {
             this.$q.notify(
@@ -133,9 +131,6 @@ export default {
           .catch((errors) => {
             setErrorValues(this.hasError, errors)
           })
-          .finally(() => {
-            this.loading = false
-          })
       }
     }
   },
@@ -143,7 +138,8 @@ export default {
     ...mapGetters({
       billerData: `${BILLER.namespace}/${BILLER.getters.GET_BILLER}`,
       accounts: `${ACCOUNT.namespace}/${ACCOUNT.getters.GET_ACCOUNTS}`,
-      accountTableHeader: `${ACCOUNT.namespace}/${ACCOUNT.getters.GET_BILLER_ACCOUNT_TABLE_HEADER}`
+      accountTableHeader: `${ACCOUNT.namespace}/${ACCOUNT.getters.GET_BILLER_ACCOUNT_TABLE_HEADER}`,
+      loading: `${BILLER.namespace}/${BILLER.getters.GET_LOADING}`
     })
   },
   async mounted () {

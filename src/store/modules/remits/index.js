@@ -3,6 +3,8 @@ import REMIT from 'src/store/types/remits'
 import { STATUS_TYPE } from 'src/util/transaction'
 import tableHeader from 'src/store/modules/remits/table_config'
 import RemitService from 'src/services/RemitService'
+import { exportFile, Notify } from 'quasar'
+import FileUtil from 'src/util/file/file'
 
 export default {
   namespaced: true,
@@ -14,7 +16,8 @@ export default {
     tableHeader,
     remitTransactions: [],
     remit: null,
-    loading: false
+    loading: false,
+    downloadingReport: false
   }),
   getters: {
     [REMIT.getters.GET_REMITS]: (state) => state.remits,
@@ -31,14 +34,15 @@ export default {
       }
 
       state.selectedTransactions.forEach((item) => {
-        total += item.amount
+        total = parseFloat(total) + parseFloat(item.amount)
       })
 
       return total
     },
     [REMIT.getters.GET_REMIT_TRANSACTIONS]: (state) => state.remitTransactions,
     [REMIT.getters.GET_REMIT]: (state) => state.remit,
-    [REMIT.getters.GET_LOADING]: (state) => state.loading
+    [REMIT.getters.GET_LOADING]: (state) => state.loading,
+    [REMIT.getters.DOWNLOADING_REPORT]: state => state.downloadingReport
   },
   actions: {
     [REMIT.actions.GET_REMITS]: async ({ commit }, remitFilter) => {
@@ -102,6 +106,23 @@ export default {
         })
         .catch((errors) => console.error(errors))
         .finally(() => commit(REMIT.mutations.SET_LOADING, false))
+    },
+    [REMIT.actions.DOWNLOAD_REMIT_REPORT]: async ({ commit }, id) => {
+      commit(REMIT.mutations.SET_DOWNLOADING_REPORT, true)
+      await RemitService.downloadRemitReport(id).then(response => {
+        exportFile(
+          FileUtil.getFileNameFormContentDisposition(response.headers['content-disposition']),
+          response.data
+        )
+      }).catch((errors) => {
+        console.log(errors)
+        Notify.create({
+          position: 'top',
+          type: 'negative',
+          message: 'Something wrong downloading the report'
+        })
+      })
+        .finally(() => commit(REMIT.mutations.SET_DOWNLOADING_REPORT, false))
     }
   },
   mutations: {
@@ -127,6 +148,9 @@ export default {
     },
     [REMIT.mutations.SET_LOADING]: (state, isLoading) => {
       state.loading = isLoading
+    },
+    [REMIT.mutations.SET_DOWNLOADING_REPORT]: (state, isDownloadingReport) => {
+      state.downloadingReport = isDownloadingReport
     }
   }
 }

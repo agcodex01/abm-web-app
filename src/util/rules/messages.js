@@ -6,3 +6,4 @@ export const EXISTS = `The ${ATTR} does not exists.`
 export const INCORRECT = `The ${ATTR} is incorrect.`
 export const MIN = `The ${ATTR} field must atleast ${VALUE} characters.`
 export const REQUIRED = `The ${ATTR} field is required`
+export const DATE = `The ${ATTR} is not a valid date.`

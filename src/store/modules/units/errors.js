@@ -15,7 +15,15 @@ const UnitErrors = {
     message: null,
     error: false
   },
-  municipality: {
+  city_municipality: {
+    message: null,
+    error: false
+  },
+  barangay: {
+    message: null,
+    error: false
+  },
+  street: {
     message: null,
     error: false
   }

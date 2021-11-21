@@ -36,7 +36,7 @@ export default [
   },
   {
     title: 'Feedbacks',
-    icon: 'feebacks',
+    icon: 'list',
     link: '/feedbacks'
   },
   {

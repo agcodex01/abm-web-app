@@ -42,7 +42,7 @@
         color="primary"
         padding="sm lg"
         label="Save"
-        :loading="setting.fee && loading"
+        :loading="loading && setting.fee > 0"
         :style="{ width: loading && setting.fee ? '150px' : '' }"
         @click="updateSetting(setting)"
       >

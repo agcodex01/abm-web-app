@@ -96,6 +96,7 @@
                 outlined
                 accept="image/*"
                 v-model="newCollection.images"
+                :rules="[val => validator.required(val, 'attachment')]"
               >
                 <template v-slot:prepend>
                   <q-icon name="attach_file" />

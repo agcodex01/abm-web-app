@@ -3,13 +3,10 @@
     <div class="flex justify-between align-center q-mt-md q-mb-xl">
       <q-breadcrumbs class="align-center q-pa-sm" style="font-size: 14px">
         <template v-slot:separator>
-          <q-icon
-            size="24px"
-            name="chevron_right"
-          />
+          <q-icon size="24px" name="chevron_right" />
         </template>
         <q-breadcrumbs-el to="/" label="Adopisoft Billing Machine" />
-        <q-breadcrumbs-el label="Profile"/>
+        <q-breadcrumbs-el label="Profile" />
       </q-breadcrumbs>
       <q-btn
         size="sm"
@@ -20,10 +17,10 @@
         @click="showModal"
       />
     </div>
-      <q-card>
+    <q-card>
       <q-card-section style="text-align: center">
         <q-avatar color="primary" text-color="white" size="100px">A</q-avatar>
-      <p class="text-subtitle1 text-bold" >{{ user.roles[0].name }}</p>
+        <p class="text-subtitle1 text-bold">{{ user.roles[0].name }}</p>
         <q-form>
           <div class="row row q-col-gutter-sm">
             <q-input
@@ -49,43 +46,40 @@
       </q-card-section>
     </q-card>
 
-      <q-dialog v-model="opened" persistent>
-        <q-card style="min-width: 350px">
-          <q-card-section>
-            <q-card-section style="text-align: center">
+    <q-dialog v-model="opened" persistent position="top">
+      <q-card style="min-width: 350px; top: 30px">
+        <q-card-section>
           <p class="text-subtitle1 text-bold">Edit Profile Information</p>
-          <q-form >
-            <div class="row row q-col-gutter-sm">
-              <q-input
-                class="col col-md-6"
-                type="text"
-                label="Name"
-                outlined
-                v-model="user.name"
-                dense
-              />
-              <q-input
-                class="col col-md-6"
-                type="email"
-                label="Email"
-                outlined
-                v-model="user.email"
-                dense
-              />
-            </div>
+          <q-form>
+            <q-input
+              type="text"
+              label="Name"
+              outlined
+              v-model="user.name"
+              dense
+              :rules="[(val) => validator.required(val, 'name')]"
+            />
+            <q-input
+              type="email"
+              label="Email"
+              outlined
+              v-model="user.email"
+              dense
+              :rules="[(val) => validator.required(val, 'email')]"
+            />
           </q-form>
         </q-card-section>
-        </q-card-section>
 
-        <q-card-actions align="right" class="text-primary">
+        <q-card-actions align="right" class="text-primary q-px-md">
           <q-btn
             size="sm"
             unelevated
             outline
             padding="sm md"
             color="negative"
-            label="Cancel/Close"
-            v-close-popup />
+            label="Close"
+            v-close-popup
+          />
           <q-btn
             size="sm"
             color="primary"
@@ -99,7 +93,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-
   </q-page>
 </template>
 <script>
@@ -107,7 +100,7 @@ import { mapGetters } from 'vuex'
 import USER from 'src/store/types/users'
 import AppConstant from 'src/constant/app'
 import Types from 'src/store/types'
-import { ref } from 'vue'
+import Validation from 'src/util/rules'
 
 export default {
   name: 'Profile',
@@ -116,15 +109,17 @@ export default {
       user: {
         name: null,
         email: null,
-        roles: [{
-          id: null,
-          name: ''
-        }]
+        roles: [
+          {
+            id: null,
+            name: ''
+          }
+        ]
       },
       roles: [],
       loading: false,
       opened: false,
-      address: ref('')
+      validator: Validation
     }
   },
   methods: {
@@ -133,19 +128,18 @@ export default {
     },
     async updateProfile () {
       this.loading = true
-      this.user.roles = this.roles
-        .filter((role) => role.value)
-        .map((role) => role.label)
+      const tempUser = Object.assign({}, this.user)
+      delete tempUser.roles
       await this.$store
         .dispatch(`${USER.namespace}/${USER.actions.UPDATE_USER}`, {
-          user: this.user,
+          user: tempUser,
           id: this.user.id
         })
         .then(({ data }) => {
           if (data) {
             this.$q.notify(
               AppConstant.SUCCESS_MSG(
-                  `Successfully updated ${this.user.name} info.`
+                `Successfully updated ${this.user.name} info.`
               )
             )
             this.loading = false
@@ -170,12 +164,12 @@ export default {
       this.$route.params.id
     )
     this.user = Object.assign({}, this.userData)
-    this.rolesData.forEach(role => {
+    this.rolesData.forEach((role) => {
       this.roles.push(Object.assign({}, role))
     })
-    this.roles.forEach(role => {
+    this.roles.forEach((role) => {
       role.value = this.user.roles
-        .map(userRole => userRole.name)
+        .map((userRole) => userRole.name)
         .includes(role.label)
     })
   }

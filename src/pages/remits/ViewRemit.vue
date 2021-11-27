@@ -16,7 +16,7 @@
        <q-card class="q-mt-lg q-pa-sm">
         <q-card-section class="flex justify-between align-center">
           <div class="text-h6">Remit Report</div>
-          <q-btn size="sm" outline  color="primary" icon-right="cloud_download" label="Download" @click="downloadReport(remit.id)"/>
+          <q-btn size="sm" outline  color="primary" :loading="downloadingReport" icon-right="cloud_download" label="Download" @click="downloadReport(remit.id)"/>
         </q-card-section>
         <q-card-section class="q-py-sm">
            <div class="text-body">Remitted by  {{ remit?.remitted_by }} on  {{ date.formatDate(remit?.created_at , 'ddd MMM. D , YYYY')}} </div>

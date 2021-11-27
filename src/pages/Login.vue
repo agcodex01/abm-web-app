@@ -65,23 +65,25 @@ import { mapActions, mapGetters } from 'vuex'
 import AuthTypes from 'src/store/types/auth'
 export default {
   name: 'Login',
-  data: () => ({
-    credentials: {
-      email: null,
-      password: null
-    },
-    validation: Validation,
-    emailErrors: {
-      email: {
-        hasError: false,
-        message: ''
+  data () {
+    return {
+      credentials: {
+        email: null,
+        password: null
       },
-      password: {
-        hasError: false,
-        message: ''
+      validation: Validation,
+      emailErrors: {
+        email: {
+          hasError: false,
+          message: ''
+        },
+        password: {
+          hasError: false,
+          message: ''
+        }
       }
     }
-  }),
+  },
   methods: {
     ...mapActions({
       login: `${AuthTypes.namespace}/${AuthTypes.actions.LOGIN}`

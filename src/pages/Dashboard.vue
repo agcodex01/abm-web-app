@@ -3,8 +3,8 @@
     <div class="row q-col-gutter-md q-mt-md">
       <div
         class="col-xs-12 col-md-3"
-        v-for="summary in dsSummary"
-        :key="summary.id"
+        v-for="(summary, i) in dsSummary"
+        :key="i"
       >
         <ds-summary v-bind="summary" />
       </div>
@@ -24,7 +24,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import DsSummary from 'src/components/dashboard/DsSummary.vue'
-import TRANSACTION from 'src/store/types/transactions'
 import ApexCharts from 'apexcharts'
 import DASHBOARD from 'src/store/types/dashboard'
 
@@ -129,7 +128,7 @@ export default {
     )
     await this.$store
       .dispatch(
-        `${DASHBOARD.namespace}/${DASHBOARD.actions.GET_TRANSACTIONS_PREVIEWL}`
+        `${DASHBOARD.namespace}/${DASHBOARD.actions.GET_TRANSACTIONS_PREVIEW}`
       )
       .then(({ data }) => {
         this.total = this.getTotal(data.pending)
@@ -142,15 +141,10 @@ export default {
       this.chartOptions
     )
     chart.render()
-    await this.$store.dispatch(
-      `${TRANSACTION.namespace}/${TRANSACTION.actions.GET_TRANSACTIONS}`
-    )
   },
   computed: {
     ...mapGetters({
-      dsSummary: 'dashboard/getDsSummary',
-      transactions: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TRANSACTIONS}`,
-      tableHeader: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TRANSACTIONS_TABLE_HEADER}`
+      dsSummary: 'dashboard/getDsSummary'
     })
   },
   methods: {

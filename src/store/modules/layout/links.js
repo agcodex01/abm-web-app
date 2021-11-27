@@ -2,46 +2,55 @@ export default [
   {
     title: 'Dashboard',
     icon: 'dashboard',
-    link: '/'
+    link: '/',
+    roles: ['Admin', 'Manager', 'Collector']
   },
   {
     title: 'Users',
     icon: 'people',
-    link: '/users'
+    link: '/users',
+    roles: ['Admin']
   },
   {
     title: 'Units',
     icon: 'monitor',
-    link: '/units'
+    link: '/units',
+    roles: ['Admin', 'Manager']
   },
   {
     title: 'Billers',
     icon: 'account_balance',
-    link: '/billers'
+    link: '/billers',
+    roles: ['Admin', 'Manager']
   },
   {
     title: 'Transactions',
     icon: 'tablet',
-    link: '/transactions'
+    link: '/transactions',
+    roles: ['Admin', 'Manager']
   },
   {
     title: 'Collections',
     icon: 'money',
-    link: '/collections'
+    link: '/collections',
+    roles: ['Admin', 'Manager', 'Collector']
   },
   {
     title: 'Remits',
     icon: 'public',
-    link: '/remits'
+    link: '/remits',
+    roles: ['Admin', 'Manager']
   },
   {
     title: 'Feedbacks',
     icon: 'list',
-    link: '/feedbacks'
+    link: '/feedbacks',
+    roles: ['Admin', 'Manager']
   },
   {
     title: 'Settings',
     icon: 'settings',
-    link: '/settings'
+    link: '/settings',
+    roles: ['Admin', 'Manager']
   }
 ]

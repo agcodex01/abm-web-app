@@ -1,6 +1,6 @@
 import auth from './middleware/auth'
-import canAccess from './middleware/canAccess'
 import redirectIfAuthenticated from './middleware/guest'
+
 const routes = [
   {
     path: '/',
@@ -13,8 +13,7 @@ const routes = [
         path: '',
         name: 'dashboard',
         meta: {
-          roles: ['Admin', 'Manager', 'Collector'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager', 'Collector']
         },
         component: () => import('src/pages/Dashboard.vue')
       },
@@ -22,8 +21,7 @@ const routes = [
         path: 'units',
         name: 'units',
         meta: {
-          roles: ['Admin', 'Manager'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager']
         },
         component: () => import('src/pages/units/Units.vue')
       },
@@ -31,8 +29,7 @@ const routes = [
         path: 'units/create',
         name: 'create_unit',
         meta: {
-          roles: ['Admin', 'Manager'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager']
         },
         component: () => import('src/pages/units/CreateUnit.vue')
       },
@@ -40,8 +37,7 @@ const routes = [
         path: 'units/:id/update',
         name: 'update_unit',
         meta: {
-          roles: ['Admin', 'Manager'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager']
         },
         component: () => import('src/pages/units/UpdateUnit.vue')
       },
@@ -49,8 +45,7 @@ const routes = [
         path: '/transactions',
         name: 'transactions',
         meta: {
-          roles: ['Admin', 'Manager'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager']
         },
         component: () => import('src/pages/transactions/Transactions.vue')
       },
@@ -58,8 +53,7 @@ const routes = [
         path: '/remits',
         name: 'remits',
         meta: {
-          roles: ['Admin', 'Manager'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager']
         },
         component: () => import('src/pages/remits/Remits.vue')
       },
@@ -67,8 +61,7 @@ const routes = [
         path: '/remits/:id',
         name: 'view_remit',
         meta: {
-          roles: ['Admin', 'Manager'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager']
         },
         component: () => import('src/pages/remits/ViewRemit.vue')
       },
@@ -76,8 +69,7 @@ const routes = [
         path: '/billers',
         name: 'billers',
         meta: {
-          roles: ['Admin', 'Manager'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager']
         },
         component: () => import('src/pages/billers/Billers.vue')
       },
@@ -85,8 +77,7 @@ const routes = [
         path: '/billers/create',
         name: 'create_biller',
         meta: {
-          roles: ['Admin', 'Manager'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager']
         },
         component: () => import('src/pages/billers/CreateBiller.vue')
       },
@@ -94,8 +85,7 @@ const routes = [
         path: '/billers/:id/update',
         name: 'update_biller',
         meta: {
-          roles: ['Admin', 'Manager'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager']
         },
         component: () => import('src/pages/billers/UpdateBiller.vue')
       },
@@ -103,8 +93,7 @@ const routes = [
         path: 'collections',
         name: 'collections',
         meta: {
-          roles: ['Admin', 'Manager', 'Collector'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager', 'Collector']
         },
         component: () => import('src/pages/collections/Collections.vue')
       },
@@ -112,8 +101,7 @@ const routes = [
         path: 'collections/create',
         name: 'create_collection',
         meta: {
-          roles: ['Admin', 'Manager', 'Collector'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager', 'Collector']
         },
         component: () => import('src/pages/collections/CreateCollection.vue')
       },
@@ -121,22 +109,23 @@ const routes = [
         path: 'collections/:id/update',
         name: 'update_collection',
         meta: {
-          roles: ['Admin', 'Manager', 'Collection'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager', 'Collection']
         },
         component: () => import('src/pages/collections/UpdateCollection.vue')
       },
       {
         path: 'profile/:id/view',
         name: 'update_profile',
+        meta: {
+          roles: ['Admin', 'Manager', 'Collection']
+        },
         component: () => import('src/pages/Profile.vue')
       },
       {
         path: 'users',
         name: 'users',
         meta: {
-          roles: ['Admin'],
-          middleware: [canAccess]
+          roles: ['Admin']
         },
         component: () => import('src/pages/users/Users.vue')
       },
@@ -144,8 +133,7 @@ const routes = [
         path: 'users/create',
         name: 'create_user',
         meta: {
-          roles: ['Admin'],
-          middleware: [canAccess]
+          roles: ['Admin']
         },
         component: () => import('src/pages/users/CreateUser.vue')
       },
@@ -153,8 +141,7 @@ const routes = [
         path: 'users/:id/update',
         name: 'update_user',
         meta: {
-          roles: ['Admin'],
-          middleware: [canAccess]
+          roles: ['Admin']
         },
         component: () => import('src/pages/users/UpdateUser.vue')
       },
@@ -162,8 +149,7 @@ const routes = [
         path: 'settings',
         name: 'settings',
         meta: {
-          roles: ['Admin', 'Manager'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager']
         },
         component: () => import('src/pages/Settings.vue')
       },
@@ -171,8 +157,7 @@ const routes = [
         path: '/feedbacks',
         name: 'feedbacks',
         meta: {
-          roles: ['Admin', 'Manager'],
-          middleware: [canAccess]
+          roles: ['Admin', 'Manager']
         },
         component: () => import('src/pages/Feedbacks.vue')
       }

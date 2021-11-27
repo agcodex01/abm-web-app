@@ -18,7 +18,7 @@ export default {
         })
         .catch(errors => console.error(errors))
     },
-    [DASHBOARD.actions.GET_TRANSACTIONS_PREVIEWL]: async (context) => {
+    [DASHBOARD.actions.GET_TRANSACTIONS_PREVIEW]: async (context) => {
       return await DashboardService.getTransactionPreview()
     }
   },

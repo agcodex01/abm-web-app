@@ -14,7 +14,7 @@ export default {
   },
   mounted () {
     this.$echo
-      .private(`App.Models.User.${this.user.id}`)
+      .private(`App.Models.User.${this.user?.id}`)
       .notification((data) => {
         this.$store.commit(
           `${LAYOUT.namespace}/${LAYOUT.mutations.ADD_NOTIFICATION}`,

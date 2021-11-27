@@ -140,7 +140,6 @@ export default {
                 `Successfully updated ${this.user.name} info.`
               )
             )
-            console.log(this.user)
             this.$store.commit(`${AuthTypes.namespace}/${AuthTypes.mutations.SET_USER}`, this.user)
           }
         })

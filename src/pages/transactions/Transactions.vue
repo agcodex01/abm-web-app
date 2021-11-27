@@ -145,7 +145,7 @@
           <div class="text-h6">Remit Preview</div>
         </q-card-section>
         <q-card-section class="row justify-between">
-          <div class="text-subtitle2">Remmiter : <span>  {{ user.name }} </span> </div>
+          <div class="text-subtitle2">Remitter : <span>  {{ user.name }} </span> </div>
           <div class="text-subtitle2">Total: P <span>  {{ total }}</span> </div>
         </q-card-section>
         <q-card-section>

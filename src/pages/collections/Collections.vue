@@ -69,9 +69,9 @@
             dense
             round
             flat
-            color="grey"
+            color="negative"
             @click="deleteRow(collection)"
-            icon="delete"
+            icon="delete_outline"
           ></q-btn>
         </q-td>
       </template>

@@ -18,31 +18,35 @@
       />
     </div>
     <q-card>
-      <q-card-section style="text-align: center">
-        <q-avatar color="primary" text-color="white" size="100px">A</q-avatar>
-        <p class="text-subtitle1 text-bold">{{ user.roles[0].name }}</p>
-        <q-form>
-          <div class="row row q-col-gutter-sm">
-            <q-input
-              class="col col-md-6"
-              type="text"
-              label="Name"
-              filled
-              v-model="user.name"
-              readonly
+      <q-card-section>
+        <div class="row q-py-lg">
+          <div class="col-6 text-center">
+            <q-avatar color="primary" text-color="white" size="100px">{{
+              user.name?.charAt(0)
+            }}</q-avatar
+            ><br /><br>
+            <q-chip
+              v-for="(role, i) in user.roles"
+              :key="i"
+              :label="role.name"
+              outline
               dense
-            />
-            <q-input
-              class="col col-md-6"
-              type="email"
-              label="Email"
-              filled
-              v-model="user.email"
-              readonly
-              dense
+              color="primary"
             />
           </div>
-        </q-form>
+          <div class="col-6">
+              <div class="text-subtitle2 q-mb-sm">Name</div>
+              <q-input type="text" v-model="user.name" outlined dense disable />
+              <div class="text-subtitle2 q-my-sm">Email</div>
+              <q-input
+                type="email"
+                outlined
+                v-model="user.email"
+                disable
+                dense
+              />
+          </div>
+        </div>
       </q-card-section>
     </q-card>
 
@@ -99,8 +103,8 @@
 import { mapGetters } from 'vuex'
 import USER from 'src/store/types/users'
 import AppConstant from 'src/constant/app'
-import Types from 'src/store/types'
 import Validation from 'src/util/rules'
+import AuthTypes from 'src/store/types/auth'
 
 export default {
   name: 'Profile',
@@ -109,12 +113,7 @@ export default {
       user: {
         name: null,
         email: null,
-        roles: [
-          {
-            id: null,
-            name: ''
-          }
-        ]
+        roles: []
       },
       roles: [],
       loading: false,
@@ -127,7 +126,6 @@ export default {
       this.opened = true
     },
     async updateProfile () {
-      this.loading = true
       const tempUser = Object.assign({}, this.user)
       delete tempUser.roles
       await this.$store
@@ -142,7 +140,7 @@ export default {
                 `Successfully updated ${this.user.name} info.`
               )
             )
-            this.loading = false
+            this.$store.commit(`${AuthTypes.namespace}/${AuthTypes.mutations.SET_USER}`, this.user)
           }
         })
         .catch((errors) => console.error(errors))
@@ -153,7 +151,7 @@ export default {
       header: 'layout/getHeader',
       userData: `${USER.namespace}/${USER.getters.GET_USER}`,
       rolesData: `${USER.namespace}/${USER.getters.GET_ROLES}`,
-      loading: `${Types.GeneralTypes.namespace}/${Types.GeneralTypes.getters.GET_LOADING}`
+      loading: `${USER.namespace}/${USER.getters.GET_LOADING}`
     })
   },
   async mounted () {

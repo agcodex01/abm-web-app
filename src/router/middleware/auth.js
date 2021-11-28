@@ -1,7 +1,9 @@
-import Types from 'src/store/types'
+import AuthTypes from 'src/store/types/auth'
+
 export default function auth ({ next, store }) {
-  const token = store().getters[`${Types.AuthTypes.namespace}/${Types.AuthTypes.getters.GET_TOKEN}`]
-  if (!token) {
+  const user = store().getters[`${AuthTypes.namespace}/${AuthTypes.getters.GET_USER}`]
+  const token = store().getters[`${AuthTypes.namespace}/${AuthTypes.getters.GET_TOKEN}`]
+  if (!token || !user) {
     return next({
       name: 'login'
     })

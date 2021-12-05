@@ -11,7 +11,7 @@ export default {
     getDsSummary: state => state.dsSummary
   },
   actions: {
-    [DASHBOARD.actions.GER_DS_SUMMARY]: async ({ commit }) => {
+    [DASHBOARD.actions.GET_DS_SUMMARY]: async ({ commit }) => {
       DashboardService.getDsSummary()
         .then(({ data }) => {
           commit(DASHBOARD.mutations.SET_DS_SUMMARY, data)

@@ -18,6 +18,7 @@ export default {
   actions: {
     [FEEDBACKS.actions.GET_FEEDBACKS]: async ({ commit }) => {
       commit(FEEDBACKS.mutations.SET_LOADING, true)
+      commit(FEEDBACKS.mutations.SET_FEEDBACKS, [])
       await FeedbackService.getFeedbacks()
         .then(({ data }) => {
           commit(FEEDBACKS.mutations.SET_FEEDBACKS, data)

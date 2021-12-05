@@ -24,7 +24,7 @@
             <q-avatar color="primary" text-color="white" size="100px">{{
               user.name?.charAt(0)
             }}</q-avatar
-            ><br /><br>
+            ><br /><br />
             <q-chip
               v-for="(role, i) in user.roles"
               :key="i"
@@ -35,16 +35,10 @@
             />
           </div>
           <div class="col-6">
-              <div class="text-subtitle2 q-mb-sm">Name</div>
-              <q-input type="text" v-model="user.name" outlined dense disable />
-              <div class="text-subtitle2 q-my-sm">Email</div>
-              <q-input
-                type="email"
-                outlined
-                v-model="user.email"
-                disable
-                dense
-              />
+            <div class="text-subtitle2 q-mb-sm">Name</div>
+            <q-input type="text" v-model="user.name" outlined dense disable />
+            <div class="text-subtitle2 q-my-sm">Email</div>
+            <q-input type="email" outlined v-model="user.email" disable dense />
           </div>
         </div>
       </q-card-section>
@@ -54,13 +48,15 @@
       <q-card style="min-width: 350px; top: 30px">
         <q-card-section>
           <p class="text-subtitle1 text-bold">Edit Profile Information</p>
-          <q-form>
+          <q-form ref="profileForm">
             <q-input
               type="text"
               label="Name"
               outlined
               v-model="user.name"
               dense
+              :error="hasError.name.error"
+              :error-message="hasError.name.message"
               :rules="[(val) => validator.required(val, 'name')]"
             />
             <q-input
@@ -69,6 +65,8 @@
               outlined
               v-model="user.email"
               dense
+              :error="hasError.email.error"
+              :error-message="hasError.email.message"
               :rules="[(val) => validator.required(val, 'email')]"
             />
           </q-form>
@@ -92,7 +90,6 @@
             @click="updateProfile"
             :loading="loading"
             :style="{ width: loading ? '150px' : '' }"
-            v-close-popup
           />
         </q-card-actions>
       </q-card>
@@ -105,6 +102,8 @@ import USER from 'src/store/types/users'
 import AppConstant from 'src/constant/app'
 import Validation from 'src/util/rules'
 import AuthTypes from 'src/store/types/auth'
+import UserErrors from 'src/store/modules/users/errors'
+import { resetErrorValues, setErrorValues } from 'src/util/validation'
 
 export default {
   name: 'Profile',
@@ -118,7 +117,8 @@ export default {
       roles: [],
       loading: false,
       opened: false,
-      validator: Validation
+      validator: Validation,
+      hasError: UserErrors
     }
   },
   methods: {
@@ -128,22 +128,35 @@ export default {
     async updateProfile () {
       const tempUser = Object.assign({}, this.user)
       delete tempUser.roles
-      await this.$store
-        .dispatch(`${USER.namespace}/${USER.actions.UPDATE_USER}`, {
-          user: tempUser,
-          id: this.user.id
-        })
-        .then(({ data }) => {
-          if (data) {
-            this.$q.notify(
-              AppConstant.SUCCESS_MSG(
-                `Successfully updated ${this.user.name} info.`
-              )
-            )
-            this.$store.commit(`${AuthTypes.namespace}/${AuthTypes.mutations.SET_USER}`, this.user)
-          }
-        })
-        .catch((errors) => console.error(errors))
+      this.loading = true
+      this.$refs.profileForm.validate().then(async (valid) => {
+        if (valid) {
+          await this.$store
+            .dispatch(`${USER.namespace}/${USER.actions.UPDATE_USER}`, {
+              user: tempUser,
+              id: this.user.id
+            })
+            .then(({ data }) => {
+              if (data) {
+                this.$q.notify(
+                  AppConstant.SUCCESS_MSG(
+                    `Successfully updated ${this.user.name} info.`
+                  )
+                )
+                this.$store.commit(
+                  `${AuthTypes.namespace}/${AuthTypes.mutations.SET_USER}`,
+                  this.user
+                )
+                this.opened = false
+              }
+            })
+            .catch((errors) => {
+              setErrorValues(this.hasErro, errors)
+            })
+        }
+      }).finally(() => {
+        this.loading = false
+      })
     }
   },
   computed: {
@@ -156,6 +169,7 @@ export default {
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Profile')
+    resetErrorValues(this.hasError)
     await this.$store.dispatch(`${USER.namespace}/${USER.actions.GET_ROLES}`)
     await this.$store.dispatch(
       `${USER.namespace}/${USER.actions.GET_USER}`,

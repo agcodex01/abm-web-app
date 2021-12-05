@@ -5,22 +5,19 @@ export default [
     label: 'ID',
     align: 'left',
     required: true,
-    sortable: true,
     sortOrder: 'ad'
   },
   {
     name: 'name',
     field: 'name',
     label: 'Name',
-    align: 'left',
-    sortable: true
+    align: 'left'
   },
   {
     name: 'funds',
     field: 'fund',
     label: 'Funds',
-    align: 'left',
-    sortable: true
+    align: 'left'
   },
   {
     name: 'actions',

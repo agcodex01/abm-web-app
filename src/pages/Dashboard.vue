@@ -83,7 +83,7 @@ export default {
           }
         },
         xaxis: {
-          categories: ['1st Week', '2nd Week', '3rd Week', '4th Week'],
+          categories: ['1st Week', '2nd Week', '3rd Week', '4th Week', '5th Week'],
           axisBorder: {
             show: true,
             width: '3px',
@@ -118,13 +118,14 @@ export default {
           horizontalAlign: 'left',
           offsetX: 40
         }
-      }
+      },
+      chart: null
     }
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Dashboard')
-    await this.$store.dispatch(
-      `${DASHBOARD.namespace}/${DASHBOARD.actions.GER_DS_SUMMARY}`
+    this.$store.dispatch(
+      `${DASHBOARD.namespace}/${DASHBOARD.actions.GET_DS_SUMMARY}`
     )
     await this.$store
       .dispatch(
@@ -132,15 +133,15 @@ export default {
       )
       .then(({ data }) => {
         this.total = this.getTotal(data.pending)
-        this.total += this.getTotal(data.remmited)
+        this.total += this.getTotal(data.remitted)
         this.chartOptions.series[0].data = this.getData(data.pending)
-        this.chartOptions.series[1].data = this.getData(data.remmited)
+        this.chartOptions.series[1].data = this.getData(data.remitted)
       })
-    const chart = new ApexCharts(
+    this.chart = new ApexCharts(
       document.querySelector('#chart'),
       this.chartOptions
     )
-    chart.render()
+    this.chart.render()
   },
   computed: {
     ...mapGetters({
@@ -150,12 +151,15 @@ export default {
   methods: {
     getData (data) {
       if (data) return data
-      return [0, 0, 0, 0]
+      return [0, 0, 0, 0, 0]
     },
     getTotal (data) {
       if (!data) return 0
       return data.reduce((a, b) => a + b)
     }
+  },
+  created () {
+
   }
 }
 </script>

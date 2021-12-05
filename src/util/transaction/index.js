@@ -13,18 +13,24 @@ export const CREATED_AT = {
   THIS_MONTH: {
     label: 'This month',
     value: 'this_month'
+  },
+  ALL: {
+    label: 'All',
+    value: 'all'
   }
 }
 
 export const STATUS_TYPE = {
   PENDING: 'pending',
-  REMITTED: 'remitted'
+  REMITTED: 'remitted',
+  CANCELLED: 'cancelled'
 }
 
 export function getStatusTypes () {
   return [
     STATUS_TYPE.PENDING,
-    STATUS_TYPE.REMITTED
+    STATUS_TYPE.REMITTED,
+    STATUS_TYPE.CANCELLED
   ]
 }
 
@@ -38,6 +44,8 @@ export function getStatusColor (status) {
       return Color.WARNING
     case STATUS_TYPE.REMITTED:
       return Color.POSITIVE
+    case STATUS_TYPE.CANCELLED:
+      return Color.NEGATIVE
   }
 }
 export function getTypeColor (type) {

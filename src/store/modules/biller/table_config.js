@@ -7,30 +7,25 @@ export default [
     field: 'id',
     label: 'ID',
     align: 'left',
-    required: true,
-    sortable: true
+    required: true
   },
   {
     name: 'name',
     field: 'name',
     label: 'Name',
-    align: 'left',
-    sortable: true
+    align: 'left'
   },
   {
     name: 'type',
     field: 'type',
     label: 'Type',
-    align: 'left',
-    sortable: true
+    align: 'left'
   },
   {
     name: 'create_at',
     align: 'left',
     field: 'created_at',
     format: (val) => date.formatDate(val, AppConstant.DATE_FORMAT),
-    label: 'Created At',
-    sortable: true,
-    sortOrder: 'ad'
+    label: 'Created At'
   }
 ]

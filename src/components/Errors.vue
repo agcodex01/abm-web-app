@@ -8,8 +8,15 @@
       <div class="text-h4" style="opacity:.4">
        {{ error.subHeader }}
       </div>
-
       <q-btn
+        v-if="$route.name === 'account_disabled'"
+        class="q-mt-xl"
+        :to="{name: 'login'}"
+        color="primary"
+        label="Back to Login"
+      />
+      <q-btn
+        v-else
         class="q-mt-xl"
         color="white"
         text-color="blue"

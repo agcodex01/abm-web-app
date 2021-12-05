@@ -1,11 +1,12 @@
 import auth from './middleware/auth'
+import disabled from './middleware/disabled'
 import redirectIfAuthenticated from './middleware/guest'
 
 const routes = [
   {
     path: '/',
     meta: {
-      middleware: [auth]
+      middleware: [auth, disabled]
     },
     component: () => import('layouts/MainLayout.vue'),
     children: [
@@ -172,7 +173,12 @@ const routes = [
     component: () => import('src/pages/Login.vue')
   },
   {
-    path: '/errors/access_denied',
+    path: '/errors/access_disabled',
+    name: 'account_disabled',
+    component: () => import('pages/errors/DisabledAccount.vue')
+  },
+  {
+    path: '/errors/account_disabled',
     name: 'access_denied',
     component: () => import('pages/errors/AccessDenied.vue')
   },

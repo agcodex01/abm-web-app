@@ -63,6 +63,11 @@
           />
         </q-td>
       </template>
+      <template v-slot:body-cell-status="props">
+        <q-td :props="props">
+          <q-chip style="font-size:12px" outline text-color="white" dense :color="props.value ? 'negative': 'positive'" :label="props.value ? 'disabled': 'active'" />
+        </q-td>
+      </template>
       <template v-slot:body-cell-roles="props">
         <q-td :props="props">
           <q-chip style="font-size:12px" outline text-color="white" dense color="primary" v-for="role in props.row.roles"  :label="role.name" :key="role.id"/>

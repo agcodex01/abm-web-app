@@ -10,16 +10,15 @@ const api = axios.create({
   withCredentials: true
 })
 
-api.interceptors.request.use(function (config) {
-  const token = LocalStorage.getItem('token')
-  if (token) {
-    config.headers.Authorization = 'Bearer ' + token
-  }
-  return config
-})
-
 export default boot(({ app, router }) => {
   app.config.globalProperties.$api = api
+  api.interceptors.request.use(function (config) {
+    const token = LocalStorage.getItem('token')
+    if (token) {
+      config.headers.Authorization = 'Bearer ' + token
+    }
+    return config
+  })
 
   api.interceptors.response.use(
     function (response) {

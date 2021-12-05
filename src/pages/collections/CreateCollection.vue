@@ -38,13 +38,19 @@
                   :error-message="hasError.unit_id.message"
                   :rules="[(val) => validator.required(val, 'unit')]"
                 />
-                <q-input
+                <q-select
                   class="col col-xs-12 col-md-12"
                   v-model="newCollection.collected_by"
-                  type="text"
-                  label="Collector"
-                  outlined
+                  :options="collectors"
+                  option-value="name"
+                  option-label="name"
+                  emit-value
+                  map-options
+                  label="Collected By"
+                  options-dense
                   dense
+                  outlined
+                  :loading="fetchingUsers"
                   :error="hasError.collected_by.error"
                   :error-message="hasError.collected_by.message"
                   :rules="[(val) => validator.required(val, 'collector')]"
@@ -60,7 +66,8 @@
                   :error-message="hasError.total.message"
                   :rules="[(val) => validator.required(val, 'total')]"
                 />
-                 <q-input class="col col-xs-12 col-md-12"
+                <q-input
+                  class="col col-xs-12 col-md-12"
                   outlined
                   dense
                   v-model="newCollection.collected_at"
@@ -68,18 +75,33 @@
                   :rules="[
                     (val) => validator.required(val, 'date collected'),
                     (val) => validator.date(val, 'date collected')
-                  ]">
+                  ]"
+                >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy ref="qDateProxy" cover transition-show="scale" transition-hide="scale">
+                      <q-popup-proxy
+                        ref="qDateProxy"
+                        cover
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="newCollection.collected_at"
                           :options="rangeOptionsFn"
-                          :navigation-min-year-month="getNavigationMinYearMonth()"
-                          :navigation-max-year-month="getNavigationMaxYearMonth()"
+                          :navigation-min-year-month="
+                            getNavigationMinYearMonth()
+                          "
+                          :navigation-max-year-month="
+                            getNavigationMaxYearMonth()
+                          "
                         >
                           <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat />
+                            <q-btn
+                              v-close-popup
+                              label="Close"
+                              color="primary"
+                              flat
+                            />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -96,22 +118,27 @@
                 outlined
                 accept="image/*"
                 v-model="newCollection.images"
-                :rules="[val => validator.required(val, 'attachment')]"
+                :rules="[(val) => validator.required(val, 'attachment')]"
               >
                 <template v-slot:prepend>
                   <q-icon name="attach_file" />
                 </template>
               </q-file>
               <div v-if="newCollection.images.length">
-                <q-img
-                  class="q-ma-md"
-                  v-for="image in newCollection.images"
-                  :key="image"
-                  :src="getFileUrl(image)"
-                  spinner-color="white"
-                  style="height: 140px; max-width: 150px"
-                  @click="openImage(image)"
-                />
+                <div
+                  v-for="(image, i) in newCollection.images"
+                  :key="i"
+                  class="row inline"
+                >
+                  <q-img
+                    class="q-ma-md"
+                    :src="getFileUrl(image)"
+                    spinner-color="white"
+                    style="height: 140px; max-width: 150px"
+                    @click="openImage(image)"
+                  />
+                  <q-btn size="sm" color="negative" icon="delete_outline" label="Remove" @click="removeImage(i)" />
+                </div>
               </div>
               <empty-state v-else message="No files attached." />
             </div>
@@ -186,6 +213,7 @@ import CollectionErrors from 'src/store/modules/collection/errors'
 import { resetErrorValues, setErrorValues } from 'src/util/validation'
 import { formatDate } from 'src/util/date'
 import { date } from 'quasar'
+import USER from 'src/store/types/users'
 
 export default {
   components: { EmptyState },
@@ -208,9 +236,11 @@ export default {
         name: ''
       },
       rangeOptions: [
-        formatDate(date.subtractFromDate(new Date(), {
-          days: 7
-        })),
+        formatDate(
+          date.subtractFromDate(new Date(), {
+            days: 7
+          })
+        ),
         formatDate(new Date())
       ]
     }
@@ -218,7 +248,10 @@ export default {
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Collections')
     resetErrorValues(this.hasError)
-    await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
+    this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
+    this.$store.dispatch(
+      `${USER.namespace}/${USER.actions.GET_USERS_COLLECTOR}`
+    )
   },
   methods: {
     async createCollection () {
@@ -257,17 +290,28 @@ export default {
       return date >= this.rangeOptions[0] && date <= this.rangeOptions[1]
     },
     getNavigationMinYearMonth () {
-      return this.rangeOptions[0].substring(0, this.rangeOptions[0].lastIndexOf('/'))
+      return this.rangeOptions[0].substring(
+        0,
+        this.rangeOptions[0].lastIndexOf('/')
+      )
     },
     getNavigationMaxYearMonth () {
-      return this.rangeOptions[1].substring(0, this.rangeOptions[1].lastIndexOf('/'))
+      return this.rangeOptions[1].substring(
+        0,
+        this.rangeOptions[1].lastIndexOf('/')
+      )
+    },
+    removeImage (index) {
+      this.newCollection.images.splice(index, 1)
     }
   },
   computed: {
     ...mapGetters({
       units: `${UNIT.namespace}/${UNIT.getters.GET_UNITS}`,
       collectionLoading: `${COLLECTION.namespace}/${COLLECTION.getters.GET_LOADING}`,
-      unitLoading: `${UNIT.namespace}/${UNIT.getters.GET_LOADING}`
+      unitLoading: `${UNIT.namespace}/${UNIT.getters.GET_LOADING}`,
+      collectors: `${USER.namespace}/${USER.getters.GET_USERS}`,
+      fetchingUsers: `${USER.namespace}/${USER.getters.GET_LOADING}`
     })
   }
 }

@@ -4,29 +4,30 @@ export default [
     field: 'id',
     label: 'ID',
     align: 'left',
-    required: true,
-    sortable: true,
-    sortOrder: 'ad'
+    required: true
   },
   {
     name: 'name',
     field: 'name',
     label: 'Name',
-    align: 'left',
-    sortable: true
+    align: 'left'
   },
   {
     name: 'email',
     field: 'email',
     label: 'Email',
-    align: 'left',
-    sortable: true
+    align: 'left'
+  },
+  {
+    name: 'status',
+    field: 'disabled',
+    label: 'Status',
+    align: 'left'
   },
   {
     name: 'roles',
     field: row => row.roles,
-    label: 'Roles',
-    align: 'left',
-    sortable: true
+    label: 'Role',
+    align: 'left'
   }
 ]

@@ -120,6 +120,7 @@
               size="sm"
               color="primary"
               label="Create"
+              :loading="configLoading"
               @click="createConfig(updatedUnit.id)"
             />
             <q-btn
@@ -127,6 +128,7 @@
               size="sm"
               color="negative"
               label="Delete"
+              :loading="configLoading"
               @click="deleteConfig(updatedUnit.id)"
             />
           </div>
@@ -134,6 +136,11 @@
             v-if="config?.token"
             class="text-subtitle2"
             v-text="config?.token"
+          />
+          <div
+            v-else-if="configLoading"
+            class="text-subtitle2"
+            v-text="'Processing....'"
           />
           <div
             v-else
@@ -254,7 +261,8 @@ export default {
   computed: {
     ...mapGetters({
       unitData: `${UNIT.namespace}/${UNIT.getters.GET_UNIT}`,
-      config: `${UNIT.namespace}/${UNIT.getters.GET_CONFIG}`
+      config: `${UNIT.namespace}/${UNIT.getters.GET_CONFIG}`,
+      configLoading: `${UNIT.namespace}/${UNIT.getters.LOADING_CONFIG}`
     })
   },
   async mounted () {

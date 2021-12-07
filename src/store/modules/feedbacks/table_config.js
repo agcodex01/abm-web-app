@@ -5,30 +5,26 @@ export default [
   {
     name: 'collapse',
     field: 'collapse',
-    label: 'Collapse',
-    align: 'center',
-    sortable: true
+    label: 'Expand',
+    align: 'center'
   },
   {
     name: 'unit',
     field: row => row.unit.name,
     label: 'Unit',
-    align: 'center',
-    sortable: true
+    align: 'center'
   },
   {
     name: 'biller',
     field: row => row.account.biller.name,
     label: 'Biller',
-    align: 'center',
-    sortable: true
+    align: 'center'
   },
   {
     name: 'service_no',
     field: row => row.account.service_number,
-    label: 'Service No',
-    align: 'center',
-    sortable: true
+    label: 'Account #',
+    align: 'center'
   },
   {
     name: 'created_at',

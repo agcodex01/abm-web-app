@@ -22,5 +22,14 @@ export default {
         roles
       }
     })
+  },
+  collectors: () => {
+    return api.get('users/roles/collectors')
+  },
+  resetPassword: (id) => {
+    return api.put(`users/${id}/password-reset`)
+  },
+  disabled: (id, status) => {
+    return api.put(`users/${id}/disabled/${status}`)
   }
 }

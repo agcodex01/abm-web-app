@@ -28,10 +28,10 @@ export default {
     [BILLER.actions.GET_BILLERS]: async ({ commit, dispatch }) => {
       commit(BILLER.mutations.SET_LOADING, true)
       commit(BILLER.mutations.SET_BILLERS, [])
+      dispatch(BILLER.actions.GET_BILLER_TYPES)
       await BillerService.getBillers()
         .then(({ data }) => {
           commit(BILLER.mutations.SET_BILLERS, data)
-          dispatch(BILLER.actions.GET_BILLER_TYPES)
         })
         .catch((errors) => console.error(errors))
         .finally(() => commit(BILLER.mutations.SET_LOADING, false))

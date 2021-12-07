@@ -10,7 +10,8 @@ export default {
     unitsForFilter: [],
     tableHeader: tableHeader,
     loading: false,
-    config: null
+    config: null,
+    configLoading: false
   }),
   getters: {
     [UNIT.getters.GET_UNITS]: state => state.units,
@@ -18,7 +19,8 @@ export default {
     [UNIT.getters.GET_UNITS_TABLE_HEADER]: state => state.tableHeader,
     [UNIT.getters.GET_UNIT]: state => state.unit,
     [UNIT.getters.GET_LOADING]: state => state.loading,
-    [UNIT.getters.GET_CONFIG]: state => state.config
+    [UNIT.getters.GET_CONFIG]: state => state.config,
+    [UNIT.getters.LOADING_CONFIG]: state => state.configLoading
   },
   actions: {
     [UNIT.actions.GET_UNITS]: ({ commit }) => {
@@ -84,22 +86,27 @@ export default {
     },
     [UNIT.actions.GET_CONFIG]: async ({ commit }, id) => {
       commit(UNIT.mutations.SET_CONFIG, null)
+      commit(UNIT.mutations.SET_LOADING_CONFIG, true)
       return await new Promise((resolve, reject) => {
         UnitService.getConfig(id).then(({ data }) => {
           commit(UNIT.mutations.SET_CONFIG, data)
           resolve(data)
         }).catch(errors => reject(errors))
+          .finally(() => commit(UNIT.mutations.SET_LOADING_CONFIG, false))
       })
     },
     [UNIT.actions.CREATE_CONFIG]: async ({ commit }, id) => {
+      commit(UNIT.mutations.SET_LOADING_CONFIG, true)
       return await new Promise((resolve, reject) => {
         UnitService.createConfig(id).then(({ data }) => {
           commit(UNIT.mutations.SET_CONFIG, data)
           resolve(data)
         }).catch(errors => reject(errors))
+          .finally(() => commit(UNIT.mutations.SET_LOADING_CONFIG, false))
       })
     },
     [UNIT.actions.DELETE_CONFIG]: async ({ commit }, id) => {
+      commit(UNIT.mutations.SET_LOADING_CONFIG, true)
       return await new Promise((resolve, reject) => {
         UnitService.deleteConfig(id).then(({ data }) => {
           if (data) {
@@ -107,6 +114,7 @@ export default {
           }
           resolve(data)
         }).then(errors => reject(errors))
+          .finally(() => commit(UNIT.mutations.SET_LOADING_CONFIG, false))
       })
     }
   },
@@ -132,6 +140,9 @@ export default {
     },
     [UNIT.mutations.SET_CONFIG]: (state, config) => {
       state.config = config
+    },
+    [UNIT.mutations.SET_LOADING_CONFIG]: (state, isLoading) => {
+      state.configLoading = isLoading
     }
   }
 }

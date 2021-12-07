@@ -7,39 +7,32 @@ export default [
     field: 'id',
     label: 'ID',
     align: 'left',
-    required: true,
-    sortable: true,
-    sortOrder: 'ad'
+    required: true
   },
   {
     name: 'unit',
     field: row => row.unit.name,
     label: 'Unit',
-    align: 'left',
-    sortable: true
+    align: 'left'
   },
   {
     name: 'collected_by',
     field: 'collected_by',
     label: 'Collector',
-    align: 'left',
-    sortable: true
+    align: 'left'
   },
   {
     name: 'total',
     field: 'total',
     label: 'Total',
-    align: 'left',
-    sortable: true
+    align: 'left'
   },
   {
     name: 'collected_at',
     align: 'left',
     field: 'collected_at',
     format: (val) => date.formatDate(val, AppConstant.DATE_FORMAT),
-    label: 'Collected At',
-    sortable: true,
-    sortOrder: 'ad'
+    label: 'Collected At'
   },
   {
     name: 'actions',

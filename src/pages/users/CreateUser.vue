@@ -7,12 +7,12 @@
         </template>
         <q-breadcrumbs-el to="/" label="Adopisoft Billing Machine" />
         <q-breadcrumbs-el label="Users" to="/users" />
-        <q-breadcrumbs-el label="Create User" />
+        <q-breadcrumbs-el label="Create" />
       </q-breadcrumbs>
     </div>
     <q-card class="shadow-1 q-pb-md">
       <q-card-section>
-        <div class="text-h6">User Details</div>
+        <div class="text-h6">Create User</div>
       </q-card-section>
       <q-card-section>
         <q-form class="q-gutter-lg" ref="userForm">
@@ -45,12 +45,20 @@
                 v-model="user.password"
                 :error="hasError.password.error"
                 :error-message="hasError.password.message"
-                type="password"
+                :type="isPwd ? 'password' : 'text'"
                 :rules="[
                   (v) => validation.required(v, 'password'),
                   (v) => validation.min(v, 'password', 8)
                 ]"
-              />
+              >
+              <template v-slot:append>
+                  <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwd = !isPwd"
+                  />
+                </template>
+              </q-input>
             </div>
             <div class="col-md-6 q-px-lg">
               <div class="text-subtitle2 q-mb-md">Roles</div>
@@ -67,7 +75,7 @@
                       dense
                       v-model="user.roles"
                       inline
-                      type="checkbox"
+                      type="radio"
                       color="primary"
                       :options="roles"
                     />
@@ -120,7 +128,7 @@ import USER from 'src/store/types/users'
 import Validation from 'src/util/rules'
 import UserErrors from 'src/store/modules/users/errors'
 import { mapGetters } from 'vuex'
-import { setErrorValues } from 'src/util/validation'
+import { resetErrorValues, setErrorValues } from 'src/util/validation'
 export default {
   name: 'CreateUser',
   data: () => ({
@@ -128,11 +136,12 @@ export default {
       name: null,
       email: null,
       password: null,
-      roles: []
+      roles: null
     },
     loading: false,
     validation: Validation,
-    hasError: UserErrors
+    hasError: UserErrors,
+    isPwd: true
   }),
   computed: {
     ...mapGetters({
@@ -172,6 +181,7 @@ export default {
   },
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Users')
+    resetErrorValues(this.hasError)
     await this.$store.dispatch(`${USER.namespace}/${USER.actions.GET_ROLES}`)
   }
 }

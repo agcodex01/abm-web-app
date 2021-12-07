@@ -6,43 +6,37 @@ export default [
     name: 'amount',
     field: 'amount',
     label: 'Amount',
-    align: 'left',
-    sortable: true
+    align: 'left'
   },
   {
     name: 'service_number',
     align: 'left',
     field: 'service_number',
-    label: 'Service #',
-    sortable: true
+    label: 'Account #'
   },
   {
     name: 'type',
     field: row => row.biller.type,
     align: 'left',
-    label: 'Type',
-    sortable: true
+    label: 'Type'
   },
   {
     name: 'biller',
     align: 'left',
     field: row => row.biller.name,
-    label: 'Biller',
-    sortable: true
+    label: 'Biller'
   },
   {
     name: 'number',
     align: 'left',
     field: 'number',
-    label: 'Phone #',
-    sortable: true
+    label: 'Phone #'
   },
   {
     name: 'status',
     align: 'left',
     field: 'status',
-    label: 'Status',
-    sortable: true
+    label: 'Status'
   },
   {
     name: 'create_at',

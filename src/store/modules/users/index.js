@@ -29,10 +29,13 @@ export default {
     },
     [USER.actions.GET_USER]: async ({ commit }, id) => {
       commit(USER.mutations.SET_LOADING, true)
-      await UserService.getUser(id).then(({ data }) => {
-        commit(USER.mutations.SET_USER, data)
-      }).catch(errors => console.error(errors))
-        .finally(() => commit(USER.mutations.SET_LOADING, false))
+      return await new Promise((resolve, reject) => {
+        UserService.getUser(id).then(({ data }) => {
+          commit(USER.mutations.SET_USER, data)
+          resolve(data)
+        }).catch(errors => reject(errors))
+          .finally(() => commit(USER.mutations.SET_LOADING, false))
+      })
     },
     [USER.actions.CREATE_USER]: ({ commit }, data) => {
       commit(USER.mutations.SET_LOADING, true)
@@ -64,6 +67,32 @@ export default {
         })
         commit(USER.mutations.SET_ROLES, data)
       })
+    },
+    [USER.actions.GET_USERS_COLLECTOR]: async ({ commit }) => {
+      commit(USER.mutations.SET_LOADING, true)
+      commit(USER.mutations.SET_USERS, [])
+      await UserService.collectors().then(({ data }) => {
+        commit(USER.mutations.SET_USERS, data)
+      }).catch(errors => console.error(errors))
+        .finally(() => commit(USER.mutations.SET_LOADING, false))
+    },
+    [USER.actions.DISABLE_ACCOUNT]: async ({ commit }, disableDto) => {
+      console.log(disableDto)
+      return await new Promise((resolve, reject) => {
+        UserService.disabled(disableDto.id, disableDto.status)
+          .then(({ data }) => {
+            resolve(data)
+            commit(USER.mutations.SET_DISABLE_ACCOUNT, data)
+          }).catch(errors => reject(errors))
+      })
+    },
+    [USER.actions.RESET_PASSWORD]: async ({ commit }, id) => {
+      return await new Promise((resolve, reject) => {
+        UserService.resetPassword(id)
+          .then(({ data }) => {
+            resolve(data)
+          }).catch(errors => reject(errors))
+      })
     }
   },
   mutations: {
@@ -78,6 +107,9 @@ export default {
     },
     [USER.mutations.SET_LOADING]: (state, isLoading) => {
       state.loading = isLoading
+    },
+    [USER.mutations.SET_DISABLE_ACCOUNT]: (state, disabled) => {
+      state.user.disabled = disabled
     }
   }
 }

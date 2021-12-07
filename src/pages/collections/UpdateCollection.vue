@@ -38,13 +38,19 @@
                   :error-message="hasError.unit_id.message"
                   :rules="[(val) => validator.required(val, 'unit')]"
                 />
-                <q-input
-                  class="ccol col-xs-12 col-md-12"
+                <q-select
+                  class="col col-xs-12 col-md-12"
                   v-model="updatedCollection.collected_by"
-                  type="text"
-                  label="Collector"
-                  outlined
+                  :options="collectors"
+                  option-value="name"
+                  option-label="name"
+                  emit-value
+                  map-options
+                  label="Collected By"
+                  options-dense
                   dense
+                  outlined
+                  :loading="fetchingUsers"
                   :error="hasError.collected_by.error"
                   :error-message="hasError.collected_by.message"
                   :rules="[(val) => validator.required(val, 'collector')]"
@@ -175,6 +181,7 @@ import CollectionErrors from 'src/store/modules/collection/errors'
 import { resetErrorValues, setErrorValues } from 'src/util/validation'
 import { formatDate } from 'src/util/date'
 import { date } from 'quasar'
+import USER from 'src/store/types/users'
 
 export default {
   components: { EmptyState },
@@ -246,7 +253,9 @@ export default {
       collectionData: `${COLLECTION.namespace}/${COLLECTION.getters.GET_COLLECTION}`,
       collectionLoading: `${COLLECTION.namespace}/${COLLECTION.getters.GET_LOADING}`,
       unitLoading: `${UNIT.namespace}/${UNIT.getters.GET_LOADING}`,
-      units: `${UNIT.namespace}/${UNIT.getters.GET_UNITS}`
+      units: `${UNIT.namespace}/${UNIT.getters.GET_UNITS}`,
+      collectors: `${USER.namespace}/${USER.getters.GET_USERS}`,
+      fetchingUsers: `${USER.namespace}/${USER.getters.GET_LOADING}`
     }),
     rangeOptions () {
       return [formatDate(date.subtractFromDate(new Date(this.updatedCollection.collected_at), {
@@ -259,7 +268,8 @@ export default {
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Collections')
     resetErrorValues(this.hasError)
-    await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
+    this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
+    this.$store.dispatch(`${USER.namespace}/${USER.actions.GET_USERS_COLLECTOR}`)
     await this.$store.dispatch(
       `${COLLECTION.namespace}/${COLLECTION.actions.GET_COLLECTION}`,
       this.$route.params.id

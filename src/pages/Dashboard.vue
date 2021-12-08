@@ -26,6 +26,8 @@ import { mapGetters } from 'vuex'
 import DsSummary from 'src/components/dashboard/DsSummary.vue'
 import ApexCharts from 'apexcharts'
 import DASHBOARD from 'src/store/types/dashboard'
+// import CHART from 'src/store/types/charts'
+// import options from 'src/store/modules/charts/chart'
 
 export default {
   components: { DsSummary },

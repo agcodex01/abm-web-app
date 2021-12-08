@@ -50,7 +50,7 @@
         filled
         v-model="transactionFilter.billerType"
         :options="types"
-        label="Types"
+        label="Type"
         @update:model-value="updateFilter"
         options-dense
         map-options

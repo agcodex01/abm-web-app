@@ -25,11 +25,11 @@ export default {
     [BILLER.getters.GET_TYPE_LOADING]: state => state.typesLoading
   },
   actions: {
-    [BILLER.actions.GET_BILLERS]: async ({ commit, dispatch }) => {
+    [BILLER.actions.GET_BILLERS]: async ({ commit, dispatch }, filter) => {
       commit(BILLER.mutations.SET_LOADING, true)
       commit(BILLER.mutations.SET_BILLERS, [])
       dispatch(BILLER.actions.GET_BILLER_TYPES)
-      await BillerService.getBillers()
+      await BillerService.getBillers(filter)
         .then(({ data }) => {
           commit(BILLER.mutations.SET_BILLERS, data)
         })

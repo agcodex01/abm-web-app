@@ -15,7 +15,7 @@
         <div class="text-subtitle2">Total: {{ total }}</div>
       </q-card-section>
       <q-card-section>
-        <div id="chart" height="500" class="shadow-2 q-py-md"></div>
+        <div ref="chart" id="chart" height="500" class="shadow-2 q-py-md"></div>
       </q-card-section>
     </q-card>
   </q-page>
@@ -129,10 +129,16 @@ export default {
     }
   },
   async mounted () {
+    console.log(this.$refs)
     this.$store.commit('layout/SET_HEADER', 'Dashboard')
     this.$store.dispatch(
       `${DASHBOARD.namespace}/${DASHBOARD.actions.GET_DS_SUMMARY}`
     )
+    this.chart = await new ApexCharts(
+      document.querySelector('#chart'),
+      this.chartOptions
+    )
+    this.chart.render()
     await this.$store
       .dispatch(
         `${DASHBOARD.namespace}/${DASHBOARD.actions.GET_TRANSACTIONS_PREVIEW}`
@@ -140,15 +146,21 @@ export default {
       .then(({ data }) => {
         this.total = this.getTotal(data.pending)
         this.total += this.getTotal(data.remitted)
-        this.chartOptions.series[0].data = this.getData(data.pending)
-        this.chartOptions.series[1].data = this.getData(data.remitted)
-        this.chartOptions.series[2].data = this.getData(data.cancelled)
+        this.chart.updateSeries([
+          {
+            name: 'Pending',
+            data: this.getData(data.pending)
+          },
+          {
+            name: 'Remitted',
+            data: this.getData(data.remitted)
+          },
+          {
+            name: 'Cancelled',
+            data: this.getData(data.cancelled)
+          }
+        ])
       })
-    this.chart = new ApexCharts(
-      document.querySelector('#chart'),
-      this.chartOptions
-    )
-    this.chart.render()
   },
   computed: {
     ...mapGetters({

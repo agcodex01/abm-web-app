@@ -7,7 +7,6 @@ export default {
   state: () => ({
     units: [],
     unit: null,
-    unitsForFilter: [],
     tableHeader: tableHeader,
     loading: false,
     config: null,
@@ -15,7 +14,6 @@ export default {
   }),
   getters: {
     [UNIT.getters.GET_UNITS]: state => state.units,
-    [UNIT.getters.GET_UNITS_FOR_FILTER]: state => state.unitsForFilter,
     [UNIT.getters.GET_UNITS_TABLE_HEADER]: state => state.tableHeader,
     [UNIT.getters.GET_UNIT]: state => state.unit,
     [UNIT.getters.GET_LOADING]: state => state.loading,
@@ -23,18 +21,13 @@ export default {
     [UNIT.getters.LOADING_CONFIG]: state => state.configLoading
   },
   actions: {
-    [UNIT.actions.GET_UNITS]: ({ commit }) => {
+    [UNIT.actions.GET_UNITS]: ({ commit }, filter) => {
       commit(UNIT.mutations.SET_LOADING, true)
       commit(UNIT.mutations.SET_UNITS, [])
       return new Promise((resolve, reject) => {
-        UnitService.getUnits().then(({ data }) => {
-          const unitsForFilter = data.map(unit => Object.assign({}, {
-            label: unit.name,
-            value: unit.name
-          }))
+        UnitService.getUnits(filter).then(({ data }) => {
           commit(UNIT.mutations.SET_UNITS, data)
-          commit(UNIT.mutations.SET_UNITS_FOR_FILTER, unitsForFilter)
-          resolve(unitsForFilter)
+          resolve(data)
         }).catch((errors) => {
           reject(errors)
           console.log(errors)
@@ -128,9 +121,6 @@ export default {
   mutations: {
     [UNIT.mutations.SET_UNITS]: (state, units) => {
       state.units = units
-    },
-    [UNIT.mutations.SET_UNITS_FOR_FILTER]: (state, units) => {
-      state.unitsForFilter = units
     },
     [UNIT.mutations.CREATE_UNIT]: (state, unit) => {
       state.units.push(unit)

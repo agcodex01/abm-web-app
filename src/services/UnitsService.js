@@ -2,8 +2,10 @@ import { api } from '../boot/axios'
 import { buildParams } from './Http'
 
 const UnitService = {
-  getUnits: () => {
-    return api.get('/units')
+  getUnits: (filter) => {
+    return api.get('/units', {
+      params: buildParams(filter)
+    })
   },
   getUnit: async (id) => {
     return await api.get(`/units/${id}`)

@@ -20,7 +20,21 @@
         @click="$router.push({ name: 'create_unit' })"
       />
     </div>
-
+    <div class="row q-col-gutter-sm">
+      <q-select
+        class="col-3"
+        filled
+        v-model="unitFilter.status"
+        :options="statuses"
+        label="Status"
+        @update:model-value="updateFilter"
+        clearable
+        options-dense
+        option-label="display"
+        emit-value
+        dense
+      />
+    </div>
     <q-table
       title="Units"
       no-data-label="There is no Units as of now!"
@@ -92,16 +106,20 @@ import UNIT from 'src/store/types/units'
 import AuthTypes from 'src/store/types/auth'
 import TableLoader from 'src/components/loaders/TableLoader.vue'
 import NoData from 'src/components/loaders/NoData.vue'
-
+import { UNIT_STATUS } from 'util/unit'
 export default {
   name: 'Transactions',
   components: { TableLoader, NoData },
   data: () => ({
-    filter: ''
+    filter: '',
+    unitFilter: {
+      status: null
+    },
+    statuses: Object.values(UNIT_STATUS)
   }),
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Units')
-    await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`)
+    await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`, this.unitFilter)
   },
   computed: {
     ...mapGetters({
@@ -115,46 +133,12 @@ export default {
     }
   },
   methods: {
-    deleteRow (unit) {
-      this.$q.dialog({
-        title: 'Confirm',
-        message: 'Are you sure you want to delete ' + unit.row.name + '?',
-        cancel: true,
-        persistent: true
-      }).onOk(() => {
-        this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.DELETE_UNIT}`, unit.row.id).then(response => {
-          this.$q.notify({
-            type: 'positive',
-            message: `Successfully deleted ${unit.row.name}.`,
-            position: 'top'
-          })
-        }, errors => {
-          console.log(errors)
-        })
-      })
-    },
     disable (unit) {
       return unit.collections_count > 0 || unit.transactions_count > 0
+    },
+    async updateFilter () {
+      await this.$store.dispatch(`${UNIT.namespace}/${UNIT.actions.GET_UNITS}`, this.unitFilter)
     }
   }
 }
 </script>
-<style lang="sass">
-.sticky-header-table
-  .q-table__top,
-  .q-table__bottom,
-  thead tr:first-child th
-    /* bg color is important for th; just specify one */
-    background-color: #ffffff
-
-  thead tr th
-    position: sticky
-    z-index: 1
-  thead tr:first-child th
-    top: 0
-
-  /* this is when the loading indicator appears */
-  &.q-table--loading thead tr:last-child th
-    /* height of all previous header rows */
-    top: 48px
-</style>

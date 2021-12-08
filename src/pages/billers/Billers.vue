@@ -17,6 +17,21 @@
         @click="$router.push({ name: 'create_biller' })"
       />
     </div>
+    <div class="row q-col-gutter-sm">
+      <q-select
+        class="col-3"
+        filled
+        v-model="billerFilter.type"
+        :options="types"
+        label="Type"
+        @update:model-value="updateFilter"
+        options-dense
+        map-options
+        emit-value
+        dense
+        :loading="typesLoading"
+      />
+    </div>
     <q-table
       title="Billers"
       no-data-label="There is no billers as of now!"
@@ -87,6 +102,9 @@ export default {
   name: 'Billers',
   data: () => ({
     filter: '',
+    billerFilter: {
+      type: null
+    },
     createdAtOptions: getCreateAtOptions()
   }),
   async mounted () {
@@ -102,12 +120,13 @@ export default {
       tableConfig: `${BILLER.namespace}/${BILLER.getters.GET_BILLERS_TABLE_CONFIG}`,
       types: `${BILLER.namespace}/${BILLER.getters.GET_BILLER_TYPES}`,
       loading: `${BILLER.namespace}/${BILLER.getters.GET_LOADING}`,
-      typeColor: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TYPE_COLOR}`
+      typeColor: `${TRANSACTION.namespace}/${TRANSACTION.getters.GET_TYPE_COLOR}`,
+      typesLoading: `${BILLER.namespace}/${BILLER.getters.GET_TYPE_LOADING}`
     })
   },
   methods: {
     async updateFilter () {
-      await this.$store.dispatch(`${BILLER.namespace}/${BILLER.actions.GET_BILLERS}`)
+      await this.$store.dispatch(`${BILLER.namespace}/${BILLER.actions.GET_BILLERS}`, this.billerFilter)
     }
   }
 }

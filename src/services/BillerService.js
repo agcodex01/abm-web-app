@@ -1,8 +1,11 @@
 import { api } from 'src/boot/axios'
+import { buildParams } from './Http'
 
 const BillerService = {
-  getBillers: async () => {
-    return await api.get('/billers')
+  getBillers: async (filter) => {
+    return await api.get('/billers', {
+      params: buildParams(filter)
+    })
   },
   getBiller: async (id) => {
     return await api.get(`/billers/${id}`)

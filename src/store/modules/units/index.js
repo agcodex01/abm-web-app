@@ -116,6 +116,13 @@ export default {
         }).then(errors => reject(errors))
           .finally(() => commit(UNIT.mutations.SET_LOADING_CONFIG, false))
       })
+    },
+    [UNIT.actions.DISABLE_UNIT]: async ({ commit }, disableDto) => {
+      return await new Promise((resolve, reject) => {
+        UnitService.disabled(disableDto.id, disableDto.status).then(({ data }) => {
+          resolve(data)
+        }).catch(errors => reject(errors))
+      })
     }
   },
   mutations: {

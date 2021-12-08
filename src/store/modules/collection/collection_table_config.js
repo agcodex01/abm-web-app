@@ -35,9 +35,10 @@ export default [
     label: 'Collected At'
   },
   {
-    name: 'actions',
-    field: 'actions',
-    label: 'Actions',
-    align: 'left'
+    name: 'updated_at',
+    align: 'left',
+    field: 'updated_at',
+    format: (val) => date.formatDate(val, AppConstant.DATE_FORMAT),
+    label: 'Updated At'
   }
 ]

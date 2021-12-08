@@ -212,6 +212,7 @@ export default {
       updateCollection: `${COLLECTION.namespace}/${COLLECTION.actions.UPDATE_COLLECTION}`
     }),
     async onUpdate () {
+      resetErrorValues(this.hasError)
       const validated = await this.$refs.collectionForm.validate()
       if (validated) {
         this.updateCollection({
@@ -224,6 +225,9 @@ export default {
                 `Successfully updated ${this.updatedCollection.id} collection.`
               )
             )
+            this.$router.push({
+              name: 'collections'
+            })
           })
           .catch((errors) => {
             setErrorValues(this.hasError, errors)

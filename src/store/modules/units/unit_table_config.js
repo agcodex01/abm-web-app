@@ -20,9 +20,9 @@ export default [
     align: 'left'
   },
   {
-    name: 'actions',
-    field: 'actions',
-    label: 'Actions',
+    name: 'status',
+    field: 'disabled',
+    label: 'Status',
     align: 'left'
   }
 ]

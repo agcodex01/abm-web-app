@@ -25,6 +25,9 @@ const UnitService = {
   },
   deleteConfig: async (id) => {
     return await api.delete(`/units/${id}/config`)
+  },
+  disabled: async (id, status) => {
+    return api.put(`units/${id}/disabled/${status}`)
   }
 }
 

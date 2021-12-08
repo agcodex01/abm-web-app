@@ -115,7 +115,6 @@ export default {
         roles: []
       },
       roles: [],
-      loading: false,
       opened: false,
       validator: Validation,
       hasError: UserErrors
@@ -128,7 +127,6 @@ export default {
     async updateProfile () {
       const tempUser = Object.assign({}, this.user)
       delete tempUser.roles
-      this.loading = true
       this.$refs.profileForm.validate().then(async (valid) => {
         if (valid) {
           await this.$store
@@ -145,17 +143,15 @@ export default {
                 )
                 this.$store.commit(
                   `${AuthTypes.namespace}/${AuthTypes.mutations.SET_USER}`,
-                  this.user
+                  Object.assign({}, this.user)
                 )
                 this.opened = false
               }
             })
             .catch((errors) => {
-              setErrorValues(this.hasErro, errors)
+              setErrorValues(this.hasError, errors)
             })
         }
-      }).finally(() => {
-        this.loading = false
       })
     }
   },

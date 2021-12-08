@@ -26,6 +26,8 @@ import { mapGetters } from 'vuex'
 import DsSummary from 'src/components/dashboard/DsSummary.vue'
 import ApexCharts from 'apexcharts'
 import DASHBOARD from 'src/store/types/dashboard'
+// import CHART from 'src/store/types/charts'
+// import options from 'src/store/modules/charts/chart'
 
 export default {
   components: { DsSummary },
@@ -63,7 +65,7 @@ export default {
         dataLabels: {
           enabled: false
         },
-        colors: ['#ffc107', '#1166bd'],
+        colors: ['#ffc107', '#21ba45', '#f44336'],
         series: [
           {
             name: 'Pending',
@@ -72,10 +74,14 @@ export default {
           {
             name: 'Remmited',
             data: []
+          },
+          {
+            name: 'Cancelled',
+            data: []
           }
         ],
         stroke: {
-          width: [4, 4]
+          width: [4, 4, 4]
         },
         plotOptions: {
           bar: {
@@ -136,6 +142,7 @@ export default {
         this.total += this.getTotal(data.remitted)
         this.chartOptions.series[0].data = this.getData(data.pending)
         this.chartOptions.series[1].data = this.getData(data.remitted)
+        this.chartOptions.series[2].data = this.getData(data.cancelled)
       })
     this.chart = new ApexCharts(
       document.querySelector('#chart'),
@@ -157,9 +164,6 @@ export default {
       if (!data) return 0
       return data.reduce((a, b) => a + b)
     }
-  },
-  created () {
-
   }
 }
 </script>

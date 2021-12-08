@@ -9,6 +9,12 @@ export default [
     required: true
   },
   {
+    name: 'insertedAmount',
+    field: 'insertedAmount',
+    label: 'Inserted Amount',
+    align: 'left'
+  },
+  {
     name: 'amount',
     field: 'amount',
     label: 'Amount',

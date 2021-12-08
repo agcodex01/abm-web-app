@@ -103,7 +103,7 @@
      <q-dialog v-model="openDisableDialog" persistent position="top">
       <q-card class="q-mt-lg q-pb-sm" style="min-width: 450px">
         <q-card-section class="q-pb-none">
-          <div class="text-h6 text-weight-regular no-margin">Disable account</div>
+          <div class="text-h6 text-weight-regular no-margin">{{ user.disabled ? 'Enable': 'Disable'}} Account</div>
         </q-card-section>
         <q-card-section>
           <div class="text-subtitle2">Are you sure you want to {{ user.disabled ? 'enable': 'disable'}} the account of <b>{{ user.name }}</b> ? </div>
@@ -189,6 +189,7 @@ import Validation from 'src/util/rules'
 import UserErrors from 'src/store/modules/users/errors'
 import { resetErrorValues, setErrorValues } from 'src/util/validation'
 import { Notify } from 'quasar'
+
 export default {
   name: 'UpdateUser',
   data: () => ({
@@ -209,6 +210,7 @@ export default {
       disableAccount: `${USER.namespace}/${USER.actions.DISABLE_ACCOUNT}`
     }),
     async onUpdate () {
+      resetErrorValues(this.hasError)
       await this.$store
         .dispatch(`${USER.namespace}/${USER.actions.UPDATE_USER}`, {
           user: this.user,
@@ -221,6 +223,9 @@ export default {
                 `Successfully updated ${this.user.name} info.`
               )
             )
+            this.$router.push({
+              name: 'users'
+            })
           }
         })
         .catch((errors) => {
@@ -266,6 +271,12 @@ export default {
             message: `Successfully ${!this.user.disabled ? 'enabled' : 'disabled'} ${this.user.name} account.`
           })
         }
+      }).catch(() => {
+        Notify.create({
+          position: 'top',
+          type: 'negative',
+          message: `Failed to  ${!this.user.disabled ? 'enabled' : 'disabled'} ${this.user.name} account.`
+        })
       })
     }
   },
@@ -294,7 +305,6 @@ export default {
         roles: this.userData.roles.map((role) => role.name)[0]
       }
     )
-    console.log(this.user)
   }
 }
 </script>

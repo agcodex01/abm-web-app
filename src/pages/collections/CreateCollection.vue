@@ -255,6 +255,7 @@ export default {
   },
   methods: {
     async createCollection () {
+      resetErrorValues(this.hasError)
       const validated = await this.$refs.collectionForm.validate()
       if (validated) {
         await this.$store

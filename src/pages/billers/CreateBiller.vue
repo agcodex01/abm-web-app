@@ -111,6 +111,7 @@ export default {
       createBiller: `${BILLER.namespace}/${BILLER.actions.CREATE_BILLER}`
     }),
     async onSave () {
+      resetErrorValues(this.hasError)
       const validated = await this.$refs.billerForm.validate()
       if (validated) {
         this.createBiller(this.biller)

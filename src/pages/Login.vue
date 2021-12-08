@@ -19,8 +19,8 @@
             label="Email"
             outlined
             dense
-            :error="emailErrors.email.hasError"
-            :error-message="emailErrors.email.message"
+            :error="hasError.email.error"
+            :error-message="hasError.email.message"
             :rules="[(val) => validation.required(val, 'email')]"
           />
           <q-input
@@ -29,9 +29,8 @@
             label="Password"
             outlined
             dense
-            lazy-rules
-            :error="emailErrors.password.hasError"
-            :error-message="emailErrors.password.message"
+            :error="hasError.password.error"
+            :error-message="hasError.password.message"
             :rules="[
               (val) => validation.required(val, 'password'),
               (val) => validation.min(val, 'password', 8)
@@ -63,6 +62,8 @@
 import Validation from 'src/util/rules'
 import { mapActions, mapGetters } from 'vuex'
 import AuthTypes from 'src/store/types/auth'
+import UserErrors from 'src/store/modules/users/errors'
+import { resetErrorValues, setErrorValues } from 'src/util/validation'
 export default {
   name: 'Login',
   data () {
@@ -72,16 +73,7 @@ export default {
         password: null
       },
       validation: Validation,
-      emailErrors: {
-        email: {
-          hasError: false,
-          message: ''
-        },
-        password: {
-          hasError: false,
-          message: ''
-        }
-      }
+      hasError: UserErrors
     }
   },
   methods: {
@@ -89,24 +81,17 @@ export default {
       login: `${AuthTypes.namespace}/${AuthTypes.actions.LOGIN}`
     }),
     startLogin () {
+      resetErrorValues(this.hasError)
       this.$refs.authForm.validate().then((isValid) => {
         if (isValid) {
           this.login(this.credentials)
             .then((result) => {
-              console.log('SUCCESS AUTH')
               this.$router.push({
                 name: 'dashboard'
               })
             })
             .catch((errors) => {
-              if ('email' in errors) {
-                this.emailErrors.email.hasError = true
-                this.emailErrors.email.message = errors.email[0]
-              }
-              if ('password' in errors) {
-                this.emailErrors.password.hasError = true
-                this.emailErrors.password.message = errors.password[0]
-              }
+              setErrorValues(this.hasError, errors)
             })
         }
       })
@@ -117,6 +102,9 @@ export default {
       loading: `${AuthTypes.namespace}/${AuthTypes.getters.GET_LOADING}`,
       user: `${AuthTypes.namespace}/${AuthTypes.getters.GET_USER}`
     })
+  },
+  mounted () {
+    resetErrorValues(this.hasError)
   }
 }
 </script>

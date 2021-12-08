@@ -29,7 +29,6 @@ export default boot(({ app, router }) => {
     function (error) {
       switch (error.response.status) {
         case 401:
-          LocalStorage.clear()
           router.push({
             name: 'login'
           })

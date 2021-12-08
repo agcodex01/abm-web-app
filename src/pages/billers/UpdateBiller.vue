@@ -12,6 +12,9 @@
     </div>
 
     <q-card>
+      <q-card-section>
+        <div class="text-h6">Update Biller</div>
+      </q-card-section>
       <q-card-section class="q-py-lg">
         <div class="row">
           <div class="col-6">
@@ -118,6 +121,7 @@ export default {
       updateBiller: `${BILLER.namespace}/${BILLER.actions.UPDATE_BILLER}`
     }),
     async onUpdate () {
+      resetErrorValues(this.hasError)
       const validated = await this.$refs.billerForm.validate()
       if (validated) {
         this.updateBiller({ id: this.biller.id, biller: this.biller })
@@ -127,6 +131,9 @@ export default {
                 `Successfully updated ${biller.name} biller.`
               )
             )
+            this.$router.push({
+              name: 'billers'
+            })
           })
           .catch((errors) => {
             setErrorValues(this.hasError, errors)

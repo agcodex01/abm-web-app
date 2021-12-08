@@ -192,7 +192,8 @@ export default {
       loading: `${AuthTypes.namespace}/${AuthTypes.getters.GET_LOADING}`,
       notifications: `${LAYOUT.namespace}/${LAYOUT.getters.GET_NOTIFICATIONS}`,
       unreadNotifications: `${LAYOUT.namespace}/${LAYOUT.getters.UNREAD_COUNT_NOTIFICATION}`,
-      fetchingNotifications: `${LAYOUT.namespace}/${LAYOUT.getters.FETCHING_NOTIFICATIONS}`
+      fetchingNotifications: `${LAYOUT.namespace}/${LAYOUT.getters.FETCHING_NOTIFICATIONS}`,
+      username: `${AuthTypes.namespace}/${AuthTypes.getters.GET_USER_NAME}`
     }),
     hasNotifications () {
       return this.notifications.length > 0

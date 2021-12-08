@@ -19,10 +19,10 @@ export default {
     [USER.getters.GET_LOADING]: state => state.loading
   },
   actions: {
-    [USER.actions.GET_USERS]: async ({ commit }) => {
+    [USER.actions.GET_USERS]: async ({ commit }, userFilter) => {
       commit(USER.mutations.SET_LOADING, true)
       commit(USER.mutations.SET_USERS, [])
-      await UserService.getUsers().then(({ data }) => {
+      await UserService.getUsers(userFilter).then(({ data }) => {
         commit(USER.mutations.SET_USERS, data)
       }).catch(errors => console.error(errors))
         .finally(() => commit(USER.mutations.SET_LOADING, false))
@@ -77,7 +77,6 @@ export default {
         .finally(() => commit(USER.mutations.SET_LOADING, false))
     },
     [USER.actions.DISABLE_ACCOUNT]: async ({ commit }, disableDto) => {
-      console.log(disableDto)
       return await new Promise((resolve, reject) => {
         UserService.disabled(disableDto.id, disableDto.status)
           .then(({ data }) => {

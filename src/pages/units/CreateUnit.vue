@@ -37,6 +37,7 @@
               label="Funds"
               outlined
               dense
+              disable
               :error="hasError.fund.error"
               :error-message="hasError.fund.message"
               :rules="[(val) => validator.required(val, 'fund')]"
@@ -48,7 +49,7 @@
             <q-input
               class="col col-md-6"
               v-model="newUnit.postal_code"
-              type="text"
+              type="number"
               label="Postal Code"
               outlined
               dense
@@ -146,7 +147,7 @@ export default {
     return {
       newUnit: {
         name: '',
-        fund: null,
+        fund: 0,
         postal_code: '',
         province: '',
         city_municipality: '',
@@ -168,6 +169,7 @@ export default {
   },
   methods: {
     async createUnit () {
+      resetErrorValues(this.hasError)
       this.$refs.unitForm.validate().then(async (valid) => {
         if (valid) {
           await this.$store

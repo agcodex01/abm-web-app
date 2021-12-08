@@ -64,13 +64,18 @@
           />
         </q-td>
       </template>
-
-      <template v-slot:body-cell-actions="unit">
-            <q-td :value="unit.id">
-              <q-btn :disable="disable(unit.row)" dense round flat color="negative" @click="deleteRow(unit)" icon="delete_outline"></q-btn>
-            </q-td>
+      <template v-slot:body-cell-status="props">
+        <q-td :props="props">
+          <q-chip
+            style="font-size: 12px"
+            outline
+            text-color="white"
+            dense
+            :color="props.value ? 'negative' : 'positive'"
+            :label="props.value ? 'disabled' : 'active'"
+          />
+        </q-td>
       </template>
-
       <template v-slot:loading>
        <table-loader v-if="loading"/>
       </template>

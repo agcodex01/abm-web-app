@@ -12,6 +12,9 @@ export default {
   }),
   getters: {
     [AuthTypes.getters.GET_USER]: (state) => {
+      if (state.user) {
+        return state.user
+      }
       const { ...userFromLocalStorage } = LocalStorage.getItem('user')
       if (!_.isEmpty(userFromLocalStorage)) return Object.assign({}, userFromLocalStorage)
       return state.user
@@ -21,7 +24,8 @@ export default {
       if (token) return token
       return state.token
     },
-    [AuthTypes.getters.GET_LOADING]: state => state.loading
+    [AuthTypes.getters.GET_LOADING]: state => state.loading,
+    [AuthTypes.getters.GET_USER_NAME]: state => state.user?.name
   },
   mutations: {
     [AuthTypes.mutations.SET_USER]: (state, user) => {
@@ -32,6 +36,12 @@ export default {
     },
     [AuthTypes.mutations.SET_LOADING]: (state, isLoading) => {
       state.loading = isLoading
+    },
+    [AuthTypes.mutations.SET_USER_NAME]: (state, name) => {
+      state.user.name = name
+      const user = LocalStorage.getItem('user')
+      user.name = name
+      LocalStorage.set('user', user)
     }
   },
   actions: {

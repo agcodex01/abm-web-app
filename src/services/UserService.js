@@ -1,8 +1,11 @@
 import { api } from 'src/boot/axios'
+import { buildParams } from './Http'
 
 export default {
-  getUsers: async () => {
-    return api.get('/users')
+  getUsers: async (params) => {
+    return api.get('/users', {
+      params: buildParams(params)
+    })
   },
   getUser: async id => {
     return api.get(`/users/${id}`)

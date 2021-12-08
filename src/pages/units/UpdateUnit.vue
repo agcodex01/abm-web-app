@@ -44,6 +44,7 @@
               label="Funds"
               outlined
               dense
+              disable
               :error="hasError.fund.error"
               :error-message="hasError.fund.message"
               :rules="[(val) => validator.required(val, 'fund')]"
@@ -55,7 +56,7 @@
             <q-input
               class="col col-md-6"
               v-model="updatedUnit.postal_code"
-              type="text"
+              type="number"
               label="Postal Code"
               outlined
               dense
@@ -161,6 +162,33 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="openDisableDialog" persistent position="top">
+      <q-card class="q-mt-lg q-pb-sm" style="min-width: 450px">
+        <q-card-section class="q-pb-none">
+          <div class="text-h6 text-weight-regular no-margin">{{ updatedUnit.disabled ? 'Enable': 'Disable'}} Unit</div>
+        </q-card-section>
+        <q-card-section>
+          <div class="text-subtitle2">Are you sure you want to {{ updatedUnit.disabled ? 'enable': 'disable'}} unit <b>{{ updatedUnit.name }}</b> ? </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            size="sm"
+            padding="8px 16px"
+            outline
+            label="Cancel"
+            color="primary"
+            v-close-popup
+          />
+          <q-btn
+            size="sm"
+            padding="8px 16px"
+            label="Confirm"
+            color="primary"
+            @click="disableUnitFn"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <q-footer
       class="bg-white q-py-sm q-px-md flex justify-between align-center"
       reveal
@@ -178,20 +206,40 @@
       >
         Back
       </q-btn>
-      <q-btn
-        size="sm"
-        color="primary"
-        padding="sm lg"
-        label="Save"
-        :loading="loading"
-        :style="{ width: loading ? '150px' : '' }"
-        @click="onUpdate"
-      >
-        <template v-slot:loading>
-          <q-spinner class="on-left" />
-          Loading...
-        </template>
-      </q-btn>
+      <div class="q-gutter-sm">
+        <q-btn
+          v-if="updatedUnit.disabled"
+          outline
+          color="positive"
+          label="Enable Unit"
+          size="sm"
+          padding="sm lg"
+          @click="openDisableDialogFn"
+        />
+        <q-btn
+          v-else
+          outline
+          color="negative"
+          label="Disable Unit"
+          size="sm"
+          padding="sm lg"
+          @click="openDisableDialogFn"
+        />
+        <q-btn
+          size="sm"
+          color="primary"
+          padding="sm lg"
+          label="Save"
+          :loading="loading"
+          :style="{ width: loading ? '150px' : '' }"
+          @click="onUpdate"
+        >
+          <template v-slot:loading>
+            <q-spinner class="on-left" />
+            Loading...
+          </template>
+        </q-btn>
+      </div>
     </q-footer>
   </q-page>
 </template>
@@ -202,6 +250,7 @@ import Validation from 'src/util/rules'
 import AppConstant from 'src/constant/app'
 import UnitErrors from 'src/store/modules/units/errors'
 import { resetErrorValues, setErrorValues } from 'src/util/validation'
+import { Notify } from 'quasar'
 
 export default {
   name: 'Update Unit',
@@ -215,21 +264,25 @@ export default {
         province: '',
         city_municipality: '',
         barangay: '',
-        street: ''
+        street: '',
+        disabled: false
       },
       validator: Validation,
       loading: false,
       hasError: UnitErrors,
-      openConfigDialog: false
+      openConfigDialog: false,
+      openDisableDialog: false
     }
   },
   methods: {
     ...mapActions({
       updateUnit: `${UNIT.namespace}/${UNIT.actions.UPDATE_UNIT}`,
       createConfig: `${UNIT.namespace}/${UNIT.actions.CREATE_CONFIG}`,
-      deleteConfig: `${UNIT.namespace}/${UNIT.actions.DELETE_CONFIG}`
+      deleteConfig: `${UNIT.namespace}/${UNIT.actions.DELETE_CONFIG}`,
+      disableUnit: `${UNIT.namespace}/${UNIT.actions.DISABLE_UNIT}`
     }),
     async onUpdate () {
+      resetErrorValues(this.hasError)
       this.$refs.unitForm.validate().then((valid) => {
         if (valid) {
           this.loading = true
@@ -240,6 +293,9 @@ export default {
                   `Successfully updated ${this.updatedUnit.name} unit.`
                 )
               )
+              this.$router.push({
+                name: 'units'
+              })
             })
             .catch((errors) => {
               setErrorValues(this.hasError, errors)
@@ -256,6 +312,31 @@ export default {
         `${UNIT.namespace}/${UNIT.actions.GET_CONFIG}`,
         this.updatedUnit.id
       )
+    },
+    openDisableDialogFn () {
+      this.openDisableDialog = true
+    },
+    async disableUnitFn () {
+      this.openDisableDialog = false
+      await this.disableUnit({
+        id: this.updatedUnit.id,
+        status: (!this.updatedUnit.disabled) ? 1 : 0
+      }).then(success => {
+        if (success) {
+          this.updatedUnit.disabled = !this.updatedUnit.disabled
+          Notify.create({
+            position: 'top',
+            type: 'positive',
+            message: `Successfully ${!this.updatedUnit.disabled ? 'enabled' : 'disabled'} ${this.updatedUnit.name}.`
+          })
+        }
+      }).catch(() => {
+        Notify.create({
+          position: 'top',
+          type: 'negative',
+          message: `Failed to  ${!this.updatedUnit.disabled ? 'enabled' : 'disabled'} ${this.updatedUnit.name}.`
+        })
+      })
     }
   },
   computed: {

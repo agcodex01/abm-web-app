@@ -25,6 +25,7 @@
         :options="types"
         label="Type"
         @update:model-value="updateFilter"
+        clearable
         options-dense
         map-options
         emit-value

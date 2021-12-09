@@ -98,7 +98,7 @@
             text-color="white"
             dense
             :color="props.value ? 'negative' : 'positive'"
-            :label="props.value ? 'disabled' : 'active'"
+            :label="props.value ? 'disabled' : 'enable'"
           />
         </q-td>
       </template>

@@ -40,7 +40,6 @@
               disable
               :error="hasError.fund.error"
               :error-message="hasError.fund.message"
-              :rules="[(val) => validator.required(val, 'fund')]"
             />
           </div>
 

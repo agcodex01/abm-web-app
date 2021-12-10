@@ -18,7 +18,7 @@
       <q-card-section class="q-py-lg">
         <div class="row">
           <div class="col-6">
-            <div class="text-subtitle2 q-mb-md">Info</div>
+            <div class="text-subtitle2 q-mb-md">Details</div>
             <q-form ref="billerForm">
               <q-input
                 v-model="biller.name"

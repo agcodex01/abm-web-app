@@ -17,7 +17,7 @@
       </q-card-section>
       <q-card-section>
         <q-form ref="unitForm">
-          <div class="text-subtitle1 q-ma-sm">Information</div>
+          <div class="text-subtitle1 q-ma-sm">Details</div>
           <div class="row q-col-gutter-sm">
             <q-input
               class="col col-md-6"

@@ -33,12 +33,5 @@ export default [
     field: 'collected_at',
     format: (val) => date.formatDate(val, AppConstant.DATE_FORMAT),
     label: 'Collected At'
-  },
-  {
-    name: 'updated_at',
-    align: 'left',
-    field: 'updated_at',
-    format: (val) => date.formatDate(val, AppConstant.DATE_FORMAT),
-    label: 'Updated At'
   }
 ]

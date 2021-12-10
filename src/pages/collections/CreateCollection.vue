@@ -17,7 +17,7 @@
       </q-card-section>
       <q-card-section>
         <q-form ref="collectionForm">
-          <div class="text-subtitle1 q-ma-sm">Information</div>
+          <div class="text-subtitle1 q-ma-sm">Details</div>
           <div class="row">
             <div class="col-md-6 q-px-md">
               <div class="row q-col-gutter-sm">
@@ -47,14 +47,25 @@
                   emit-value
                   map-options
                   label="Collected By"
-                  options-dense
                   dense
                   outlined
                   :loading="fetchingUsers"
                   :error="hasError.collected_by.error"
                   :error-message="hasError.collected_by.message"
                   :rules="[(val) => validator.required(val, 'collector')]"
-                />
+                >
+                  <template v-slot:option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <q-item-section avatar>
+                        <q-icon right size="32px" color="primary" name="account_circle" />
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>{{ scope.opt.name }}</q-item-label>
+                        <q-item-label caption>{{ scope.opt.email }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
                 <q-input
                   class="col col-xs-12 col-md-12"
                   v-model="newCollection.total"
@@ -167,7 +178,56 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-
+    <q-dialog v-model="openPreview" >
+      <q-card style="width:420px">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Collection Preview</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section>
+          <div class="text-subtitle2 q-mb-sm">Details</div>
+          <q-list bordered separator>
+            <q-item>
+              <q-item-section>Unit</q-item-section>
+              <q-item-section side v-text="selectedUnit?.name"></q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>Collected By</q-item-section>
+              <q-item-section side v-text="newCollection.collected_by"/>
+            </q-item>
+            <q-item>
+              <q-item-section>Total</q-item-section>
+              <q-item-section side v-text="newCollection.total"/>
+            </q-item>
+            <q-item>
+              <q-item-section>Collected At</q-item-section>
+              <q-item-section side v-text="newCollection.collected_at"/>
+            </q-item>
+          </q-list>
+          <div class="text-subtitle2 q-mt-md">Attachments</div>
+          <div v-if="newCollection.images.length">
+            <div
+              v-for="(image, i) in newCollection.images"
+              :key="i"
+              class="row inline"
+            >
+              <q-img
+                class="q-ma-md"
+                :src="getFileUrl(image)"
+                spinner-color="white"
+                style="height:150px; width:150px"
+              />
+            </div>
+          </div>
+          <empty-state v-else message="No files attached." />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn size="sm" unelevated outline padding="sm md" label="Cancel" color="primary" v-close-popup />
+          <q-btn size="sm" unelevated  padding="sm md" label="Create Collection" color="primary" @click="createCollectionFn"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <q-footer
       class="bg-white q-py-sm q-px-md flex justify-between align-center"
       reveal
@@ -218,33 +278,32 @@ import USER from 'src/store/types/users'
 export default {
   components: { EmptyState },
   name: 'Create Collection',
-  data () {
-    return {
-      newCollection: {
-        unit_id: '',
-        collected_by: '',
-        total: 0,
-        collected_at: formatDate(new Date()),
-        images: []
-      },
-      selectedUnit: null,
-      validator: Validation,
-      hasError: CollectionErrors,
-      openImageModal: false,
-      selectedImage: {
-        url: '',
-        name: ''
-      },
-      rangeOptions: [
-        formatDate(
-          date.subtractFromDate(new Date(), {
-            days: 7
-          })
-        ),
-        formatDate(new Date())
-      ]
-    }
-  },
+  data: () => ({
+    newCollection: {
+      unit_id: '',
+      collected_by: '',
+      total: 0,
+      collected_at: formatDate(new Date()),
+      images: []
+    },
+    selectedUnit: null,
+    validator: Validation,
+    hasError: CollectionErrors,
+    openImageModal: false,
+    selectedImage: {
+      url: '',
+      name: ''
+    },
+    rangeOptions: [
+      formatDate(
+        date.subtractFromDate(new Date(), {
+          days: 7
+        })
+      ),
+      formatDate(new Date())
+    ],
+    openPreview: false
+  }),
   async mounted () {
     this.$store.commit('layout/SET_HEADER', 'Collections')
     resetErrorValues(this.hasError)
@@ -258,25 +317,8 @@ export default {
       resetErrorValues(this.hasError)
       const validated = await this.$refs.collectionForm.validate()
       if (validated) {
-        await this.$store
-          .dispatch(
-            `${COLLECTION.namespace}/${COLLECTION.actions.CREATE_COLLECTION}`,
-            this.newCollection
-          )
-          .then((collection) => {
-            this.$q.notify(
-              AppConstant.SUCCESS_MSG(
-                `Successfully created a collection from  ${this.newCollection.unit_id}.`
-              )
-            )
-            this.$router.push({
-              name: 'update_collection',
-              params: { id: collection.id }
-            })
-          })
-          .catch((errors) => {
-            setErrorValues(this.hasError, errors)
-          })
+        this.openPreview = true
+        this.setSelectedUnit()
       }
     },
     getFileUrl (image) {
@@ -304,6 +346,31 @@ export default {
     },
     removeImage (index) {
       this.newCollection.images.splice(index, 1)
+    },
+    setSelectedUnit () {
+      this.selectedUnit = this.units.find(unit => unit.id === this.newCollection.unit_id)
+    },
+    async createCollectionFn () {
+      this.openPreview = false
+      await this.$store
+        .dispatch(
+          `${COLLECTION.namespace}/${COLLECTION.actions.CREATE_COLLECTION}`,
+          this.newCollection
+        )
+        .then((collection) => {
+          this.$q.notify(
+            AppConstant.SUCCESS_MSG(
+              `Successfully created a collection from  ${this.selectedUnit?.name}.`
+            )
+          )
+          this.$router.push({
+            name: 'update_collection',
+            params: { id: collection.id }
+          })
+        })
+        .catch((errors) => {
+          setErrorValues(this.hasError, errors)
+        })
     }
   },
   computed: {

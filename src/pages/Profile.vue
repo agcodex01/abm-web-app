@@ -47,7 +47,7 @@
     <q-dialog v-model="opened" persistent position="top">
       <q-card style="min-width: 350px; top: 30px">
         <q-card-section>
-          <p class="text-subtitle1 text-bold">Edit Profile Information</p>
+          <p class="text-subtitle1 text-bold">Edit Profile Details</p>
           <q-form ref="profileForm">
             <q-input
               type="text"

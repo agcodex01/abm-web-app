@@ -7,21 +7,21 @@
         </template>
         <q-breadcrumbs-el to="/" label="Adopisoft Billing Machine" />
         <q-breadcrumbs-el to="/collections" label="Collections" />
-        <q-breadcrumbs-el label="Update" />
+        <q-breadcrumbs-el label="Details" />
       </q-breadcrumbs>
     </div>
 
     <q-card>
       <q-card-section>
-        <div class="text-h6">Update Collection</div>
+        <div class="text-h6">Collection Details</div>
       </q-card-section>
       <q-card-section>
         <q-form ref="collectionForm">
           <div class="row">
             <div class="col col-xs-12 col-md-6 q-px-md">
               <div class="row q-col-gutter-sm">
-                <div class="col col-xs-12 col-md-12 col-12 text-subtitle2 q-ma-sm">Information</div>
-                <q-select
+                <div class="col col-xs-12 col-md-12 col-12 text-subtitle2 q-mb-md">Details</div>
+                <!-- <q-select
                   class="col col-xs-12 col-md-12"
                   v-model="updatedCollection.unit_id"
                   :options="units"
@@ -91,7 +91,25 @@
                       </q-popup-proxy>
                     </q-icon>
                   </template>
-                </q-input>
+                </q-input> -->
+                <q-list bordered separator class="full-width">
+                  <q-item>
+                    <q-item-section>Unit</q-item-section>
+                    <q-item-section side v-text="updatedCollection?.unit?.name"></q-item-section>
+                  </q-item>
+                  <q-item>
+                    <q-item-section>Collected By</q-item-section>
+                    <q-item-section side v-text="updatedCollection.collected_by"/>
+                  </q-item>
+                  <q-item>
+                    <q-item-section>Total</q-item-section>
+                    <q-item-section side v-text="updatedCollection.total"/>
+                  </q-item>
+                  <q-item>
+                    <q-item-section>Collected At</q-item-section>
+                    <q-item-section side v-text="updatedCollection.collected_at"/>
+                  </q-item>
+                </q-list>
               </div>
             </div>
 
@@ -152,20 +170,6 @@
       >
         Back
       </q-btn>
-      <q-btn
-        size="sm"
-        color="primary"
-        padding="sm lg"
-        label="Save"
-        :loading="collectionLoading && !!updatedCollection.unit_id"
-        :style="{ width: collectionLoading && !!updatedCollection.unit_id ? '150px' : '' }"
-        @click="onUpdate"
-      >
-        <template v-slot:loading>
-          <q-spinner class="on-left" />
-          Loading...
-        </template>
-      </q-btn>
     </q-footer>
   </q-page>
 </template>
@@ -190,7 +194,7 @@ export default {
     return {
       id: this.$route.params.id,
       updatedCollection: {
-        unit_id: null,
+        name: null,
         collected_by: '',
         total: 0,
         collected_at: formatDate(new Date()),
